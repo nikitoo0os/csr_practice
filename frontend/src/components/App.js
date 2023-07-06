@@ -17,7 +17,7 @@ function App() {
     return (<>
         <BrowserRouter>
             <Navbar isAuthenticated={isAuthenticated} />
-            <div className="bg-gray-300 pb-96 py-8">
+            <div className="bg-gray-300 h-screen py-8">
             <Routes>
                 <Route path="/login" element={<Login onLogin={handleLogin}/>} />
             </Routes>

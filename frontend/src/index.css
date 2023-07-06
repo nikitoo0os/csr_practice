@@ -26,6 +26,10 @@ code {
   border-radius: 4px;
 }
 
+.Modal:focus {
+  outline: none;
+}
+
 .Overlay {
   position: fixed;
   top: 0;
@@ -36,4 +40,8 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.Overlay:focus {
+  outline: none;
 }

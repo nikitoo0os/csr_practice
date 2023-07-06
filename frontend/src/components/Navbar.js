@@ -6,6 +6,9 @@ import "react-toastify/dist/ReactToastify.css";
 import ReactModal from "react-modal";
 import Login from "./Login";
 
+
+ReactModal.setAppElement("#root");
+
 function logout() {
     setAuthHeader(null);
     window.location.reload();
@@ -98,7 +101,7 @@ export const Navbar = ({ isAuthenticated }) => {
               ) : (
                 <>
                   <li className="bg-green-600 md:hover:bg-green-700 flex items-center px-2 ml-auto">
-                    <button onClick={openModal} className="h-full flex items-center">
+                    <button onClick={openModal} className="h-full flex items-center focus:outline-none">
                       Войти
                       <img
                         className="h-8 mt-1 ml-1 mr-4 md:border-0"
@@ -120,7 +123,7 @@ export const Navbar = ({ isAuthenticated }) => {
           className="Modal"
           overlayClassName="Overlay"
         >
-          <Login onLogin={onLogin} />
+          <Login onLogin={onLogin} close = {closeModal} />
         </ReactModal>
       </>
     );

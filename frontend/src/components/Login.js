@@ -15,7 +15,7 @@ export default class Login extends React.Component {
       email: "",
       password: "",
       onLogin: props.onLogin,
-      onRegister: props.onRegister,
+      close: props.close
     };
   }
   onChangeHandler = (event) => {
@@ -39,8 +39,16 @@ export default class Login extends React.Component {
   render() {
     return (
       <div className="flex justify-center">
-        <div className="w-1/4">
-          <div className="flex justify-center mb-3">
+        <div className="w-1/4 bg-white bg-opacity-100 rounded border-sky-500 border-2 p-2">
+          <div className="flex justify-end">
+          <button className="full" onClick={this.state.close}>
+            <img
+              className="h-8"
+              src={require("../pictures/close.png")}
+              alt="закрыть"
+            /></button>
+            </div>
+          <div className="flex justify-center  mb-3">
             <h2 className="text-2xl font-bold text-gray-800">Авторизация</h2>
           </div>
           <div className="p-4 rounded">
