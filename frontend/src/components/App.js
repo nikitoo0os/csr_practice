@@ -5,11 +5,11 @@ import Login  from './Login'
 import { ToastContainer } from 'react-toastify';
 import { getAuthToken } from '../helpers/axios_helper'
 import ReactModal from "react-modal";
+import Users from './Users';
+import NewUser from './NewUser';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(getAuthToken() !== null && getAuthToken() !== "null");
-    console.log("appjs " + isAuthenticated);
-
     const handleLogin = (e, email, password) => {
         onLogin(e, email, password);
     };
@@ -17,9 +17,14 @@ function App() {
     return (<>
         <BrowserRouter>
             <Navbar isAuthenticated={isAuthenticated} />
-            <div className="bg-gray-300 h-screen py-8">
+            <div className="bg-gray-300 h-screen">
             <Routes>
-                <Route path="/login" element={<Login onLogin={handleLogin}/>} />
+                {isAuthenticated ? (<>
+                </>):(<>
+                    <Route path="/" element={<Login onLogin={handleLogin}/>} />
+                    <Route path="/users" element={<Users/>} />
+                    <Route path="/newuser" element={<NewUser/>} />
+                </>)}
             </Routes>
             </div>
         </BrowserRouter>

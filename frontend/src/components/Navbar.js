@@ -80,6 +80,11 @@ export const Navbar = ({ isAuthenticated }) => {
                   Отчеты
                 </NavLink>
               </li>
+              <li className="hover:bg-sky-700 flex items-cetner px-2">
+                <NavLink to="/users" className="h-full flex items-center">
+                  Пользователи
+                </NavLink>
+              </li>
               {isAuthenticated ? (
                 <>
                   <li className="bg-red-600 hover:bg-red-700 flex items-center px-2 ml-auto">
@@ -100,7 +105,7 @@ export const Navbar = ({ isAuthenticated }) => {
                 </>
               ) : (
                 <>
-                  <li className="bg-green-600 md:hover:bg-green-700 flex items-center px-2 ml-auto">
+                  {/* <li className="bg-green-600 md:hover:bg-green-700 flex items-center px-2 ml-auto">
                     <button onClick={openModal} className="h-full flex items-center focus:outline-none">
                       Войти
                       <img
@@ -109,7 +114,7 @@ export const Navbar = ({ isAuthenticated }) => {
                         alt="Войти"
                       />
                     </button>
-                  </li>
+                  </li> */}
                 </>
               )}
             </ul>
