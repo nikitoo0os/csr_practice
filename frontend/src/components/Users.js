@@ -72,7 +72,7 @@ export default function Users() {
 
   return (
     <>
-      <div className="max-w-screen-xl mx-auto bg-white">
+      <div className="max-w-screen-xl mx-auto bg-white shadow-md">
         <button onClick={openAddModal} className="bg-green-500 md:hover:bg-green-600 font-bold px-3 py-2 m-2 rounded text-white mt-8 focus:outline-none">
           Добавить
         </button>

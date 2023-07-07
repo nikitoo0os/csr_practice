@@ -16,7 +16,7 @@ export default function Report() {
           }`}
           onClick={() => handleTabClick(0)}
         >
-          Tab 1
+          Шаблоны
         </button>
         <button
           className={`py-2 px-4 text-sm font-medium ${
@@ -24,7 +24,7 @@ export default function Report() {
           }`}
           onClick={() => handleTabClick(1)}
         >
-          Tab 2
+          Справочник услуг
         </button>
         <button
           className={`py-2 px-4 text-sm font-medium ${
