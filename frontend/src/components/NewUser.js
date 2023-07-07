@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import {request} from '../helpers/axios_helper'
 
 export default function NewUser() {
   const [surname, setSurname] = useState('');
@@ -8,26 +9,63 @@ export default function NewUser() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [region, setRegion] = useState('');
+  const [regionList, setRegionList] = useState([]);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        const response = await request('get', '/regions');
+        if (response.status === 200) {
+          setRegionList(response.data);
+        } else {
+          // Обработка ошибки, если требуется
+        }
+      } catch (error) {
+        // Обработка ошибки, если требуется
+      }
+    };
+
+    fetchRegions();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Ваш код для отправки данных формы на сервер
-
-    // Очищаем значения полей формы
-    setSurname('');
-    setFirstname('');
-    setPatronymic('');
-    setEmail('');
-    setPassword('');
-    setRegion('');
-
-    toast.success('Пользователь успешно добавлен');
+  
+    try {
+      const userData = {
+        surname,
+        firstname,
+        patronymic,
+        email,
+        password,
+        region
+      };
+  
+      // Отправляем данные на сервер
+      const response = await request('post', '/users', userData);
+  
+      // Проверяем успешный статус ответа
+      if (response.status === 200) {
+        // Очищаем значения полей формы
+        setSurname('');
+        setFirstname('');
+        setPatronymic('');
+        setEmail('');
+        setPassword('');
+        setRegion('');
+  
+        toast.success('Пользователь успешно добавлен');
+      } else {
+        // Обработка ошибки, если требуется
+      }
+    } catch (error) {
+      // Обработка ошибки, если требуется
+    }
   };
 
   return (
     <>
-      <div className="w-1/4 bg-white rounded p-4">
+      <div className="w-1/4 bg-white rounded p-4 mx-auto mt-56">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Добавить пользователя</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -74,7 +112,7 @@ export default function NewUser() {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-800" htmlFor="email">
-              Email
+              Электронная почта
             </label>
             <input
               type="email"
@@ -101,7 +139,7 @@ export default function NewUser() {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-800" htmlFor="region">
+          <label className="block text-sm font-medium text-gray-800" htmlFor="region">
               Район
             </label>
             <select
@@ -113,11 +151,16 @@ export default function NewUser() {
               required
             >
               <option value="">Выберите район</option>
+              {regionList.map((region) => (
+                <option key={region.id} value={region.id}>
+                  {region.name}
+                </option>
+              ))}
             </select>
           </div>
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none"
+            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
           >
             Добавить
           </button>

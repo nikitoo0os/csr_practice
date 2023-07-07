@@ -3,29 +3,47 @@ import { request } from '../helpers/axios_helper';
 import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReactModal from "react-modal";
+import NewUser from './NewUser';
+
+ReactModal.setAppElement("#root");
+
 
 export default function Users() {
     const [users, setUsers] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
 
     useEffect(() => {
-        // Здесь нужно выполнить запрос на получение данных пользователей и обновить состояние `users`
-        async function fetchUsers() {
-            try {
-                const response = await request.get('/users'); // Пример запроса на получение данных пользователей
-                setUsers(response.data); // Обновляем состояние `users` данными из ответа
-            } catch (error) {
-                toast.error('Ошибка при получении данных пользователей');
+        const fetchUsers = async () => {
+          try {
+            const response = await request('get', '/users');
+            if (response.status === 200) {
+              setUsers(response.data);
+            } else {
+              // Обработка ошибки, если требуется
             }
-        }
-
+          } catch (error) {
+            // Обработка ошибки, если требуется
+            toast.error('Ошибка при получении данных пользователей');
+          }
+        };
+    
         fetchUsers();
-    }, []);
-
+      }, []);
+      
     return (
         <>
             <div className="max-w-screen-xl mx-auto bg-white">
-                <button className="bg-green-600 md:hover:bg-green-700 font-bold px-3 py-2 m-2 rounded text-white mt-8">
-                    Добавить нового пользователя
+                <button onClick={openModal} className="bg-green-500 md:hover:bg-green-600 font-bold px-3 py-2 m-2 rounded text-white mt-8 focus:outline-none">
+                    Добавить
                 </button>
                 <table className="table-auto w-full">
                     <thead>
@@ -48,18 +66,18 @@ export default function Users() {
                                 </td>
                             </tr>
                         ))}
-                          <tr>
-                                <td className="border px-4 py-2">123</td>
-                                <td className="border px-4 py-2">123</td>
-                                <td className="border px-4 py-2">123</td>
-                                <td className="border px-4 py-2">
-                                    <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2">Удалить</button>
-                                    <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Изменить</button>
-                                </td>
-                            </tr>
                     </tbody>
                 </table>
             </div>
+            <ReactModal
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          contentLabel="Новый пользователь"
+          className="Modal"
+          overlayClassName="Overlay"
+        >
+          <NewUser/>
+        </ReactModal>
         </>
     );
 }

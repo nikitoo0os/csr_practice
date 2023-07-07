@@ -39,7 +39,7 @@ export default class Login extends React.Component {
     return (
       <div className="flex justify-center">
         <div className="w-1/4 bg-white bg-opacity-100 rounde shadow-xl p-2">
-          <div className="flex justify-center  mb-3">
+          <div className="flex justify-center mb-3">
             <h2 className="text-2xl font-bold text-gray-800">Авторизация</h2>
           </div>
           <div className="p-4 rounded">
@@ -74,7 +74,7 @@ export default class Login extends React.Component {
 
               <button
                 type="submit"
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
               >
                 Войти
               </button>
