@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class _UserDTO {
+    private Integer id;
     private String fullName;
     private String email;
     private String region;

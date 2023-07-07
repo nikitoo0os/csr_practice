@@ -75,8 +75,7 @@ public class UserServiceImpl implements UserService {
             _UserDTO userDTO = new _UserDTO();
             userDTO.setFullName(user.getSurname() + " " + user.getFirstName().charAt(0) + ". " + user.getPatronymic().charAt(0));
             userDTO.setEmail(user.getEmail());
-            userDTO.setRegion(regionRepository.findById(Long.valueOf(
-                    userDTO.getRegion())).orElseThrow().getName());
+            userDTO.setRegion(regionRepository.findById(Long.valueOf(user.getRegion().getId())).get().getName());
         }
         return userDTOList;
     }
