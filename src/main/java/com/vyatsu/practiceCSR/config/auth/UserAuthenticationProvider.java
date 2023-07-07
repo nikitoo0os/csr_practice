@@ -5,7 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vyatsu.practiceCSR.dto.auth.UserDto;
-import com.vyatsu.practiceCSR.service.UserService;
+import com.vyatsu.practiceCSR.service.impl.UserServiceImpl;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +24,7 @@ public class UserAuthenticationProvider {
     @Value("${security.jwt.token.secret-key:secret-key}")
     private String secretKey;
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     @PostConstruct
     protected void init() {
@@ -52,7 +52,7 @@ public class UserAuthenticationProvider {
 
         DecodedJWT decoded = verifier.verify(token);
 
-        UserDto user = userService.findByLogin(decoded.getIssuer());
+        UserDto user = userServiceImpl.findByLogin(decoded.getIssuer());
 
         return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }
