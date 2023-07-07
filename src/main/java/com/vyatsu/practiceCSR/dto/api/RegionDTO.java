@@ -1,16 +1,14 @@
 package com.vyatsu.practiceCSR.dto.api;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class RegionDTO {
 
-    @Getter
-    @Setter
     private int id;
-
-    @Getter
-    @Setter
     private String name;
 
 }

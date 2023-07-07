@@ -29,7 +29,7 @@ public class Report {
     @Getter
     @Setter
     @JoinColumn(name = "region_id")
-    private RegionList region;
+    private Region region;
 
     @NotNull
     @Getter

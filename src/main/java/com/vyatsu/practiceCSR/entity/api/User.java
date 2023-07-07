@@ -40,7 +40,7 @@ public class User {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "region_id")
-    private RegionList region;
+    private Region region;
 
     @Getter
     @Setter

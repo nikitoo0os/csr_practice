@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "region_list")
-public class RegionList {
+public class Region {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter

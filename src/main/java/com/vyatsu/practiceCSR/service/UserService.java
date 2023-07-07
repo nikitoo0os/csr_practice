@@ -15,4 +15,8 @@ public interface UserService {
     List<UserDto> getAllUsers();
 
     List<_UserDTO> getAllUsersDTO();
+
+    UserDto findByEmail(String email);
+
+    UserDto create(SignUpDto userDto);
 }

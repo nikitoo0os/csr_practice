@@ -1,4 +1,4 @@
-security.jwt.token.secret-key: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY4ODcxMjE2MCwiaWF0IjoxNjg4NzEyMTYwfQ.fZi769njiHSDBftmMJyOeMA060OgbgnmV7JBaZtDMnQ
+security.jwt.token.secret-key: my-secret-key
 
 spring:
   datasource:

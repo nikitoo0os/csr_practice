@@ -8,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -24,5 +26,10 @@ public class UserController {
         return ResponseEntity.ok(userDTOList);
     }
 
+    @PostMapping("/users")
+    public ResponseEntity<UserDto> createUser(@RequestBody SignUpDto user){
+        UserDto createdUser = userService.register(user);
+        return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
+    }
 
 }

@@ -76,14 +76,35 @@ public class UserServiceImpl implements UserService {
             userDTO.setFullName(user.getSurname() + " " + user.getFirstName().charAt(0) + ". " + user.getPatronymic().charAt(0));
             userDTO.setEmail(user.getEmail());
             userDTO.setRegion(regionRepository.findById(Long.valueOf(user.getRegion().getId())).get().getName());
+            userDTOList.add(userDTO);
         }
         return userDTOList;
     }
 
-    public UserDto findByLogin(String login) {
-        User user = userRepository.findByEmail(login)
+    @Override
+    public UserDto findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
         return userMapper.toUserDto(user);
+    }
+
+    @Override
+    public UserDto create(SignUpDto userDto) {
+        Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
+
+        if (optionalUser.isPresent()) {
+            throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
+        }
+
+        User user = userMapper.signUpToUser(userDto);
+        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
+
+        user.setRegion(regionRepository.findById(userDto.getRegion_id())
+                .orElseThrow(() -> new AppException("Регион с таким идентификатором не найден", HttpStatus.BAD_REQUEST)));
+
+        User savedUser = userRepository.save(user);
+
+        return userMapper.toUserDto(savedUser);
     }
 
 }

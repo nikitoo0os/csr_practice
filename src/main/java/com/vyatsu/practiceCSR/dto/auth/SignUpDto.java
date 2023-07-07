@@ -16,7 +16,7 @@ public class SignUpDto {
     private String surname;
 
     @NotEmpty
-    private String firstName;
+    private String firstname;
 
     @NotEmpty
     private String patronymic;
