@@ -1,5 +1,6 @@
 package com.vyatsu.practiceCSR.service.impl;
 
+import com.vyatsu.practiceCSR.dto.api._UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.CredentialsDto;
 import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserDto;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,6 +65,20 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         return userMapper.toListUserDTO(users);
+    }
+
+    @Override
+    public List<_UserDTO> getAllUsersDTO() {
+        List<User> users = userRepository.findAll();
+        List<_UserDTO> userDTOList = new ArrayList<>();
+        for(User user : users){
+            _UserDTO userDTO = new _UserDTO();
+            userDTO.setFullName(user.getSurname() + " " + user.getFirstName().charAt(0) + ". " + user.getPatronymic().charAt(0));
+            userDTO.setEmail(user.getEmail());
+            userDTO.setRegion(regionRepository.findById(Long.valueOf(
+                    userDTO.getRegion())).orElseThrow().getName());
+        }
+        return userDTOList;
     }
 
     public UserDto findByLogin(String login) {

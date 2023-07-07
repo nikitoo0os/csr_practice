@@ -1,5 +1,6 @@
 package com.vyatsu.practiceCSR.mapper;
 
+import com.vyatsu.practiceCSR.dto.api._UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserDto;
 import org.mapstruct.Mapper;

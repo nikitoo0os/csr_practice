@@ -1,6 +1,6 @@
 package com.vyatsu.practiceCSR.controller.api;
 
-import com.vyatsu.practiceCSR.dto.auth.UserDto;
+import com.vyatsu.practiceCSR.dto.api._UserDTO;
 import com.vyatsu.practiceCSR.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserDto>> getAllUsers(){
-        List<UserDto> userDTOList = userService.getAllUsers();
+    public ResponseEntity<List<_UserDTO>> getAllUsers(){
+        List<_UserDTO> userDTOList = userService.getAllUsersDTO();
         return ResponseEntity.ok(userDTOList);
     }
 
