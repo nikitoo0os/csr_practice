@@ -7,7 +7,7 @@ export default function EditUser({ userId }) {
   const [firstname, setFirstname] = useState('');
   const [patronymic, setPatronymic] = useState('');
   const [email, setEmail] = useState('');
-  const [region, setRegion] = useState('');
+  const [region_id, setRegion] = useState('');
   const [regionList, setRegionList] = useState([]);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function EditUser({ userId }) {
         firstname,
         patronymic,
         email,
-        region,
+        region_id,
       };
 
       // Отправляем данные на сервер
@@ -140,7 +140,7 @@ export default function EditUser({ userId }) {
             <select
               id="region"
               name="region"
-              value={region}
+              value={region_id}
               onChange={(e) => setRegion(e.target.value)}
               className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
               required
