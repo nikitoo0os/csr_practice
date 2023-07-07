@@ -87,7 +87,7 @@ export default function Users() {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id}>
+              <tr key={user.email}>
                 <td className="border px-4 py-2">{user.fullName}</td>
                 <td className="border px-4 py-2">{user.email}</td>
                 <td className="border px-4 py-2">{user.region}</td>

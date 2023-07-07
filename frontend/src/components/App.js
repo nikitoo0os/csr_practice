@@ -4,7 +4,6 @@ import { Navbar, onLogin } from './Navbar';
 import Login  from './Login'
 import { ToastContainer } from 'react-toastify';
 import { getAuthToken } from '../helpers/axios_helper'
-import ReactModal from "react-modal";
 import Users from './Users';
 import NewUser from './NewUser';
 import Report from './Reports';
@@ -23,10 +22,10 @@ function App() {
                 {isAuthenticated ? (<>
                 </>):(<>
                     <Route path="/" element={<Login onLogin={handleLogin}/>} />
-                    <Route path="/users" element={<Users/>} />
-                    <Route path="/newuser" element={<NewUser/>} />
-                    <Route path="/reports" element={<Report/>} />
                 </>)}
+                <Route path="/users" element={<Users/>} />
+                <Route path="/newuser" element={<NewUser/>} />
+                <Route path="/reports" element={<Report/>} />
             </Routes>
             </div>
         </BrowserRouter>
