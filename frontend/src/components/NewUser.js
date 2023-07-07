@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import {request} from '../helpers/axios_helper'
+import { request } from '../helpers/axios_helper'
 
-export default function NewUser() {
+export default function NewUser({ closeModal }) {
   const [surname, setSurname] = useState('');
   const [firstname, setFirstname] = useState('');
   const [patronymic, setPatronymic] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [region, setRegion] = useState('');
+  const [region_id, setRegion] = useState('');
   const [regionList, setRegionList] = useState([]);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function NewUser() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const userData = {
         surname,
@@ -38,12 +38,12 @@ export default function NewUser() {
         patronymic,
         email,
         password,
-        region
+        region_id
       };
-  
+
       // Отправляем данные на сервер
       const response = await request('post', '/users', userData);
-  
+
       // Проверяем успешный статус ответа
       if (response.status === 200) {
         // Очищаем значения полей формы
@@ -53,7 +53,7 @@ export default function NewUser() {
         setEmail('');
         setPassword('');
         setRegion('');
-  
+        closeModal();
         toast.success('Пользователь успешно добавлен');
       } else {
         // Обработка ошибки, если требуется
@@ -66,6 +66,15 @@ export default function NewUser() {
   return (
     <>
       <div className="w-1/4 bg-white rounded p-4 mx-auto mt-56">
+        <div className="flex justify-end">
+        <button onClick={() => closeModal()}>
+          <img
+            className="h-6 mt-1 ml-1 md:border-0"
+            src={require("../pictures/close.png")}
+            alt="Войти"
+          />
+        </button>
+        </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Добавить пользователя</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -139,13 +148,13 @@ export default function NewUser() {
             />
           </div>
           <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-800" htmlFor="region">
+            <label className="block text-sm font-medium text-gray-800" htmlFor="region">
               Район
             </label>
             <select
               id="region"
               name="region"
-              value={region}
+              value={region_id}
               onChange={(e) => setRegion(e.target.value)}
               className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
               required
