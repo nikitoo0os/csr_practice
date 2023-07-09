@@ -20,7 +20,7 @@ export default function EditUser({ userId }) {
           setFirstname(user.firstname);
           setPatronymic(user.patronymic);
           setEmail(user.email);
-          setRegion(user.region_id);
+          setRegion(user.region.id);
         } else {
           // Обработка ошибки, если требуется
         }

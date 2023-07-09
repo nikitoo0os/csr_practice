@@ -75,7 +75,7 @@ export default function Users() {
   return (
     <>
       <div className="max-w-screen-xl mx-auto bg-white shadow-md">
-        <button onClick={openAddModal} className="bg-green-500 md:hover:bg-green-600 font-bold px-3 py-2 m-2 rounded text-white mt-8 focus:outline-none">
+        <button onClick={openAddModal} className="bg-green-500 md:hover:bg-green-600 font-bold px-3 py-2 m-2 rounded text-white mt-8 focus:outline-none shadow-lg">
           Добавить
         </button>
         <table className="table-auto w-full">
@@ -90,14 +90,14 @@ export default function Users() {
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
-                <td className="border px-4 py-2">{user.fullName}</td>
+                <td className="border px-4 py-2">{user.surname} {user.firstname[0]}. {user.patronymic}.</td>
                 <td className="border px-4 py-2">{user.email}</td>
-                <td className="border px-4 py-2">{user.region}</td>
+                <td className="border px-4 py-2">{user.region.name}</td>
                 <td className="border px-4 py-2">
                   {!user.isDeleted && (
                     <>
-                      <button onClick={() => handleSoftDeleteUser(user.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2">Удалить</button>
-                      <button onClick={() => openEditModal(user.id)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Изменить</button>
+                      <button onClick={() => handleSoftDeleteUser(user.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 shadow-md">Удалить</button>
+                      <button onClick={() => openEditModal(user.id)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:border-0 shadow-md">Изменить</button>
                     </>
                   )}
                 </td>

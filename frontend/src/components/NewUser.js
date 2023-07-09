@@ -69,9 +69,9 @@ export default function NewUser({ closeModal, setIsUserAdded }) {
     <>
       <div className="w-1/4 bg-white rounded p-4 mx-auto mt-56">
         <div className="flex justify-end">
-        <button onClick={() => closeModal()}>
+        <button onClick={() => closeModal() }>
           <img
-            className="h-6 mt-1 ml-1 md:border-0"
+            className="h-6 md:border-0 hover:brightness-90"
             src={require("../pictures/close.png")}
             alt="Войти"
           />
