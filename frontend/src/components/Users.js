@@ -14,6 +14,7 @@ export default function Users() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editUserId, setEditUserId] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isUserAdded, setIsUserAdded] = useState(false);
 
   const openAddModal = () => {
     setIsAddModalOpen(true);
@@ -46,9 +47,12 @@ export default function Users() {
         toast.error('Ошибка при получении данных пользователей');
       }
     };
-
+    if (isUserAdded) {
+      fetchUsers(); // Обновляем список пользователей
+      setIsUserAdded(false); // Сбрасываем флаг добавления пользователя
+    }
     fetchUsers();
-  }, []);
+  }, [isUserAdded]);
 
   const handleDeleteUser = async (userId) => {
     try {
@@ -107,7 +111,7 @@ export default function Users() {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <NewUser closeModal={closeAddModal}/>
+        <NewUser closeModal={closeAddModal} setIsUserAdded = {setIsUserAdded}/>
       </ReactModal>
       <ReactModal
         isOpen={isEditModalOpen}

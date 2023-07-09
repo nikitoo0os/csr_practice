@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { request } from '../helpers/axios_helper'
 
-export default function NewUser({ closeModal }) {
+export default function NewUser({ closeModal, setIsUserAdded }) {
   const [surname, setSurname] = useState('');
   const [firstname, setFirstname] = useState('');
   const [patronymic, setPatronymic] = useState('');
@@ -43,9 +43,10 @@ export default function NewUser({ closeModal }) {
 
       // Отправляем данные на сервер
       const response = await request('post', '/users', userData);
+      console.log()
 
       // Проверяем успешный статус ответа
-      if (response.status === 200) {
+      if (response.status === 201) {
         // Очищаем значения полей формы
         setSurname('');
         setFirstname('');
@@ -53,9 +54,10 @@ export default function NewUser({ closeModal }) {
         setEmail('');
         setPassword('');
         setRegion('');
-        closeModal();
+        setIsUserAdded(true);
         toast.success('Пользователь успешно добавлен');
-      } else {
+        closeModal();
+      }  else {
         // Обработка ошибки, если требуется
       }
     } catch (error) {
