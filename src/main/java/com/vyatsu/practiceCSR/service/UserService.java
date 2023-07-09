@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface UserService {
-    public UserAuthDto login(CredentialsDto credentialsDto);
+    UserAuthDto login(CredentialsDto credentialsDto);
 
     UserAuthDto register(SignUpDto userDto);
 

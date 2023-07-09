@@ -80,7 +80,9 @@ public class UserServiceImpl implements UserService {
             if(user.getIsActive()){
                 UserDTO userDTO = new UserDTO();
                 userDTO.setId(user.getId());
-                userDTO.setFullName(user.getSurname() + " " + user.getFirstname().charAt(0) + ". " + user.getPatronymic().charAt(0));
+                userDTO.setFirstname(user.getFirstname());
+                userDTO.setSurname(userDTO.getSurname());
+                userDTO.setPatronymic(userDTO.getPatronymic());
                 userDTO.setEmail(user.getEmail());
                 Region region = regionRepository.findById(Long.valueOf(user.getRegion().getId())).get();
                 RegionDTO regionDTO = regionMapper.toRegionDTO(region);

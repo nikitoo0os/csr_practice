@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface RegionService {
 
-    public List<RegionDTO> getALlRegionsDTO();
+    List<RegionDTO> getALlRegionsDTO();
     Region getRegionById(Long id);
 }

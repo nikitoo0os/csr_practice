@@ -14,7 +14,9 @@ import org.springframework.context.annotation.Lazy;
 @Builder
 public class UserDTO {
     private Integer id;
-    private String fullName;
+    private String firstname;
+    private String surname;
+    private String patronymic;
     private String email;
     private RegionDTO region;
 }

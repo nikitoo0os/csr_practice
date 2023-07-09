@@ -30,7 +30,7 @@ public class ServiceController {
     }
 
     @PostMapping
-    public ResponseEntity createService(@RequestBody String name){
+    public ResponseEntity<Void> createService(@RequestBody String name){
         return servicesService.createService(name);
     }
 }
