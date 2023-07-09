@@ -5,6 +5,7 @@ import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.User;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
+import com.vyatsu.practiceCSR.service.RegionService;
 import com.vyatsu.practiceCSR.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final RegionService regionService;
     private final UserMapper userMapper;
 
     @GetMapping
@@ -48,7 +50,12 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO){
-        User user = userMapper.toUser(userDTO);
+        User user = userService.getUserById((long) userDTO.getId());
+        user.setSurname(userDTO.getSurname());
+        user.setFirstname(userDTO.getFirstname());
+        user.setPatronymic(userDTO.getPatronymic());
+        user.setEmail(userDTO.getEmail());
+        user.setRegion(regionService.getRegionById((long) userDTO.getRegion().getId()));
         userService.updateUser(user);
         return ResponseEntity.ok().build();
     }
