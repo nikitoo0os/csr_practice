@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        user.setIsActive(true);
+        user.setIsActive(false);
         updateUser(user);
         return ResponseEntity.ok().build();
     }
