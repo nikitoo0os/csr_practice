@@ -5,11 +5,9 @@ import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserDto;
 import com.vyatsu.practiceCSR.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
@@ -31,5 +29,12 @@ public class UserController {
         UserDto createdUser = userService.register(user);
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
     }
+
+    @PutMapping("/users/&{id}")
+    public HttpStatus dropUser(@PathVariable Long id){
+        userService.deleteById(id);
+        return HttpStatus.OK;
+    }
+
 
 }

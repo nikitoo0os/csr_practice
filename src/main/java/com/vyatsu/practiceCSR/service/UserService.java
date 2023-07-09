@@ -19,4 +19,6 @@ public interface UserService {
     UserDto findByEmail(String email);
 
     UserDto create(SignUpDto userDto);
+
+    void deleteById(Long id);
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -19,9 +20,8 @@ public class Template {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "date", nullable = false, columnDefinition = "timestamp without time zone default current_timestamp")
+    private Timestamp date;
 
     @Getter
     @Setter

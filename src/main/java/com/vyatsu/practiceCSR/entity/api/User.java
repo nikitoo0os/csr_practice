@@ -45,7 +45,7 @@ public class User {
     @Getter
     @Setter
     @Size(max = 100)
-    @Column(name = "first_name", length = 100)
+    @Column(name = "firstname", length = 100)
     private String firstName;
 
     @Getter
@@ -68,12 +68,12 @@ public class User {
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "user")
-    private Set<UserReport> userReports = new LinkedHashSet<>();
+    @Column(name = "is_active")
+    private Boolean isActive;
 
     @Getter
     @Setter
     @OneToMany(mappedBy = "user")
-    private Set<Template> templates = new LinkedHashSet<>();
+    private Set<UserReport> userReports = new LinkedHashSet<>();
 
 }

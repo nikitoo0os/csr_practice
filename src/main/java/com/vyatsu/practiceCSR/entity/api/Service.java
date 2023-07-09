@@ -26,6 +26,11 @@ public class Service {
 
     @Getter
     @Setter
+    @Column(name = "is_active")
+    private Boolean isActive;
+
+    @Getter
+    @Setter
     @OneToMany(mappedBy = "service")
     private Set<TemplateData> templateData = new LinkedHashSet<>();
 

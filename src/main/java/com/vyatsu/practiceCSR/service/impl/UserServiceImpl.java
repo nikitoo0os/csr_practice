@@ -72,11 +72,13 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
         List<_UserDTO> userDTOList = new ArrayList<>();
         for(User user : users){
-            _UserDTO userDTO = new _UserDTO();
-            userDTO.setFullName(user.getSurname() + " " + user.getFirstName().charAt(0) + ". " + user.getPatronymic().charAt(0));
-            userDTO.setEmail(user.getEmail());
-            userDTO.setRegion(regionRepository.findById(Long.valueOf(user.getRegion().getId())).get().getName());
-            userDTOList.add(userDTO);
+            if(user.getIsActive()){
+                _UserDTO userDTO = new _UserDTO();
+                userDTO.setFullName(user.getSurname() + " " + user.getFirstName().charAt(0) + ". " + user.getPatronymic().charAt(0));
+                userDTO.setEmail(user.getEmail());
+                userDTO.setRegion(regionRepository.findById(Long.valueOf(user.getRegion().getId())).get().getName());
+                userDTOList.add(userDTO);
+            }
         }
         return userDTOList;
     }
@@ -105,6 +107,11 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
 
         return userMapper.toUserDto(savedUser);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
     }
 
 }
