@@ -1,9 +1,9 @@
 package com.vyatsu.practiceCSR.service.impl;
 
-import com.vyatsu.practiceCSR.dto.api._UserDTO;
+import com.vyatsu.practiceCSR.dto.api.UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.CredentialsDto;
 import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
-import com.vyatsu.practiceCSR.dto.auth.UserDto;
+import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.exception.AppException;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.RegionRepository;
@@ -32,18 +32,18 @@ public class UserServiceImpl implements UserService {
     private final RegionRepository regionRepository;
 
     @Override
-    public UserDto login(CredentialsDto credentialsDto) {
+    public UserAuthDto login(CredentialsDto credentialsDto) {
         User user = userRepository.findByEmail(credentialsDto.getEmail())
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
-            return userMapper.toUserDto(user);
+            return userMapper.toUserAuthDto(user);
         }
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    public UserDto register(SignUpDto userDto) {
+    public UserAuthDto register(SignUpDto userDto) {
         Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
 
         if (optionalUser.isPresent()) {
@@ -58,26 +58,26 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user);
 
-        return userMapper.toUserDto(savedUser);
+        return userMapper.toUserAuthDto(savedUser);
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
+    public List<UserAuthDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         return userMapper.toListUserDTO(users);
     }
 
     @Override
-    public List<_UserDTO> getAllUsersDTO() {
+    public List<UserDTO> getAllUsersDTO() {
         List<User> users = userRepository.findAll();
-        List<_UserDTO> userDTOList = new ArrayList<>();
+        List<UserDTO> userDTOList = new ArrayList<>();
         for(User user : users){
             if(user.getIsActive()){
-                _UserDTO userDTO = new _UserDTO();
+                UserDTO userDTO = new UserDTO();
                 userDTO.setId(user.getId());
-                userDTO.setFullName(user.getSurname() + " " + user.getFirstName().charAt(0) + ". " + user.getPatronymic().charAt(0));
+                userDTO.setFullName(user.getSurname() + " " + user.getFirstname().charAt(0) + ". " + user.getPatronymic().charAt(0));
                 userDTO.setEmail(user.getEmail());
-                userDTO.setRegion(regionRepository.findById(Long.valueOf(user.getRegion().getId())).get().getName());
+                userDTO.setRegion(regionRepository.findById(Long.valueOf(user.getRegion().getId())).get());
                 userDTOList.add(userDTO);
             }
         }
@@ -85,14 +85,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findByEmail(String email) {
+    public UserAuthDto findByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
-        return userMapper.toUserDto(user);
+        return userMapper.toUserAuthDto(user);
     }
 
     @Override
-    public UserDto create(SignUpDto userDto) {
+    public UserAuthDto create(SignUpDto userDto) {
         Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
 
         if (optionalUser.isPresent()) {
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user);
 
-        return userMapper.toUserDto(savedUser);
+        return userMapper.toUserAuthDto(savedUser);
     }
 
     @Override

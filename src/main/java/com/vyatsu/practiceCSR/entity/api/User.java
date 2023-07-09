@@ -46,7 +46,7 @@ public class User {
     @Setter
     @Size(max = 100)
     @Column(name = "firstname", length = 100)
-    private String firstName;
+    private String firstname;
 
     @Getter
     @Setter

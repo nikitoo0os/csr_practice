@@ -3,7 +3,7 @@ package com.vyatsu.practiceCSR.controller.auth;
 import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.auth.CredentialsDto;
 import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
-import com.vyatsu.practiceCSR.dto.auth.UserDto;
+import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +22,15 @@ public class AuthController {
     private final UserAuthenticationProvider userAuthenticationProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody @Valid CredentialsDto credentialsDto) {
-        UserDto userDto = userService.login(credentialsDto);
-        userDto.setToken(userAuthenticationProvider.createToken(credentialsDto.getEmail()));
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<UserAuthDto> login(@RequestBody @Valid CredentialsDto credentialsDto) {
+        UserAuthDto userAuthDto = userService.login(credentialsDto);
+        userAuthDto.setToken(userAuthenticationProvider.createToken(credentialsDto.getEmail()));
+        return ResponseEntity.ok(userAuthDto);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody @Valid SignUpDto user) {
-        UserDto createdUser = userService.register(user);
+    public ResponseEntity<UserAuthDto> register(@RequestBody @Valid SignUpDto user) {
+        UserAuthDto createdUser = userService.register(user);
         createdUser.setToken(userAuthenticationProvider.createToken(user.getEmail()));
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
     }

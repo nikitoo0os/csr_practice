@@ -1,5 +1,6 @@
 package com.vyatsu.practiceCSR.dto.api;
 
+import com.vyatsu.practiceCSR.entity.api.Region;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class _UserDTO {
+public class UserDTO {
     private Integer id;
     private String fullName;
     private String email;
-    private String region;
+    private Region region;
 }

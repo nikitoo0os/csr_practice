@@ -1,9 +1,10 @@
 package com.vyatsu.practiceCSR.controller.api;
 
-import com.vyatsu.practiceCSR.dto.api._UserDTO;
+import com.vyatsu.practiceCSR.dto.api.UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
-import com.vyatsu.practiceCSR.dto.auth.UserDto;
+import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.User;
+import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,16 +19,24 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @GetMapping("/users")
-    public ResponseEntity<List<_UserDTO>> getAllUsers(){
-        List<_UserDTO> userDTOList = userService.getAllUsersDTO();
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
+        List<UserDTO> userDTOList = userService.getAllUsersDTO();
         return ResponseEntity.ok(userDTOList);
     }
 
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        UserDTO userDTO = userMapper.toUserDTO(user);
+        return ResponseEntity.ok(userDTO);
+    }
+
     @PostMapping("/users")
-    public ResponseEntity<UserDto> createUser(@RequestBody SignUpDto user){
-        UserDto createdUser = userService.register(user);
+    public ResponseEntity<UserAuthDto> createUser(@RequestBody SignUpDto user){
+        UserAuthDto createdUser = userService.register(user);
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
     }
 
