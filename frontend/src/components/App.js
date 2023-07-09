@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import { Navbar, onLogin } from './Navbar';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Navbar } from './Navbar';
 import Login  from './Login'
 import { ToastContainer } from 'react-toastify';
 import { getAuthToken } from '../helpers/axios_helper'
 import Users from './Users';
-import NewUser from './NewUser';
-import Report from './Reports';
+import MyReports from './MyReports';
+import TemplatesAndReports from './TemplatesAndReports';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(getAuthToken() !== null && getAuthToken() !== "null");
-    const handleLogin = (e, email, password) => {
-        onLogin(e, email, password);
-    };
 
     return (<>
         <BrowserRouter>
@@ -21,11 +18,11 @@ function App() {
             <Routes>
                 {isAuthenticated ? (<>
                 </>):(<>
-                    <Route path="/" element={<Login onLogin={handleLogin}/>} />
+                    <Route path="/" element={<Login/>} />
                 </>)}
                 <Route path="/users" element={<Users/>} />
-                <Route path="/newuser" element={<NewUser/>} />
-                <Route path="/reports" element={<Report/>} />
+                <Route path="/reports" element={<TemplatesAndReports/>} />
+                <Route path="/myreports" element={<MyReports/>} />
             </Routes>
             </div>
         </BrowserRouter>

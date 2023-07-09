@@ -1,8 +1,7 @@
 import * as React from "react";
-import classNames from "classnames";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ReactModal from "react-modal";
+import { request, setAuthHeader } from "../helpers/axios_helper";
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -14,7 +13,6 @@ export default class Login extends React.Component {
       patronymic: "",
       email: "",
       password: "",
-      onLogin: props.onLogin,
     };
   }
   onChangeHandler = (event) => {
@@ -23,10 +21,33 @@ export default class Login extends React.Component {
     this.setState({ [name]: value });
   };
 
+  onLogin(e, email, password) {
+    e.preventDefault();
+    request(
+        "POST",
+        "/login",
+        {
+            email: email,
+            password: password
+        }).then(
+            (response) => {
+                setAuthHeader(response.data.token);
+                window.location.reload();
+            }).catch(
+                (error) => {
+                    setAuthHeader(null);
+                    toast.error('Неверный логин или пароль!', {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 3000,
+                    });
+                }
+            );
+};
+
   onSubmitLogin = (e) => {
     e.preventDefault();
     if (this.state.password.length > 0) {
-      this.state.onLogin(e, this.state.email, this.state.password);
+      this.onLogin(e, this.state.email, this.state.password);
     } else {
       toast.error("Введите пароль!", {
         position: toast.POSITION.TOP_RIGHT,

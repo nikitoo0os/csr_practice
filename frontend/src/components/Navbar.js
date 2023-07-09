@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
-import { request, setAuthHeader } from "../helpers/axios_helper";
-import { toast } from "react-toastify";
+import { setAuthHeader } from "../helpers/axios_helper";
 import "react-toastify/dist/ReactToastify.css";
 import ReactModal from "react-modal";
-import Login from "./Login";
 
 
 ReactModal.setAppElement("#root");
@@ -15,53 +13,7 @@ function logout() {
     window.location.assign('/')
 };
 
-export function onLogin(e, email, password) {
-    e.preventDefault();
-    request(
-        "POST",
-        "/login",
-        {
-            email: email,
-            password: password
-        }).then(
-            (response) => {
-                setAuthHeader(response.data.token);
-                window.location.reload();
-            }).catch(
-                (error) => {
-                    setAuthHeader(null);
-                    toast.error('Неверный логин или пароль!', {
-                        position: toast.POSITION.TOP_RIGHT,
-                        autoClose: 3000,
-                    });
-                }
-            );
-};
-
 export const Navbar = ({ isAuthenticated }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-  
-    const openModal = () => {
-      setIsModalOpen(true);
-    };
-  
-    const closeModal = () => {
-      setIsModalOpen(false);
-    };
-  
-    const onLogin = (e, email, password) => {
-      e.preventDefault();
-      if (password.length > 0) {
-        // Добавьте здесь вашу логику для авторизации
-        toast.success("Успешная авторизация!");
-        closeModal();
-      } else {
-        toast.error("Введите пароль!", {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
-      }
-    };
   
     return (
       <>
@@ -77,12 +29,17 @@ export const Navbar = ({ isAuthenticated }) => {
               </li>
               <li className="hover:bg-sky-700 flex items-cetner px-2">
                 <NavLink to="/reports" className="h-full flex items-center">
-                  Шаблоны
+                  Шаблоны и отчеты
                 </NavLink>
               </li>
               <li className="hover:bg-sky-700 flex items-cetner px-2">
                 <NavLink to="/users" className="h-full flex items-center">
                   Пользователи
+                </NavLink>
+              </li>
+              <li className="hover:bg-sky-700 flex items-cetner px-2">
+                <NavLink to="/myreports" className="h-full flex items-center">
+                  Мои отчеты
                 </NavLink>
               </li>
               {isAuthenticated ? (
@@ -120,16 +77,6 @@ export const Navbar = ({ isAuthenticated }) => {
             </ul>
           </div>
         </nav>
-  
-        <ReactModal
-          isOpen={isModalOpen}
-          onRequestClose={closeModal}
-          contentLabel="Авторизация"
-          className="Modal"
-          overlayClassName="Overlay"
-        >
-          <Login onLogin={onLogin} close = {closeModal} />
-        </ReactModal>
       </>
     );
   };
