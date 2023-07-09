@@ -50,8 +50,9 @@ export default function EditUser({ userId }) {
     e.preventDefault();
 
     try {
-      const userData = {
-        userId,
+      const id = userId;
+      const user = {
+        id,
         surname,
         firstname,
         patronymic,
@@ -60,7 +61,8 @@ export default function EditUser({ userId }) {
       };
 
       // Отправляем данные на сервер
-      const response = await request('put', `/users`, userData);
+      console.log(userId);
+      const response = await request('put', `/users`, user);
 
       // Проверяем успешный статус ответа
       if (response.status === 200) {
