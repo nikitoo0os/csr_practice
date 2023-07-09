@@ -46,6 +46,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping
+    public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO){
+        User user = userMapper.toUser(userDTO);
+        userService.updateUser(user);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> softDeleteUser(@PathVariable Long id){
         return userService.softDeleteById(id);
