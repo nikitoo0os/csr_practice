@@ -5,6 +5,7 @@ import com.vyatsu.practiceCSR.dto.auth.CredentialsDto;
 import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.User;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -23,6 +24,10 @@ public interface UserService {
 
     void deleteById(Long id);
 
+    ResponseEntity<Void> softDeleteById(Long id);
+
     User getUserById(Long id);
     void updateUser(User user);
+
+
 }

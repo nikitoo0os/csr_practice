@@ -1,14 +1,16 @@
 package com.vyatsu.practiceCSR.controller.api;
 
 import com.vyatsu.practiceCSR.dto.api.ServiceDTO;
+import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
+import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.Service;
+import com.vyatsu.practiceCSR.entity.api.User;
 import com.vyatsu.practiceCSR.service.ServicesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,5 +23,14 @@ public class ServiceController {
     public ResponseEntity<List<ServiceDTO>> getAllService(){
         List<ServiceDTO> serviceDTOList = servicesService.getAllServices();
         return ResponseEntity.ok(serviceDTOList);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> softDeleteUser(@PathVariable Long id) {
+        return servicesService.softDeleteById(id);
+    }
+
+    @PostMapping
+    public ResponseEntity createService(@RequestBody String name){
+        return servicesService.createService(name);
     }
 }

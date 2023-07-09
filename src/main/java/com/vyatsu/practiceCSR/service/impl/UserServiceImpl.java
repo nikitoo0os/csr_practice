@@ -15,6 +15,7 @@ import com.vyatsu.practiceCSR.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import com.vyatsu.practiceCSR.entity.api.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -119,6 +120,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public ResponseEntity<Void> softDeleteById(Long id) {
+        User user = getUserById(id);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        user.setIsActive(true);
+        updateUser(user);
+        return ResponseEntity.ok().build();
     }
 
     @Override
