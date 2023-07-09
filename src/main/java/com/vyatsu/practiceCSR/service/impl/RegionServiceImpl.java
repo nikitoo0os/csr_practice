@@ -5,22 +5,18 @@ import com.vyatsu.practiceCSR.entity.api.Region;
 import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.repository.RegionRepository;
 import com.vyatsu.practiceCSR.service.RegionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@RequiredArgsConstructor
 @Service
 public class RegionServiceImpl implements RegionService {
 
     private final RegionRepository regionRepository;
     private final RegionMapper regionMapper;
-
-    public RegionServiceImpl(RegionRepository regionRepository,
-                             RegionMapper regionMapper) {
-        this.regionRepository = regionRepository;
-        this.regionMapper = regionMapper;
-    }
 
     @Override
     public List<RegionDTO> getALlRegionsDTO() {
