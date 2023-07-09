@@ -1,10 +1,13 @@
 package com.vyatsu.practiceCSR.service.impl;
 
+import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.dto.api.UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.CredentialsDto;
 import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
+import com.vyatsu.practiceCSR.entity.api.Region;
 import com.vyatsu.practiceCSR.exception.AppException;
+import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.RegionRepository;
 import com.vyatsu.practiceCSR.repository.UserRepository;
@@ -29,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final UserMapper userMapper;
+    private final RegionMapper regionMapper;
     private final RegionRepository regionRepository;
 
     @Override
@@ -77,7 +81,9 @@ public class UserServiceImpl implements UserService {
                 userDTO.setId(user.getId());
                 userDTO.setFullName(user.getSurname() + " " + user.getFirstname().charAt(0) + ". " + user.getPatronymic().charAt(0));
                 userDTO.setEmail(user.getEmail());
-                userDTO.setRegion(regionRepository.findById(Long.valueOf(user.getRegion().getId())).get());
+                Region region = regionRepository.findById(Long.valueOf(user.getRegion().getId())).get();
+                RegionDTO regionDTO = regionMapper.toRegionDTO(region);
+                userDTO.setRegion(regionDTO);
                 userDTOList.add(userDTO);
             }
         }

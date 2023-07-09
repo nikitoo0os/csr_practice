@@ -8,10 +8,11 @@ spring:
     password: 1
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
   sql:
     init:
       platform: postgres
       mode: never
+      data-locations: classpath:insert.sql

@@ -45,14 +45,14 @@ public class User {
     @Getter
     @Setter
     @Size(max = 100)
-    @Column(name = "firstname", length = 100)
-    private String firstname;
+    @Column(name = "surname", length = 100, nullable = false)
+    private String surname;
 
     @Getter
     @Setter
     @Size(max = 100)
-    @Column(name = "surname", length = 100, nullable = false)
-    private String surname;
+    @Column(name = "firstname", length = 100)
+    private String firstname;
 
     @Getter
     @Setter

@@ -1,10 +1,12 @@
 package com.vyatsu.practiceCSR.dto.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vyatsu.practiceCSR.entity.api.Region;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 
 @Data
 @AllArgsConstructor
@@ -14,5 +16,5 @@ public class UserDTO {
     private Integer id;
     private String fullName;
     private String email;
-    private Region region;
+    private RegionDTO region;
 }
