@@ -51,7 +51,7 @@ public class User {
     @Getter
     @Setter
     @Size(max = 100)
-    @Column(name = "surname", length = 100)
+    @Column(name = "surname", length = 100, nullable = false)
     private String surname;
 
     @Getter
@@ -63,12 +63,12 @@ public class User {
 
     @Getter
     @Setter
-    @Column(name = "is_admin")
+    @Column(name = "is_admin", columnDefinition = "boolean default false")
     private Boolean isAdmin;
 
     @Getter
     @Setter
-    @Column(name = "is_active")
+    @Column(name = "is_active", columnDefinition = "boolean default true")
     private Boolean isActive;
 
     @Getter

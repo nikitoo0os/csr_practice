@@ -74,6 +74,7 @@ public class UserServiceImpl implements UserService {
         for(User user : users){
             if(user.getIsActive()){
                 _UserDTO userDTO = new _UserDTO();
+                userDTO.setId(user.getId());
                 userDTO.setFullName(user.getSurname() + " " + user.getFirstName().charAt(0) + ". " + user.getPatronymic().charAt(0));
                 userDTO.setEmail(user.getEmail());
                 userDTO.setRegion(regionRepository.findById(Long.valueOf(user.getRegion().getId())).get().getName());
@@ -112,6 +113,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id).get();
+    }
+
+    @Override
+    public void updateUser(User user) {
+        if(user != null){
+            userRepository.save(user);
+        }
     }
 
 }

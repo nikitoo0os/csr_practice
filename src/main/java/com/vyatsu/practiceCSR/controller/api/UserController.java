@@ -3,6 +3,7 @@ package com.vyatsu.practiceCSR.controller.api;
 import com.vyatsu.practiceCSR.dto.api._UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserDto;
+import com.vyatsu.practiceCSR.entity.api.User;
 import com.vyatsu.practiceCSR.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,17 @@ public class UserController {
     public HttpStatus dropUser(@PathVariable Long id){
         userService.deleteById(id);
         return HttpStatus.OK;
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> softDeleteUser(@PathVariable Long id){
+        User user = userService.getUserById(id);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        user.setIsActive(true);
+        userService.updateUser(user);
+        return ResponseEntity.ok().build();
     }
 
 
