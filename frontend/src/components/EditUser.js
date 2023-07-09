@@ -51,6 +51,7 @@ export default function EditUser({ userId }) {
 
     try {
       const userData = {
+        userId,
         surname,
         firstname,
         patronymic,
@@ -59,7 +60,7 @@ export default function EditUser({ userId }) {
       };
 
       // Отправляем данные на сервер
-      const response = await request('put', `/users/${userId}`, userData);
+      const response = await request('put', `/users`, userData);
 
       // Проверяем успешный статус ответа
       if (response.status === 200) {
