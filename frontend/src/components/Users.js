@@ -32,20 +32,21 @@ export default function Users() {
     setIsEditModalOpen(false);
   };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await request('get', '/users');
-        if (response.status === 200) {
-          setUsers(response.data);
-        } else {
-          // Обработка ошибки, если требуется
-        }
-      } catch (error) {
+  const fetchUsers = async () => {
+    try {
+      const response = await request('get', '/users');
+      if (response.status === 200) {
+        setUsers(response.data);
+      } else {
         // Обработка ошибки, если требуется
-        toast.error('Ошибка при получении данных пользователей');
       }
-    };
+    } catch (error) {
+      // Обработка ошибки, если требуется
+      toast.error('Ошибка при получении данных пользователей');
+    }
+  };
+
+  useEffect(() => {
     if (isUserAdded) {
       fetchUsers(); // Обновляем список пользователей
       setIsUserAdded(false); // Сбрасываем флаг добавления пользователя
@@ -56,19 +57,12 @@ export default function Users() {
   const handleSoftDeleteUser = async (userId) => {
     try {
       // Отправляем запрос на мягкое удаление пользователя
-      const response = await request('put', `/users/${userId}`);
-
+      const response = await request('delete', `/users/${userId}`);
+  
       // Проверяем успешный статус ответа
       if (response.status === 200) {
         // Обновляем список пользователей после удаления
-        const updatedUsers = users.map((user) => {
-          if (user.id === userId) {
-            return { ...user, isDeleted: true };
-          }
-          return user;
-        });
-        setUsers(updatedUsers);
-
+        fetchUsers(); // Вызываем метод fetchUsers для обновления списка
         toast.success('Пользователь успешно удален');
       } else {
         // Обработка ошибки, если требуется
@@ -95,15 +89,17 @@ export default function Users() {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.email}>
+              <tr key={user.id}>
                 <td className="border px-4 py-2">{user.fullName}</td>
                 <td className="border px-4 py-2">{user.email}</td>
                 <td className="border px-4 py-2">{user.region}</td>
                 <td className="border px-4 py-2">
+                  {!user.isDeleted && (
                     <>
                       <button onClick={() => handleSoftDeleteUser(user.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2">Удалить</button>
                       <button onClick={() => openEditModal(user.id)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Изменить</button>
                     </>
+                  )}
                 </td>
               </tr>
             ))}
