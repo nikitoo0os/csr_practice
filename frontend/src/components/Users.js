@@ -53,15 +53,20 @@ export default function Users() {
     fetchUsers();
   }, [isUserAdded]);
 
-  const handleDeleteUser = async (userId) => {
+  const handleSoftDeleteUser = async (userId) => {
     try {
-      // Отправляем запрос на удаление пользователя
-      const response = await request('delete', `/users/${userId}`);
+      // Отправляем запрос на мягкое удаление пользователя
+      const response = await request('put', `/users/${userId}`);
 
       // Проверяем успешный статус ответа
       if (response.status === 200) {
         // Обновляем список пользователей после удаления
-        const updatedUsers = users.filter((user) => user.id !== userId);
+        const updatedUsers = users.map((user) => {
+          if (user.id === userId) {
+            return { ...user, isDeleted: true };
+          }
+          return user;
+        });
         setUsers(updatedUsers);
 
         toast.success('Пользователь успешно удален');
@@ -95,8 +100,10 @@ export default function Users() {
                 <td className="border px-4 py-2">{user.email}</td>
                 <td className="border px-4 py-2">{user.region}</td>
                 <td className="border px-4 py-2">
-                  <button onClick={() => handleDeleteUser(user.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2">Удалить</button>
-                  <button onClick={() => openEditModal(user.id)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Изменить</button>
+                    <>
+                      <button onClick={() => handleSoftDeleteUser(user.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2">Удалить</button>
+                      <button onClick={() => openEditModal(user.id)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Изменить</button>
+                    </>
                 </td>
               </tr>
             ))}
@@ -110,7 +117,7 @@ export default function Users() {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <NewUser closeModal={closeAddModal} setIsUserAdded = {setIsUserAdded}/>
+        <NewUser closeModal={closeAddModal} setIsUserAdded={setIsUserAdded} />
       </ReactModal>
       <ReactModal
         isOpen={isEditModalOpen}
@@ -119,7 +126,7 @@ export default function Users() {
         className="Modal"
         overlayClassName="Overlay"
       >
-        {editUserId && <EditUser userId={editUserId} />}
+        <EditUser userId={editUserId} />
       </ReactModal>
     </>
   );
