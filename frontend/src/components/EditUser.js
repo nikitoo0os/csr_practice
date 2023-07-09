@@ -7,7 +7,7 @@ export default function EditUser({ userId }) {
   const [firstname, setFirstname] = useState('');
   const [patronymic, setPatronymic] = useState('');
   const [email, setEmail] = useState('');
-  const [region_id, setRegion] = useState('');
+  const [region, setRegion] = useState('');
   const [regionList, setRegionList] = useState([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function EditUser({ userId }) {
           setFirstname(user.firstname);
           setPatronymic(user.patronymic);
           setEmail(user.email);
-          setRegion(user.region.id);
+          setRegion(user.region);
         } else {
           // Обработка ошибки, если требуется
         }
@@ -55,7 +55,7 @@ export default function EditUser({ userId }) {
         firstname,
         patronymic,
         email,
-        region_id,
+        region,
       };
 
       // Отправляем данные на сервер
@@ -140,14 +140,14 @@ export default function EditUser({ userId }) {
             <select
               id="region"
               name="region"
-              value={region_id}
+              value={region}
               onChange={(e) => setRegion(e.target.value)}
               className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
               required
             >
               <option value="">Выберите район</option>
               {regionList.map((region) => (
-                <option key={region.id} value={region.id}>
+                <option key={region.id} value={region}>
                   {region.name}
                 </option>
               ))}
