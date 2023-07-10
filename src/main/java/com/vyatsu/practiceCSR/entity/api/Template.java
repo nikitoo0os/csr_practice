@@ -3,6 +3,7 @@ package com.vyatsu.practiceCSR.entity.api;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.sql.Timestamp;
 import java.util.LinkedHashSet;
@@ -21,6 +22,7 @@ public class Template {
     @Getter
     @Setter
     @Column(name = "date", nullable = false, columnDefinition = "timestamp without time zone default current_timestamp")
+    @ColumnDefault(value = "CURRENT_TIMESTAMP")
     private Timestamp date;
 
     @Getter

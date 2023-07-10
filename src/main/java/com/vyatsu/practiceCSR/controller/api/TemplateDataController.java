@@ -1,26 +1,31 @@
 package com.vyatsu.practiceCSR.controller.api;
 
+import com.vyatsu.practiceCSR.dto.api.TemplateDataDTO;
 import com.vyatsu.practiceCSR.entity.api.TemplateData;
-import com.vyatsu.practiceCSR.repository.TemplateDataRepository;
+import com.vyatsu.practiceCSR.mapper.TemplateDataMapper;
 import com.vyatsu.practiceCSR.service.TemplateDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/template/data")
+@RequestMapping("/template_data")
 public class TemplateDataController {
     private final TemplateDataService templateDataService;
-    @PostMapping("/create")
-    public ResponseEntity<Void> createTemplateData(@RequestBody TemplateData templateData) {
-        if (templateData == null) {
+    private final TemplateDataMapper templateDataMapper;
+    @PostMapping
+    public ResponseEntity<Void> createTemplateData(@RequestBody TemplateDataDTO templateDataDTO) {
+        if (templateDataDTO == null) {
             return ResponseEntity.badRequest().build();
         }
-        templateDataService.createTemplateData(templateData);
+        templateDataService.createTemplateData(templateDataMapper.toTemplateData(templateDataDTO));
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<TemplateData> getTemplateDataByTemplateId(@PathVariable Long id){
+        TemplateData templateData = templateDataService.getTemplateDataByTemplateId(id);
+        return ResponseEntity.ok(templateData);
     }
 }

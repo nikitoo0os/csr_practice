@@ -14,4 +14,9 @@ public class TemplateDataServiceImpl implements TemplateDataService {
     public void createTemplateData(TemplateData templateData) {
         templateDataRepository.save(templateData);
     }
+
+    @Override
+    public TemplateData getTemplateDataByTemplateId(Long id) {
+        return templateDataRepository.findByTemplateId(id);
+    }
 }

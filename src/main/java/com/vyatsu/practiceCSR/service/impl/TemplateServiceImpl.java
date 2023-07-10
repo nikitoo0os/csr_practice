@@ -8,6 +8,9 @@ import com.vyatsu.practiceCSR.service.TemplateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 @RequiredArgsConstructor
 @Service
 public class TemplateServiceImpl implements TemplateService {
@@ -19,7 +22,9 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public void createTemplate(Template template) {
+    public void createTemplate() {
+        Template template = new Template();
+        template.setDate(new Timestamp(System.currentTimeMillis()));
         templateRepository.save(template);
     }
 
