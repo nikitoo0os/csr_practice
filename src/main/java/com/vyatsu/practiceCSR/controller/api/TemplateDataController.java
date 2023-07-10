@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/template_data")
+@RequestMapping("/template/data")
 public class TemplateDataController {
     private final TemplateDataService templateDataService;
     private final TemplateDataMapper templateDataMapper;
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Void> createTemplateData(@RequestBody TemplateDataDTO templateDataDTO) {
         if (templateDataDTO == null) {
             return ResponseEntity.badRequest().build();
@@ -28,4 +28,7 @@ public class TemplateDataController {
         TemplateData templateData = templateDataService.getTemplateDataByTemplateId(id);
         return ResponseEntity.ok(templateData);
     }
+
+
+
 }

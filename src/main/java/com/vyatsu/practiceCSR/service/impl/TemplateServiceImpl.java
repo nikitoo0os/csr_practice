@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -32,5 +33,10 @@ public class TemplateServiceImpl implements TemplateService {
     public TemplateDTO getTemplateById(Long id) {
         Template template = templateRepository.findById(id).get();
         return templateMapper.toTemplateDTO(template);
+    }
+
+    @Override
+    public List<Template> getAllTemplates() {
+        return templateRepository.findAll();
     }
 }
