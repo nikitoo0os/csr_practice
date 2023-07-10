@@ -41,7 +41,7 @@ export default function Templates() {
       }));
 
       // Отправляем данные шаблона на сервер
-      await request('post', '/template_data', templateData);
+      await request('post', '/template/data/create', templateData);
 
       toast.success('Шаблон успешно создан.');
       setCreatingTemplate(false);
