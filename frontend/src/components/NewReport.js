@@ -79,6 +79,7 @@ export default function NewReport({templateId,closeModal}) {
       setComment("");
       setFrequency("");
       setSelectedRegion("");
+      closeModal();
     } catch (error) {
       // Обработка ошибки при создании отчета
       toast.error("Не удалось создать отчет.");
