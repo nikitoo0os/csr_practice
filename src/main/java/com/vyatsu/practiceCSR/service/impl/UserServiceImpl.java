@@ -58,6 +58,9 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.signUpToUser(userDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
 
+        user.setIsAdmin(false);
+        user.setIsActive(true);
+
         user.setRegion(regionRepository.findById(userDto.getRegion_id())
                 .orElseThrow(() -> new AppException("Регион с таким идентификатором не найден", HttpStatus.BAD_REQUEST)));
 
@@ -110,7 +113,8 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.signUpToUser(userDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
-
+        user.setIsActive(true);
+        user.setIsAdmin(false);
         user.setRegion(regionRepository.findById(userDto.getRegion_id())
                 .orElseThrow(() -> new AppException("Регион с таким идентификатором не найден", HttpStatus.BAD_REQUEST)));
 
