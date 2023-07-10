@@ -90,7 +90,7 @@ export default function Users() {
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
-                <td className="border px-4 py-2">{user.surname} {user.firstname[0]}. {user.patronymic}.</td>
+                <td className="border px-4 py-2">{user.surname} {user.firstname[0]}. {user.patronymic[0]}.</td>
                 <td className="border px-4 py-2">{user.email}</td>
                 <td className="border px-4 py-2">{user.region.name}</td>
                 <td className="border px-4 py-2">
@@ -122,7 +122,7 @@ export default function Users() {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <EditUser userId={editUserId} />
+        <EditUser userId={editUserId} fetchUsers={fetchUsers} closeModal={closeEditModal} />
       </ReactModal>
     </>
   );

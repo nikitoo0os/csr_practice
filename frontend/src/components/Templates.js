@@ -55,7 +55,7 @@ export default function Templates() {
     <>
       <h1 className="text-2xl font-bold mb-4">Шаблоны</h1>
       <form>
-        <div className="space-y-2">
+        <div className="space-y-2 mb-4">
           {services.map(service => (
             <div key={service.id} className="flex items-center">
               <input

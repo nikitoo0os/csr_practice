@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { request } from '../helpers/axios_helper';
 
-export default function EditUser({ userId }) {
+export default function EditUser({ closeModal, fetchUsers, userId }) {
   const [surname, setSurname] = useState('');
   const [firstname, setFirstname] = useState('');
   const [patronymic, setPatronymic] = useState('');
@@ -67,6 +67,8 @@ export default function EditUser({ userId }) {
       // Проверяем успешный статус ответа
       if (response.status === 200) {
         toast.success('Данные пользователя успешно изменены');
+        fetchUsers();
+        closeModal();
       } else {
         // Обработка ошибки, если требуется
       }
@@ -78,6 +80,15 @@ export default function EditUser({ userId }) {
   return (
     <>
       <div className="w-1/4 bg-white rounded p-4 mx-auto mt-56">
+      <div className="flex justify-end">
+        <button onClick={() => closeModal() }>
+          <img
+            className="h-6 md:border-0 hover:brightness-90"
+            src={require("../pictures/close.png")}
+            alt="Войти"
+          />
+        </button>
+        </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Изменить данные пользователя</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

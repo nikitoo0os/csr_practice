@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 export default function ServiceList() {
   const [services, setServices] = useState([]);
-  const [serviceName, setServiceName] = useState('');
+  const [name, setServiceName] = useState('');
 
   useEffect(() => {
     fetchServices();
@@ -26,13 +26,10 @@ export default function ServiceList() {
 
   const addService = async () => {
     try {
-      const newService = {
-        name: serviceName
-      };
 
-      const response = await request('post', '/services', newService);
+      const response = await request('post', '/services', name);
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         toast.success('Услуга успешно добавлена');
         setServiceName('');
         fetchServices(); // Обновляем список услуг после добавления
@@ -58,7 +55,7 @@ export default function ServiceList() {
         <div className="mt-4">
           <input
             type="text"
-            value={serviceName}
+            value={name}
             onChange={(e) => setServiceName(e.target.value)}
             placeholder="Введите название услуги"
             className="border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mr-2"
