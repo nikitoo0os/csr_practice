@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { request } from '../helpers/axios_helper';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReactModal from 'react-modal';
+import NewReport from './NewReport';
 
 export default function Templates() {
   const [services, setServices] = useState([]);
@@ -9,7 +11,8 @@ export default function Templates() {
   const [creatingTemplate, setCreatingTemplate] = useState(false);
   const [templates, setTemplates] = useState([]);
   const [templateName, setTemplateName] = useState('');
-
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 
   const formatTemplateDate = (date) => {
     const templateDate = new Date(date);
@@ -45,7 +48,7 @@ export default function Templates() {
     if (event.target.checked) {
       setSelectedServices([...selectedServices, service]);
     } else {
-      setSelectedServices(selectedServices.filter(id => id !== service));
+      setSelectedServices(selectedServices.filter((id) => id !== service));
     }
   };
 
@@ -54,7 +57,6 @@ export default function Templates() {
       setCreatingTemplate(true);
       const response = await request('post', '/template', { name: templateName });
       const template = response.data;
-      console.log(template);
 
       for (const service of selectedServices) {
         const templateData = {
@@ -68,16 +70,22 @@ export default function Templates() {
       toast.success('Шаблон успешно создан.');
       fetchTemplates();
       setCreatingTemplate(false);
-      setTemplateName(''); // Очистить поле ввода названия шаблона
+      setTemplateName('');
+      setSelectedServices([]);
     } catch (error) {
       toast.error('Не удалось создать шаблон.');
       setCreatingTemplate(false);
     }
   };
-  
+
   const handleCreateReport = (templateId) => {
-    // Обработка создания отчета на основе выбранного шаблона
-    console.log(`Создание отчета для шаблона с ID: ${templateId}`);
+    setSelectedTemplateId(templateId);
+    setIsReportModalOpen(true);
+  };
+
+  const closeReportModal = () => {
+    setSelectedTemplateId(null);
+    setIsReportModalOpen(false);
   };
 
   return (
@@ -94,14 +102,14 @@ export default function Templates() {
             required
           />
 
-          <div className="space-y-2 mb-4 max-w-5xl max-h-96 overflow-y-auto">
-            {services.map(service => (
+          <div className="space-y-2 mb-4 max-w-7xl max-h-96 overflow-y-auto">
+            {services.map((service) => (
               <div key={service.id} className="flex items-center">
                 <input
                   type="checkbox"
-                  value={service}
-                  checked={selectedServices.includes(service)}
-                  onChange={event => handleServiceSelection(event, service)}
+                  value={service.id}
+                  checked={selectedServices.includes(service.id)}
+                  onChange={(event) => handleServiceSelection(event, service.id)}
                   className="form-checkbox mr-2"
                 />
                 <label className="text-gray-700">{service.name}</label>
@@ -120,11 +128,11 @@ export default function Templates() {
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">Список шаблонов</h2>
           <div className="space-y-4">
-            {templates.map(template => (
+            {templates.map((template) => (
               <div key={template.id} className="bg-gray-100 shadow-md rounded p-4 flex items-center justify-between">
                 <div className="flex">
-                <div className="w-32">{formatTemplateDate(template.date)}</div>
-                <div className="ml-4 font-semibold">{template.name}</div>
+                  <div className="w-32">{formatTemplateDate(template.date)}</div>
+                  <div className="ml-4 font-semibold">{template.name}</div>
                 </div>
                 <button
                   onClick={() => handleCreateReport(template.id)}
@@ -137,6 +145,15 @@ export default function Templates() {
           </div>
         </div>
       </div>
+      <ReactModal
+        isOpen={isReportModalOpen}
+        onRequestClose={closeReportModal}
+        contentLabel="Создание отчета"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <NewReport templateId={selectedTemplateId} closeModal={closeReportModal}/>
+      </ReactModal>
     </>
   );
 }

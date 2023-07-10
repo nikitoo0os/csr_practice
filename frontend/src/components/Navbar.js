@@ -13,7 +13,7 @@ function logout() {
     window.location.assign('/')
 };
 
-export const Navbar = ({ isAuthenticated }) => {
+export const Navbar = ({ isAuthenticated, isAdmin }) => {
   
     return (
       <>
@@ -27,8 +27,9 @@ export const Navbar = ({ isAuthenticated }) => {
                   alt="Герб"
                 />
               </li>
-              <li className="hover:bg-sky-700 flex items-cetner px-2">
-                <NavLink to="/reports" className="h-full flex items-center">
+              {isAdmin ? (<>
+                <li className="hover:bg-sky-700 flex items-cetner px-2">
+                <NavLink to="/" className="h-full flex items-center">
                   Шаблоны и отчеты
                 </NavLink>
               </li>
@@ -37,11 +38,13 @@ export const Navbar = ({ isAuthenticated }) => {
                   Пользователи
                 </NavLink>
               </li>
-              <li className="hover:bg-sky-700 flex items-cetner px-2">
-                <NavLink to="/myreports" className="h-full flex items-center">
+              </>):(<>
+                <li className="hover:bg-sky-700 flex items-cetner px-2">
+                <NavLink to="/" className="h-full flex items-center">
                   Мои отчеты
                 </NavLink>
               </li>
+              </>)}
               {isAuthenticated ? (
                 <>
                   <li className="bg-red-600 hover:bg-red-700 flex items-center px-2 ml-auto">

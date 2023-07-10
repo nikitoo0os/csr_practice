@@ -77,7 +77,7 @@ export default function ServiceList() {
           </button>
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Список услуг</h2>
-        <div className="max-w-6xl max-h-96 overflow-y-auto shadow-xl rounded border-2">
+        <div className="max-w-7xl max-h-96 overflow-y-auto shadow-xl rounded border-2">
           <ul>
             {services.map((service, index) => (
               <li
