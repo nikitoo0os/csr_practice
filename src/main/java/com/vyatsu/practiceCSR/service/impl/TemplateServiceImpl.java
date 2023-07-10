@@ -28,7 +28,8 @@ public class TemplateServiceImpl implements TemplateService {
         template1.setName(template.getName());
         template1.setDate(new Timestamp(System.currentTimeMillis()));
         template1 = templateRepository.save(template1);
-        return templateMapper.toTemplateDTO(template1);
+        TemplateDTO templateDTO = templateMapper.toTemplateDTO(template1);
+        return templateDTO;
     }
 
     @Override

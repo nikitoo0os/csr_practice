@@ -19,7 +19,8 @@ public class TemplateDataController {
         if (templateDataDTO == null) {
             return ResponseEntity.badRequest().build();
         }
-        templateDataService.createTemplateData(templateDataMapper.toTemplateData(templateDataDTO));
+        TemplateData templateData = templateDataMapper.toTemplateData(templateDataDTO);
+        templateDataService.createTemplateData(templateData);
         return ResponseEntity.ok().build();
     }
 
