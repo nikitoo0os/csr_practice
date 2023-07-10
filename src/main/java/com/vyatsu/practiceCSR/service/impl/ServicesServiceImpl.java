@@ -59,7 +59,7 @@ public class ServicesServiceImpl implements ServicesService {
         }
 
         com.vyatsu.practiceCSR.entity.api.Service service = new com.vyatsu.practiceCSR.entity.api.Service();
-        service.setName(name.replace('"', ' '));
+        service.setName(name);
         service.setIsActive(true);
         serviceRepository.save(service);
 
