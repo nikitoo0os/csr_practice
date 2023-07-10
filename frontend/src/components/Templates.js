@@ -21,11 +21,11 @@ export default function Templates() {
     }
   };
 
-  const handleServiceSelection = (event, serviceId) => {
+  const handleServiceSelection = (event, service) => {
     if (event.target.checked) {
-      setSelectedServices([...selectedServices, serviceId]);
+      setSelectedServices([...selectedServices, service]);
     } else {
-      setSelectedServices(selectedServices.filter(id => id !== serviceId));
+      setSelectedServices(selectedServices.filter(id => id !== service));
     }
   };
 
@@ -33,11 +33,11 @@ export default function Templates() {
     try {
       setCreatingTemplate(true);
       const response = await request('post', '/template');
-      const templateId = response.data.id;
+      const template = response.data;
 
-      const templateData = selectedServices.map(serviceId => ({
-        templateId,
-        serviceId,
+      const templateData = selectedServices.map(service => ({
+        template,
+        service,
       }));
 
       // Отправляем данные шаблона на сервер
@@ -60,9 +60,9 @@ export default function Templates() {
             <div key={service.id} className="flex items-center">
               <input
                 type="checkbox"
-                value={service.id}
-                checked={selectedServices.includes(service.id)}
-                onChange={event => handleServiceSelection(event, service.id)}
+                value={service}
+                checked={selectedServices.includes(service)}
+                onChange={event => handleServiceSelection(event, service)}
                 className="form-checkbox mr-2"
               />
               <label className="text-gray-700">{service.name}</label>
