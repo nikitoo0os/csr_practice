@@ -60,6 +60,7 @@ public class ServicesServiceImpl implements ServicesService {
 
         com.vyatsu.practiceCSR.entity.api.Service service = new com.vyatsu.practiceCSR.entity.api.Service();
         service.setName(name);
+        service.setIsActive(true);
         serviceRepository.save(service);
 
         return ResponseEntity.ok("Услуга успешно добавлена");
