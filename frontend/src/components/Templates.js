@@ -54,13 +54,17 @@ export default function Templates() {
       setCreatingTemplate(true);
       const response = await request('post', '/template', { name: templateName });
       const template = response.data;
-  
-      const templateData = selectedServices.map(service => ({
-        template,
-        service,
-      }));
-  
-      await request('post', '/template/data/create', templateData);
+      console.log(template);
+
+      for (const service of selectedServices) {
+        const templateData = {
+          template,
+          service,
+        };
+
+        await request('post', '/template/data/create', templateData);
+      }
+
       toast.success('Шаблон успешно создан.');
       fetchTemplates();
       setCreatingTemplate(false);
@@ -87,6 +91,7 @@ export default function Templates() {
             onChange={(e) => setTemplateName(e.target.value)}
             placeholder="Введите название шаблона"
             className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2"
+            required
           />
 
           <div className="space-y-2 mb-4 max-w-5xl max-h-96 overflow-y-auto">
@@ -117,7 +122,10 @@ export default function Templates() {
           <div className="space-y-4">
             {templates.map(template => (
               <div key={template.id} className="bg-gray-100 shadow-md rounded p-4 flex items-center justify-between">
-                <span>{formatTemplateDate(template.date)}</span>
+                <div className="flex">
+                <div className="w-32">{formatTemplateDate(template.date)}</div>
+                <div className="ml-4 font-semibold">{template.name}</div>
+                </div>
                 <button
                   onClick={() => handleCreateReport(template.id)}
                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none"

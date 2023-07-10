@@ -76,7 +76,7 @@ export default function ServiceList() {
           </button>
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Список услуг</h2>
-        <div className="max-w-6xl max-h-96 overflow-y-auto shadow-xl">
+        <div className="max-w-6xl max-h-96 overflow-y-auto shadow-xl rounded border-2">
           <ul>
             {services.map((service, index) => (
               <li
@@ -85,12 +85,12 @@ export default function ServiceList() {
                   index % 2 === 0 ? 'bg-gray-200' : 'bg-white'
                 }`}
               >
-                <span className="w-3/4">
+                <span className="w-10/12 p-1">
                   {index + 1}. {service.name}
                 </span>
                 <button
                   onClick={() => deleteService(service.id)}
-                  className="w-1/4 text-red-500 hover:text-red-600 focus:outline-none text-right"
+                  className="w-2/12 p-1 mr-2 text-red-500 hover:text-red-600 focus:outline-none text-right"
                 >
                   Удалить
                 </button>
