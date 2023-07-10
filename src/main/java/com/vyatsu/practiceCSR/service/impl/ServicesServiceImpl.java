@@ -25,6 +25,12 @@ public class ServicesServiceImpl implements ServicesService {
     }
 
     @Override
+    public List<ServiceDTO> getAllActiveServices() {
+        List<com.vyatsu.practiceCSR.entity.api.Service> serviceDTOList = serviceRepository.findAllActive();
+        return serviceMapper.listServiceToListServiceDTO(serviceDTOList);
+    }
+
+    @Override
     public ServiceDTO getServiceDTOById(Long id) {
         com.vyatsu.practiceCSR.entity.api.Service service = serviceRepository.findById(id).get();
         return serviceMapper.serviceToServiceDTO(service);
@@ -52,14 +58,14 @@ public class ServicesServiceImpl implements ServicesService {
     }
 
     @Override
-    public ResponseEntity createService(String name) {
-        if (serviceRepository.existsByName(name)) {
+    public ResponseEntity createService(ServiceDTO serviceDTO) {
+        if (serviceRepository.existsByName(serviceDTO.getName())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Услуга с таким именем уже существует");
         }
 
         com.vyatsu.practiceCSR.entity.api.Service service = new com.vyatsu.practiceCSR.entity.api.Service();
-        service.setName(name);
+        service.setName(serviceDTO.getName());
         service.setIsActive(true);
         serviceRepository.save(service);
 

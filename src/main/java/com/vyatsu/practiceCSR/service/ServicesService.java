@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ServicesService {
     List<ServiceDTO> getAllServices();
+    List<ServiceDTO> getAllActiveServices();
 
     ServiceDTO getServiceDTOById(Long id);
 
@@ -17,6 +18,6 @@ public interface ServicesService {
 
     ResponseEntity<Void> softDeleteById(Long id);
 
-    ResponseEntity<Void> createService(String name);
+    ResponseEntity<Void> createService(ServiceDTO serviceDTO);
 
 }

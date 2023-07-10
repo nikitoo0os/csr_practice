@@ -30,7 +30,7 @@ public class ServiceController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createService(@RequestBody String name){
-        return servicesService.createService(name);
+    public ResponseEntity<Void> createService(@RequestBody ServiceDTO serviceDTO){
+        return servicesService.createService(serviceDTO);
     }
 }
