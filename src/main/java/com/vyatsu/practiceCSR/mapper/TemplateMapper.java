@@ -12,4 +12,6 @@ public interface TemplateMapper {
     TemplateDTO toTemplateDTO(Template template);
 
     List<TemplateDTO> toTemplateDTOList(List<Template> templates);
+
+    Template toTemplate(TemplateDTO templateDTO);
 }

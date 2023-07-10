@@ -22,8 +22,12 @@ public class Template {
     @Getter
     @Setter
     @Column(name = "date", nullable = false, columnDefinition = "timestamp without time zone default current_timestamp")
-    @ColumnDefault(value = "CURRENT_TIMESTAMP")
     private Timestamp date;
+
+    @Getter
+    @Setter
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Getter
     @Setter

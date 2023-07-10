@@ -14,5 +14,5 @@ import java.sql.Timestamp;
 public class TemplateDTO {
     private int id;
     private Timestamp date;
-
+    private String name;
 }
