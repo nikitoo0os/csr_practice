@@ -6,10 +6,7 @@ import com.vyatsu.practiceCSR.mapper.TemplateMapper;
 import com.vyatsu.practiceCSR.service.TemplateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,7 +19,7 @@ public class TemplateController {
     private final TemplateMapper templateMapper;
 
     @PostMapping
-    public ResponseEntity<Void> createTemplate(){
+    public ResponseEntity<TemplateDTO> createTemplate(){
         templateService.createTemplate();
         return ResponseEntity.ok().build();
     }
@@ -32,5 +29,10 @@ public class TemplateController {
         List<Template> templates = templateService.getAllTemplates();
         List<TemplateDTO> templateDTOs = templateMapper.toTemplateDTOList(templates);
         return ResponseEntity.ok(templateDTOs);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TemplateDTO> getTemplateById(@PathVariable Long id){
+        return ResponseEntity.ok(templateService.getTemplateById(id));
     }
 }

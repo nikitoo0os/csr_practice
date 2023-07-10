@@ -16,6 +16,5 @@ public class TemplateDataDTO {
 
     private Integer id;
     private Template template;
-
     private Service service;
 }

@@ -23,10 +23,11 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public void createTemplate() {
+    public TemplateDTO createTemplate() {
         Template template = new Template();
         template.setDate(new Timestamp(System.currentTimeMillis()));
-        templateRepository.save(template);
+        template = templateRepository.save(template);
+        return templateMapper.toTemplateDTO(template);
     }
 
     @Override

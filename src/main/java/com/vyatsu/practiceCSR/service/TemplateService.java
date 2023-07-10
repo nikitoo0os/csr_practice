@@ -10,9 +10,11 @@ public interface TemplateService {
 
     void deleteById(Long id);
 
-    void createTemplate();
+    TemplateDTO createTemplate();
 
     TemplateDTO getTemplateById(Long id);
+
+
 
     List<Template> getAllTemplates();
 }
