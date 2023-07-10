@@ -30,4 +30,5 @@ public interface UserService {
     void updateUser(User user);
 
 
+    User getUserByEmail(String email);
 }

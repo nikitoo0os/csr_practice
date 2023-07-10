@@ -21,7 +21,7 @@ public class ServiceController {
     private final ServicesService servicesService;
     @GetMapping
     public ResponseEntity<List<ServiceDTO>> getAllService(){
-        List<ServiceDTO> serviceDTOList = servicesService.getAllServices();
+        List<ServiceDTO> serviceDTOList = servicesService.getAllActiveServices();
         return ResponseEntity.ok(serviceDTOList);
     }
     @DeleteMapping("/{id}")

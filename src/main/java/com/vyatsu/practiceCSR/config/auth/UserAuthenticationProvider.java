@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
+import com.vyatsu.practiceCSR.entity.api.User;
 import com.vyatsu.practiceCSR.service.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +32,18 @@ public class UserAuthenticationProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String login) {
+    public String createToken(String email) {
         Date now = new Date();
         Date validity = new Date(now.getTime() +  604800000); // 7 days
 
+        User user = userService.getUserByEmail(email);
+
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         return JWT.create()
-                .withIssuer(login)
+                .withIssuer(email)
                 .withIssuedAt(now)
                 .withExpiresAt(validity)
+                .withClaim("isAdmin", user.getIsAdmin())
                 .sign(algorithm);
     }
 
