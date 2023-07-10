@@ -26,7 +26,8 @@ export default function ServiceList() {
 
   const addService = async () => {
     try {
-      const response = await request('post', '/services', name);
+      const serviceData = {name};
+      const response = await request('post', '/services', serviceData);
 
       if (response.status === 200) {
         toast.success('Услуга успешно добавлена');
