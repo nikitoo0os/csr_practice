@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { request } from '../helpers/axios_helper';
-import { toast } from 'react-toastify';
+import React, { useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
-import ReactModal from "react-modal";
+import ActiveReports from './ActiveReports';
+import InactiveReports from './InActiveReports';
 
 export default function MyReports() {
     const [activeTab, setActiveTab] = useState(0);
@@ -32,12 +31,12 @@ export default function MyReports() {
   
         {activeTab === 0 &&
           <div className="p-4">
-            Активные
+            <ActiveReports/>
           </div>}
   
         {activeTab === 1 &&
           <div className="p-4">
-            Завершенные
+            <InactiveReports/>
           </div>}
       </div>
     );

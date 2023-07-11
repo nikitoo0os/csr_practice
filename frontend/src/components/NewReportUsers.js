@@ -12,6 +12,7 @@ export default function NewReportUsers({ report, closeModal }) {
 
   const fetchUsers = async () => {
     try {
+      console.log(report);
       const response = await request("get", `/users/region/${report.region.id}`);
       setUsers(response.data);
     } catch (error) {

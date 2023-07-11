@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Templates from './Templates';
 import ServiceList from './ServiceList';
-import Reports from './Reports';
 
 export default function TemplatesAndReports() {
   const [activeTab, setActiveTab] = useState(0);
@@ -38,17 +37,17 @@ export default function TemplatesAndReports() {
 
       {activeTab === 0 &&
         <div className="p-4">
-          <Templates/>
+          <Templates />
         </div>}
 
       {activeTab === 1 &&
         <div className="p-4">
-          <ServiceList/>
+          <ServiceList />
         </div>}
 
       {activeTab === 2 && <div className="p-4">
-        <Reports/>
-        </div>}
+        123
+      </div>}
     </div>
   );
 }
