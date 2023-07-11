@@ -5,8 +5,8 @@ import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.User;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
-import com.vyatsu.practiceCSR.service.RegionService;
-import com.vyatsu.practiceCSR.service.UserService;
+import com.vyatsu.practiceCSR.service.api.RegionService;
+import com.vyatsu.practiceCSR.service.api.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +33,13 @@ public class UserController {
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
         UserDTO userDTO = userMapper.toUserDTO(user);
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @GetMapping("/region/{id}")
+    public ResponseEntity<List<UserDTO>> getUserByRegionId(@PathVariable Long id){
+        List<User> userList = userService.getUserByRegionId(id);
+        List<UserDTO> userDTO = userMapper.toListUserDTO(userList);
         return ResponseEntity.ok(userDTO);
     }
 

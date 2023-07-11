@@ -1,4 +1,4 @@
-package com.vyatsu.practiceCSR.service;
+package com.vyatsu.practiceCSR.service.api;
 
 import com.vyatsu.practiceCSR.entity.api.TemplateData;
 

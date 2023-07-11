@@ -3,7 +3,7 @@ package com.vyatsu.practiceCSR.controller.api;
 import com.vyatsu.practiceCSR.dto.api.TemplateDataDTO;
 import com.vyatsu.practiceCSR.entity.api.TemplateData;
 import com.vyatsu.practiceCSR.mapper.TemplateDataMapper;
-import com.vyatsu.practiceCSR.service.TemplateDataService;
+import com.vyatsu.practiceCSR.service.api.TemplateDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

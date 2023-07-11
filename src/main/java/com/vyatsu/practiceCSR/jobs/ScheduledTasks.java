@@ -17,6 +17,15 @@ public class ScheduledTasks {
 
     @Scheduled(fixedRateString = "#{@schedulerProvider.getFrequency()}")
     public void reportCurrentTime() {
-        log.info("The time is now {}", dateFormat.format(new Date()));
+        log.info("Текущее время {}", dateFormat.format(new Date()));
     }
+
+//    @Scheduled(fixedDelayString = "#{report.getFrequency()}")
+//    public Report createFrequencyReport(Report report){
+//        log.info("Создан периодичный отчет id:" + report.getId());
+//        if(report.getFrequency() != null){
+//           // return schedulerProvider.extensionReport(report);
+//        }
+//        return null;
+//    }
 }

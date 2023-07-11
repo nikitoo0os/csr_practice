@@ -2,11 +2,9 @@ package com.vyatsu.practiceCSR.controller.api;
 
 import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.entity.api.Region;
-import com.vyatsu.practiceCSR.service.RegionService;
-import jakarta.annotation.security.PermitAll;
+import com.vyatsu.practiceCSR.service.api.RegionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,8 +1,8 @@
-package com.vyatsu.practiceCSR.service.impl;
+package com.vyatsu.practiceCSR.service.api.impl;
 
 import com.vyatsu.practiceCSR.entity.api.TemplateData;
 import com.vyatsu.practiceCSR.repository.TemplateDataRepository;
-import com.vyatsu.practiceCSR.service.TemplateDataService;
+import com.vyatsu.practiceCSR.service.api.TemplateDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

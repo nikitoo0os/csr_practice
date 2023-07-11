@@ -22,28 +22,27 @@ public class Report {
     @ManyToOne(fetch = FetchType.LAZY)
     @Getter
     @Setter
-    @JoinColumn(name = "template_id")
+    @JoinColumn(name = "template_id", nullable = false)
     private Template template;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Getter
     @Setter
-    @JoinColumn(name = "region_id")
+    @JoinColumn(name = "region_id", nullable = false)
     private Region region;
 
-    @NotNull
     @Getter
     @Setter
-    @Column(name = "frequency", nullable = false)
+    @Column(name = "frequency")
     private Long frequency;
 
     @Getter
     @Setter
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
     @Getter
     @Setter
-    @Column(name = "end_date")
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
     @Getter
@@ -53,15 +52,15 @@ public class Report {
 
     @Getter
     @Setter
-    @Column(name = "comment", length = Integer.MAX_VALUE)
+    @Column(name = "comment", length = 2000)
     private String comment;
     @Getter
     @Setter
-    @Column(name = "is_active")
+    @Column(name = "is_active", nullable = false)
     private Boolean isActive;
     @Getter
     @Setter
-    @Column(name = "is_completed")
+    @Column(name = "is_completed", nullable = false)
     private Boolean isCompleted;
     @Getter
     @Setter

@@ -1,4 +1,4 @@
-package com.vyatsu.practiceCSR.service;
+package com.vyatsu.practiceCSR.service.api;
 
 import com.vyatsu.practiceCSR.dto.api.UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.CredentialsDto;
@@ -31,4 +31,6 @@ public interface UserService {
 
 
     User getUserByEmail(String email);
+
+    List<User> getUserByRegionId(Long id);
 }

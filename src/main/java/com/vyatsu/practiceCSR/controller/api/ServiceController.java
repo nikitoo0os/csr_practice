@@ -1,16 +1,11 @@
 package com.vyatsu.practiceCSR.controller.api;
 
 import com.vyatsu.practiceCSR.dto.api.ServiceDTO;
-import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
-import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
-import com.vyatsu.practiceCSR.entity.api.Service;
-import com.vyatsu.practiceCSR.entity.api.User;
-import com.vyatsu.practiceCSR.service.ServicesService;
+import com.vyatsu.practiceCSR.service.api.ServicesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor

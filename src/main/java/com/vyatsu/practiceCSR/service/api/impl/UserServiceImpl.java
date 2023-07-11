@@ -1,4 +1,4 @@
-package com.vyatsu.practiceCSR.service.impl;
+package com.vyatsu.practiceCSR.service.api.impl;
 
 import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.dto.api.UserDTO;
@@ -11,7 +11,7 @@ import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.RegionRepository;
 import com.vyatsu.practiceCSR.repository.UserRepository;
-import com.vyatsu.practiceCSR.service.UserService;
+import com.vyatsu.practiceCSR.service.api.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import com.vyatsu.practiceCSR.entity.api.User;
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserAuthDto> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return userMapper.toListUserDTO(users);
+        return userMapper.toListUserAuthDTO(users);
     }
 
     @Override
@@ -154,6 +154,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).get();
+    }
+
+    @Override
+    public List<User> getUserByRegionId(Long id) {
+        return userRepository.findByRegionId(id);
     }
 
 }

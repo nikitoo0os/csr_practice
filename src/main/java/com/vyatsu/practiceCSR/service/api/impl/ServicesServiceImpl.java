@@ -1,14 +1,13 @@
-package com.vyatsu.practiceCSR.service.impl;
+package com.vyatsu.practiceCSR.service.api.impl;
 
 import com.vyatsu.practiceCSR.dto.api.ServiceDTO;
 import com.vyatsu.practiceCSR.mapper.ServiceMapper;
 import com.vyatsu.practiceCSR.repository.ServiceRepository;
-import com.vyatsu.practiceCSR.service.ServicesService;
+import com.vyatsu.practiceCSR.service.api.ServicesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 

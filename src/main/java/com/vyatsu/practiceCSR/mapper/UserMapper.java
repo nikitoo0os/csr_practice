@@ -18,7 +18,9 @@ public interface UserMapper {
 
     User toUser(UserDTO userDTO);
 
-    List<UserAuthDto> toListUserDTO(List<User> userList);
+    List<UserAuthDto> toListUserAuthDTO(List<User> userList);
+
+    List<UserDTO> toListUserDTO(List<User> userList);
 
     @Mapping(target = "password", ignore = true)
     User signUpToUser(SignUpDto signUpDto);

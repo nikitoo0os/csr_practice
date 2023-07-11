@@ -1,14 +1,13 @@
-package com.vyatsu.practiceCSR.service.impl;
+package com.vyatsu.practiceCSR.service.api.impl;
 
 import com.vyatsu.practiceCSR.dto.api.TemplateDTO;
 import com.vyatsu.practiceCSR.entity.api.Template;
 import com.vyatsu.practiceCSR.mapper.TemplateMapper;
 import com.vyatsu.practiceCSR.repository.TemplateRepository;
-import com.vyatsu.practiceCSR.service.TemplateService;
+import com.vyatsu.practiceCSR.service.api.TemplateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
