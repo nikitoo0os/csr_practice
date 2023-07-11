@@ -52,6 +52,15 @@ export default function Templates() {
     }
   };
 
+  const handleSelectAllServices = () => {
+    const allServiceIds = services.map((service) => service.id);
+    setSelectedServices(allServiceIds);
+  };
+
+  const handleDeselectAllServices = () => {
+    setSelectedServices([]);
+  };
+
   const createTemplate = async () => {
     try {
       setCreatingTemplate(true);
@@ -91,45 +100,71 @@ export default function Templates() {
   return (
     <>
       <div className="mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Шаблоны</h1>
-        <form>
-          <input
-            type="text"
-            value={templateName}
-            onChange={(e) => setTemplateName(e.target.value)}
-            placeholder="Введите название шаблона"
-            className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2"
-            required
-          />
-
-          <div className="space-y-2 mb-4 max-w-7xl max-h-96 overflow-y-auto">
-            {services.map((service) => (
-              <div key={service.id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  value={service.id}
-                  checked={selectedServices.includes(service.id)}
-                  onChange={(event) => handleServiceSelection(event, service.id)}
-                  className="form-checkbox mr-2"
-                />
-                <label className="text-gray-700">{service.name}</label>
+        <div className="p-2 shadow-lg border">
+          <h2 className="text-xl font-bold mb-4">Создание шаблона</h2>
+          <form>
+            <input
+              type="text"
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
+              placeholder="Введите название шаблона"
+              className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2"
+              required
+            />
+            <h2 className="text-md font-bold mb-4">Услуги</h2>
+            <div className="space-y-2 mb-4 max-w-7xl max-h-96 overflow-y-auto">
+              <div className="flex items-center">
+                <button
+                  type="button"
+                  onClick={handleSelectAllServices}
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none mr-2"
+                >
+                  Выбрать все
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeselectAllServices}
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
+                >
+                  Снять выбор
+                </button>
               </div>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={createTemplate}
-            disabled={creatingTemplate}
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
-          >
-            {creatingTemplate ? 'Создание...' : 'Создать шаблон'}
-          </button>
-        </form>
+              {services.map((service, index) => (
+                <div
+                  key={service.id}
+                  className={`flex items-center ${index % 2 === 0 ? 'bg-white' : 'bg-gray-200'}`}
+                >
+                  <input
+                    type="checkbox"
+                    value={service.id}
+                    checked={selectedServices.includes(service.id)}
+                    onChange={(event) => handleServiceSelection(event, service.id)}
+                    className="form-checkbox mr-2"
+                  />
+                  <label className="text-gray-700">{`${index + 1}. ${service.name}`}</label>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={createTemplate}
+              disabled={creatingTemplate}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
+            >
+              {creatingTemplate ? 'Создание...' : 'Создать шаблон'}
+            </button>
+          </form>
+        </div>
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">Список шаблонов</h2>
           <div className="space-y-4">
-            {templates.map((template) => (
-              <div key={template.id} className="bg-gray-100 shadow-md rounded p-4 flex items-center justify-between">
+            {templates.map((template, index) => (
+              <div
+                key={template.id}
+                className={`bg-gray-100 shadow-md rounded p-4 flex items-center justify-between ${
+                  index % 2 === 0 ? 'bg-white' : 'bg-gray-200'
+                }`}
+              >
                 <div className="flex">
                   <div className="w-32">{formatTemplateDate(template.date)}</div>
                   <div className="ml-4 font-semibold">{template.name}</div>
@@ -152,7 +187,7 @@ export default function Templates() {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <NewReport template={selectedTemplate} closeModal={closeReportModal}/>
+        <NewReport template={selectedTemplate} closeModal={closeReportModal} />
       </ReactModal>
     </>
   );
