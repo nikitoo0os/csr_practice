@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { request } from "../helpers/axios_helper";
 import { toast } from "react-toastify";
+import NewReportUsers from "./NewReportUsers"
+import ReactModal from 'react-modal';
 
 export default function NewReport({ template, closeModal }) {
   const [isRecurring, setIsRecurring] = useState(false);
@@ -10,7 +12,11 @@ export default function NewReport({ template, closeModal }) {
   const [comment, setComment] = useState("");
   const [frequency, setFrequency] = useState("");
   const [regions, setRegions] = useState([]);
-  const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const[report,setReport] = useState({});
+  const [isReportUsersModalOpen, setIsReportUsersModalOpen] = useState(false);
+  const [isReportSubmitted, setIsReportSubmitted] = useState(false);
+
 
   useEffect(() => {
     fetchRegions();
@@ -68,10 +74,9 @@ export default function NewReport({ template, closeModal }) {
       }
 
       console.log(requestData);
-
-      const response = await request("post", "/reports", requestData);
+      setReport(requestData);
+      // const response = await request("post", "/reports", requestData);
       // Обработка успешного создания отчета
-      toast.success("Отчет успешно создан.");
       // Сброс значений полей формы
       setIsRecurring(false);
       setStartDate("");
@@ -80,7 +85,8 @@ export default function NewReport({ template, closeModal }) {
       setComment("");
       setFrequency("");
       setSelectedRegion("");
-      closeModal();
+      setIsReportSubmitted(true);
+      setIsReportUsersModalOpen(true);
     } catch (error) {
       // Обработка ошибки при создании отчета
       toast.error("Не удалось создать отчет.");
@@ -110,9 +116,14 @@ export default function NewReport({ template, closeModal }) {
     }
   };
 
+  const closeReportUsersModal = () => {
+    closeModal();
+    setIsReportUsersModalOpen(false);
+  };
+
   return (
     <>
-      <div className="mx-auto w-1/4 bg-white p-4 mt-60">
+    {!isReportSubmitted && (<><div className="mx-auto w-1/4 bg-white p-4 mt-60">
         <div className="flex justify-end">
           <button onClick={() => closeModal()}>
             <img
@@ -239,12 +250,22 @@ export default function NewReport({ template, closeModal }) {
           </div>
           <button
             type="submit"
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
           >
-            Создать отчет
+            Далее
           </button>
         </form>
-      </div>
+      </div></>)}
+      
+      <ReactModal
+        isOpen={isReportUsersModalOpen}
+        onRequestClose={closeReportUsersModal}
+        contentLabel="Создание отчета"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <NewReportUsers report={report} closeModal={closeReportUsersModal} region={selectedRegion}/>
+      </ReactModal>
     </>
   );
 }

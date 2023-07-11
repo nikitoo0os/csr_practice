@@ -38,7 +38,7 @@ export default function Templates() {
   const fetchTemplates = async () => {
     try {
       const response = await request('get', '/template');
-      setTemplates(response.data);
+      setTemplates(response.data.reverse());
     } catch (error) {
       toast.error('Не удалось получить список шаблонов.');
     }
@@ -53,7 +53,7 @@ export default function Templates() {
   };
 
   const handleSelectAllServices = () => {
-    const allServiceIds = services.map((service) => service.id);
+    const allServiceIds = services.map((service) => service);
     setSelectedServices(allServiceIds);
   };
 
@@ -185,7 +185,7 @@ export default function Templates() {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <NewReport template={selectedTemplate} closeModal={closeReportModal} />
+        <NewReport template={selectedTemplate} closeModal={closeReportModal}/>
       </ReactModal>
     </>
   );
