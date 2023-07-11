@@ -36,23 +36,22 @@ export default function NewReport({ template, closeModal }) {
   };
 
   const handleRegionChange = (event) => {
-    console.log(event.target.value);
-    setSelectedRegion(event.target.value);
+    setSelectedRegion(event.target.value);    
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Отправка данных отчета на сервер
     try {
       let requestData = {};
-
+      const response = await request("get", `/regions/${selectedRegion}`);
+      const region = response.data;
       if (!isRecurring) {
         requestData = {
           template,
           startDate,
           endDate,
           comment,
-          regionId: selectedRegion,
+          region,
         };
       } else {
         requestData = {
@@ -69,11 +68,9 @@ export default function NewReport({ template, closeModal }) {
                     ? 365 * 24 * 60 * 60 * 1000 // Временной интервал в миллисекундах для лет
                     : null,
           comment,
-          regionId: selectedRegion,
+          region,
         };
       }
-
-      console.log(requestData);
       setReport(requestData);
       // const response = await request("post", "/reports", requestData);
       // Обработка успешного создания отчета
@@ -86,6 +83,7 @@ export default function NewReport({ template, closeModal }) {
       setFrequency("");
       setSelectedRegion("");
       setIsReportSubmitted(true);
+      console.log("Первая форма id региона " + selectedRegion);
       setIsReportUsersModalOpen(true);
     } catch (error) {
       // Обработка ошибки при создании отчета
@@ -95,7 +93,6 @@ export default function NewReport({ template, closeModal }) {
 
   const handleStartDateChange = (event) => {
     const selectedStartDate = event.target.value;
-    console.log(endDate);
     if (endDate === '')
     {
       setStartDate(selectedStartDate);
@@ -264,7 +261,7 @@ export default function NewReport({ template, closeModal }) {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <NewReportUsers report={report} closeModal={closeReportUsersModal} region={selectedRegion}/>
+        <NewReportUsers report={report} closeModal={closeReportUsersModal}/>
       </ReactModal>
     </>
   );

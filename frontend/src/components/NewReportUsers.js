@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { request } from "../helpers/axios_helper";
 import { toast } from "react-toastify";
 
-export default function NewReportUsers({ report, closeModal, region }) {
+export default function NewReportUsers({ report, closeModal }) {
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
 
@@ -12,8 +12,7 @@ export default function NewReportUsers({ report, closeModal, region }) {
 
   const fetchUsers = async () => {
     try {
-      const response = await request("get", `/users`);
-      // const response = await request("get", `/users/${region}`);
+      const response = await request("get", `/users/region/${report.region.id}`);
       setUsers(response.data);
     } catch (error) {
       toast.error("Не удалось получить список пользователей.");
