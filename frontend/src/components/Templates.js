@@ -136,9 +136,9 @@ export default function Templates() {
                 >
                   <input
                     type="checkbox"
-                    value={service.id}
-                    checked={selectedServices.includes(service.id)}
-                    onChange={(event) => handleServiceSelection(event, service.id)}
+                    value={service}
+                    checked={selectedServices.includes(service)}
+                    onChange={(event) => handleServiceSelection(event, service)}
                     className="form-checkbox mr-2"
                   />
                   <label className="text-gray-700">{`${index + 1}. ${service.name}`}</label>

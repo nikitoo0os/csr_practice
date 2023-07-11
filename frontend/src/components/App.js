@@ -8,6 +8,7 @@ import Users from './Users';
 import MyReports from './MyReports';
 import TemplatesAndReports from './TemplatesAndReports';
 import NewReport from './NewReport';
+import NewReportUsers from './NewReportUsers';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
                   <>
                     <Route path="/users" element={<Users />} />
                     <Route path="/" element={<TemplatesAndReports />} />
+                    <Route path="/report" element={<NewReportUsers/>}/>
                   </>
                 ) : (
                   <>
