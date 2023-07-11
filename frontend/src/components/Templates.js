@@ -12,7 +12,7 @@ export default function Templates() {
   const [templates, setTemplates] = useState([]);
   const [templateName, setTemplateName] = useState('');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [selectedTemplateId, setSelectedTemplateId] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const formatTemplateDate = (date) => {
     const templateDate = new Date(date);
@@ -78,13 +78,13 @@ export default function Templates() {
     }
   };
 
-  const handleCreateReport = (templateId) => {
-    setSelectedTemplateId(templateId);
+  const handleCreateReport = (template) => {
+    setSelectedTemplate(template);
     setIsReportModalOpen(true);
   };
 
   const closeReportModal = () => {
-    setSelectedTemplateId(null);
+    setSelectedTemplate(null);
     setIsReportModalOpen(false);
   };
 
@@ -135,7 +135,7 @@ export default function Templates() {
                   <div className="ml-4 font-semibold">{template.name}</div>
                 </div>
                 <button
-                  onClick={() => handleCreateReport(template.id)}
+                  onClick={() => handleCreateReport(template)}
                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
                 >
                   Создать отчет
@@ -152,7 +152,7 @@ export default function Templates() {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <NewReport templateId={selectedTemplateId} closeModal={closeReportModal}/>
+        <NewReport template={selectedTemplate} closeModal={closeReportModal}/>
       </ReactModal>
     </>
   );

@@ -32,7 +32,6 @@ function App() {
                   <>
                     <Route path="/users" element={<Users />} />
                     <Route path="/" element={<TemplatesAndReports />} />
-                    <Route path="/newreport" element={<NewReport />} />
                   </>
                 ) : (
                   <>

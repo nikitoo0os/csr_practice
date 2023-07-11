@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { request } from "../helpers/axios_helper";
 import { toast } from "react-toastify";
 
-export default function NewReport({templateId,closeModal}) {
+export default function NewReport({ template, closeModal }) {
   const [isRecurring, setIsRecurring] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -30,6 +30,7 @@ export default function NewReport({templateId,closeModal}) {
   };
 
   const handleRegionChange = (event) => {
+    console.log(event.target.value);
     setSelectedRegion(event.target.value);
   };
 
@@ -38,36 +39,36 @@ export default function NewReport({templateId,closeModal}) {
     // Отправка данных отчета на сервер
     try {
       let requestData = {};
-  
+
       if (!isRecurring) {
         requestData = {
-          templateId,
+          template,
           startDate,
           endDate,
           comment,
-          region: selectedRegion,
+          regionId: selectedRegion,
         };
       } else {
         requestData = {
-          templateId,
+          template,
           activeDays: activeDays ? Number(activeDays) : null,
           frequency:
             frequency === "day"
               ? 24 * 60 * 60 * 1000 // Временной интервал в миллисекундах для дней
               : frequency === "week"
-              ? 7 * 24 * 60 * 60 * 1000 // Временной интервал в миллисекундах для недель
-              : frequency === "month"
-              ? 30 * 24 * 60 * 60 * 1000 // Временной интервал в миллисекундах для месяцев
-              : frequency === "year"
-              ? 365 * 24 * 60 * 60 * 1000 // Временной интервал в миллисекундах для лет
-              : null,
+                ? 7 * 24 * 60 * 60 * 1000 // Временной интервал в миллисекундах для недель
+                : frequency === "month"
+                  ? 30 * 24 * 60 * 60 * 1000 // Временной интервал в миллисекундах для месяцев
+                  : frequency === "year"
+                    ? 365 * 24 * 60 * 60 * 1000 // Временной интервал в миллисекундах для лет
+                    : null,
           comment,
-          region: selectedRegion,
+          regionId: selectedRegion,
         };
       }
 
       console.log(requestData);
-  
+
       const response = await request("post", "/reports", requestData);
       // Обработка успешного создания отчета
       toast.success("Отчет успешно создан.");
@@ -85,19 +86,41 @@ export default function NewReport({templateId,closeModal}) {
       toast.error("Не удалось создать отчет.");
     }
   };
-  
+
+  const handleStartDateChange = (event) => {
+    const selectedStartDate = event.target.value;
+    console.log(endDate);
+    if (endDate === '')
+    {
+      setStartDate(selectedStartDate);
+    }
+    else if (selectedStartDate >= endDate) {
+      toast.error("Дата начала отчета не может быть позднее даты окончания.");
+    } else {
+      setStartDate(selectedStartDate);
+    }
+  };
+
+  const handleEndDateChange = (event) => {
+    const selectedEndDate = event.target.value;
+    if (startDate >= selectedEndDate) {
+      toast.error("Дата начала отчета не может быть позднее даты окончания.");
+    } else {
+      setEndDate(selectedEndDate);
+    }
+  };
 
   return (
     <>
       <div className="mx-auto w-1/4 bg-white p-4 mt-60">
-      <div className="flex justify-end">
-        <button onClick={() => closeModal() }>
-          <img
-            className="h-6 md:border-0 hover:brightness-90"
-            src={require("../pictures/close.png")}
-            alt="Войти"
-          />
-        </button>
+        <div className="flex justify-end">
+          <button onClick={() => closeModal()}>
+            <img
+              className="h-6 md:border-0 hover:brightness-90"
+              src={require("../pictures/close.png")}
+              alt="Войти"
+            />
+          </button>
         </div>
         <h1 className="text-2xl font-bold mb-4">Создание отчета</h1>
         <form onSubmit={handleSubmit}>
@@ -136,8 +159,10 @@ export default function NewReport({templateId,closeModal}) {
                 <input
                   type="date"
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  onChange={handleStartDateChange}
+                  min={new Date().toISOString().split("T")[0]}
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
+                  required
                 />
               </div>
 
@@ -148,8 +173,10 @@ export default function NewReport({templateId,closeModal}) {
                 <input
                   type="date"
                   value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
+                  onChange={handleEndDateChange}
+                  min={startDate}
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
+                  required
                 />
               </div>
             </>
@@ -161,6 +188,7 @@ export default function NewReport({templateId,closeModal}) {
                   value={frequency}
                   onChange={(e) => setFrequency(e.target.value)}
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
+                  required
                 >
                   <option value="">Выберите периодичность</option>
                   <option value="day">День</option>
@@ -171,7 +199,7 @@ export default function NewReport({templateId,closeModal}) {
               </div>
               <div className="mb-4">
                 <label className="block font-bold mb-2">
-                  Количество дней активности:
+                  Продолжительность в днях:
                 </label>
                 <input
                   type="number"
@@ -179,6 +207,7 @@ export default function NewReport({templateId,closeModal}) {
                   min={1}
                   onChange={(e) => setActiveDays(e.target.value)}
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
+                  required
                 />
               </div>
             </>
@@ -198,10 +227,11 @@ export default function NewReport({templateId,closeModal}) {
               value={selectedRegion}
               onChange={handleRegionChange}
               className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
+              required
             >
               <option value="">Выберите регион</option>
               {regions.map((region) => (
-                <option key={region.id} value={region}>
+                <option key={region.id} value={region.id}>
                   {region.name}
                 </option>
               ))}
