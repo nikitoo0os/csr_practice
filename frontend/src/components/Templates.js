@@ -161,9 +161,7 @@ export default function Templates() {
             {templates.map((template, index) => (
               <div
                 key={template.id}
-                className={`bg-gray-100 shadow-md rounded p-4 flex items-center justify-between ${
-                  index % 2 === 0 ? 'bg-white' : 'bg-gray-200'
-                }`}
+                className="bg-gray-100 shadow-lg rounded p-4 flex items-center justify-between"
               >
                 <div className="flex">
                   <div className="w-32">{formatTemplateDate(template.date)}</div>
