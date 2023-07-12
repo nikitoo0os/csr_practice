@@ -83,7 +83,6 @@ export default function NewReport({ template, closeModal }) {
       setFrequency("");
       setSelectedRegion("");
       setIsReportSubmitted(true);
-      console.log("Первая форма id региона " + selectedRegion);
       setIsReportUsersModalOpen(true);
     } catch (error) {
       // Обработка ошибки при создании отчета

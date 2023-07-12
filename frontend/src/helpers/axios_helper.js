@@ -31,6 +31,7 @@ export const request = (method, url, data) => {
     });
 };
 
+//Декодирование JWT
 export const decodeJwt = () => {
     try {
         const decoded = jwtDecode(getAuthToken());

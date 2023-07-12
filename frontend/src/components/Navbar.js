@@ -38,12 +38,12 @@ export const Navbar = ({ isAuthenticated, isAdmin }) => {
                   Пользователи
                 </NavLink>
               </li>
-              </>):(<>
-                <li className="hover:bg-sky-700 flex items-cetner px-2">
+              </>):(<> {isAuthenticated && (  <li className="hover:bg-sky-700 flex items-cetner px-2">
                 <NavLink to="/" className="h-full flex items-center">
                   Мои отчеты
                 </NavLink>
-              </li>
+              </li>)}
+              
               </>)}
               {isAuthenticated ? (
                 <>
@@ -65,6 +65,7 @@ export const Navbar = ({ isAuthenticated, isAdmin }) => {
                 </>
               ) : (
                 <>
+                
                   {/* <li className="bg-green-600 md:hover:bg-green-700 flex items-center px-2 ml-auto">
                     <button onClick={openModal} className="h-full flex items-center focus:outline-none">
                       Войти

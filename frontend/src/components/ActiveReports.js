@@ -57,6 +57,19 @@ export default function ActiveReports() {
           </button>
         </div>
       ))}
+       <div className="border border-green-300 shadow-lg bg-gray-200 rounded p-4 mb-4">
+          <div>
+            <strong>Дата начала:</strong> 12.07.2023
+          </div>
+          <div>
+            <strong>Дата завершения:</strong> 30.07.2023
+          </div>
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none mt-4"
+          >
+            Заполнить отчет
+          </button>
+        </div>
     </div>
   );
 }

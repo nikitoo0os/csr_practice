@@ -26,13 +26,6 @@ export default function TemplatesAndReports() {
         >
           Справочник услуг
         </button>
-        <button
-          className={`py-2 px-4 text-sm font-medium ${activeTab === 2 ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700'
-            }`}
-          onClick={() => handleTabClick(2)}
-        >
-          Отчеты
-        </button>
       </div>
 
       {activeTab === 0 &&
@@ -44,10 +37,6 @@ export default function TemplatesAndReports() {
         <div className="p-4">
           <ServiceList />
         </div>}
-
-      {activeTab === 2 && <div className="p-4">
-        123
-      </div>}
     </div>
   );
 }
