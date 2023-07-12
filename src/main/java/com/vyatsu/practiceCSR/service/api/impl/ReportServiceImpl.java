@@ -2,17 +2,18 @@ package com.vyatsu.practiceCSR.service.api.impl;
 
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
+import com.vyatsu.practiceCSR.entity.api.User;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.repository.ReportRepository;
+import com.vyatsu.practiceCSR.repository.UserRepository;
 import com.vyatsu.practiceCSR.service.api.RegionService;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.service.scheduling.TaskSchedulingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -36,6 +37,8 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private Report report1;
+    private final UserRepository userRepository;
+
     @Override
     public Report extensionReport(Report report) {
 
@@ -78,6 +81,20 @@ public class ReportServiceImpl implements ReportService {
             report.setIsActive(false);
         }
         return report;
+    }
+
+    @Override
+    public List<Report> getActiveReportByUserId(Long userId) {
+        User user = userRepository.findById(userId).get();
+        List<Report> activeReports = reportRepository.getActiveReportByRegionId(Long.valueOf(user.getRegion().getId()));
+        return activeReports;
+    }
+
+    @Override
+    public List<Report> getInactiveReportByUserId(Long userId) {
+        User user = userRepository.findById(userId).get();
+        List<Report> inactiveReports = reportRepository.getInactiveReportByRegionId(Long.valueOf(user.getRegion().getId()));
+        return inactiveReports;
     }
 
 }
