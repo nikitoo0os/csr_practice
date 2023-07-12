@@ -1,8 +1,10 @@
 package com.vyatsu.practiceCSR.service.scheduling;
 
+import com.vyatsu.practiceCSR.entity.api.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class TaskSchedulingService {
@@ -17,19 +20,20 @@ public class TaskSchedulingService {
     @Autowired
     private TaskScheduler taskScheduler;
 
-    Map<UUID, ScheduledFuture<?>> jobsMap = new HashMap<>();
+    Map<Integer, ScheduledFuture<?>> jobsMap = new HashMap<>();
 
-    public void scheduleATask(UUID uuid, Runnable tasklet, String cronExpression) {
-        System.out.println("Задача по расписанию: " + uuid + " cron: " + cronExpression);
-        ScheduledFuture<?> scheduledTask = taskScheduler.schedule(tasklet, new CronTrigger(cronExpression, TimeZone.getTimeZone(TimeZone.getDefault().getID())));
-        jobsMap.put(uuid, scheduledTask);
+    public void scheduleATask(Report report, Runnable tasklet) {
+        System.out.println("Задача по расписанию, отчет №: " + report.getId() + " с частотой: " + report.getFrequency() + "мс");
+        PeriodicTrigger periodicTrigger = new PeriodicTrigger(report.getFrequency(), TimeUnit.MILLISECONDS);
+        ScheduledFuture<?> scheduledTask = taskScheduler.schedule(tasklet, periodicTrigger);
+        jobsMap.put(report.getId(), scheduledTask);
     }
 
-    public void removeScheduledTask(UUID uuid) {
-        ScheduledFuture<?> scheduledTask = jobsMap.get(uuid);
+    public void removeScheduledTask(Integer reportId) {
+        ScheduledFuture<?> scheduledTask = jobsMap.get(reportId);
         if(scheduledTask != null) {
             scheduledTask.cancel(true);
-            jobsMap.put(uuid, null);
+            jobsMap.put(reportId, null);
         }
     }
 }

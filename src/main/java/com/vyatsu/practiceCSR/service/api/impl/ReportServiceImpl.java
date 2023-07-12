@@ -28,11 +28,12 @@ public class ReportServiceImpl implements ReportService {
         Report report = reportMapper.toReport(reportDTO);
         report.setIsActive(true);
         report.setIsCompleted(false);
+        report = reportRepository.save(report);
+
         if (report.getFrequency() != null) {
             return extensionReport(report);
-        } else {
-            return reportRepository.save(report);
         }
+        return report;
     }
 
     private Report report1;
@@ -42,9 +43,8 @@ public class ReportServiceImpl implements ReportService {
     public Report extensionReport(Report report) {
 
         taskSchedulingService.scheduleATask(
-                UUID.randomUUID(),
-                () -> report1 = reportRun(report),
-                String.valueOf(report.getFrequency())
+                report,
+                () -> report1 = reportRun(report)
         );
         return report1;
     }

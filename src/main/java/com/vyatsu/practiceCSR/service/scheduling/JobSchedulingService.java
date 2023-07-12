@@ -1,11 +1,8 @@
 package com.vyatsu.practiceCSR.service.scheduling;
 
 import com.vyatsu.practiceCSR.bean.TaskDefinitionBean;
-import com.vyatsu.practiceCSR.dto.task.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class JobSchedulingService {
@@ -15,8 +12,8 @@ public class JobSchedulingService {
 
     @Autowired
     private TaskDefinitionBean taskDefinitionBean;
-    public void scheduleATask(TaskDefinition taskDefinition, Long reportId) {
-        taskDefinitionBean.setTaskDefinition(taskDefinition);
-        taskSchedulingService.scheduleATask(UUID.randomUUID(), taskDefinitionBean, taskDefinition.getCronExpression());
-    }
+//    public void scheduleATask(TaskDefinition taskDefinition, Integer reportId) {
+//        taskDefinitionBean.setTaskDefinition(taskDefinition);
+//        taskSchedulingService.scheduleATask(reportId, taskDefinitionBean, taskDefinition.getCronExpression());
+//    }
 }

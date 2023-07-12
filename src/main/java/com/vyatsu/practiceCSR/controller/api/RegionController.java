@@ -2,6 +2,7 @@ package com.vyatsu.practiceCSR.controller.api;
 
 import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.entity.api.Region;
+import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.service.api.RegionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 public class RegionController {
 
     private final RegionService regionService;
+    private final RegionMapper regionMapper;
 
     @GetMapping
     private ResponseEntity<List<RegionDTO>> getAllRegions(){
@@ -26,9 +28,10 @@ public class RegionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Region> getRegionById(@PathVariable Long id) {
+    public ResponseEntity<RegionDTO> getRegionById(@PathVariable Long id) {
         Region region = regionService.getRegionById(id);
-        return ResponseEntity.ok(region);
+        RegionDTO regionDTO = regionMapper.toRegionDTO(region);
+        return ResponseEntity.ok(regionDTO);
     }
 
 }
