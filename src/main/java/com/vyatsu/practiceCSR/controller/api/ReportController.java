@@ -3,6 +3,7 @@ package com.vyatsu.practiceCSR.controller.api;
 import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
 import com.vyatsu.practiceCSR.dto.api.UserDTO;
+import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.service.api.ReportService;
@@ -33,7 +34,7 @@ public class ReportController {
             Authentication authentication = authenticationProvider.validateToken(jwtToken);
 
             // Получаем ID аутентифицированного клиента
-            Long userId = Long.valueOf(((UserDTO) authentication.getPrincipal()).getId());
+            Long userId = Long.valueOf(((UserAuthDto) authentication.getPrincipal()).getId());
 
             // Получаем профили для аутентифицированного клиента
             List<Report> reports = reportService.getActiveReportByUserId(userId);

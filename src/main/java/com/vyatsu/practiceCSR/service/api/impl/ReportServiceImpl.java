@@ -28,7 +28,6 @@ public class ReportServiceImpl implements ReportService {
         Report report = reportMapper.toReport(reportDTO);
         report.setIsActive(true);
         report.setIsCompleted(false);
-        report.setRegion(regionService.getRegionById(reportDTO.getRegionId()));
         if (report.getFrequency() != null) {
             return extensionReport(report);
         } else {
