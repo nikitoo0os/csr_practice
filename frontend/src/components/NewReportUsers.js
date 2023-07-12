@@ -43,13 +43,14 @@ export default function NewReportUsers({ report, closeModal }) {
     try {
       const response = await request("post", "/reports", report);
       const reportId = response.data.id;
-      for (const userId of selectedUsers) {
-        const requestData = {
-          reportId,
-          userId,
-        };
-        await request("post", "/report/user", requestData);
-      }
+      await request("post", `/report/user/${reportId}`, selectedUsers);
+      // for (const userId of selectedUsers) {
+      //   const requestData = {
+      //     reportId,
+      //     userId,
+      //   };
+      //   await request("post", "/report/user", requestData);
+      // }
       toast.success("Отчет успешно создан.");
       closeModal();
     } catch (error) {
