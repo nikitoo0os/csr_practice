@@ -26,6 +26,8 @@ export default function ServiceList() {
 
   const addService = async () => {
     try {
+      if(name.length > 0 )
+      {
       const serviceData = {name};
       const response = await request('post', '/services', serviceData);
 
@@ -36,6 +38,7 @@ export default function ServiceList() {
       } else {
         // Обработка ошибки, если требуется
       }
+    }
     } catch (error) {
       // Обработка ошибки, если требуется
     }
@@ -60,12 +63,14 @@ export default function ServiceList() {
     <>
       <div className="mx-auto bg-white p-4">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Добавление услуги</h2>
+        <form>
         <div className="mb-4">
           <textarea
             value={name}
             onChange={(e) => setServiceName(e.target.value)}
             placeholder="Введите название услуги"
             className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 max-h-64"
+            required
           />
         </div>
         <div className="mb-4">
@@ -76,6 +81,7 @@ export default function ServiceList() {
             Добавить
           </button>
         </div>
+        </form>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Список услуг</h2>
         <div className="max-w-7xl max-h-96 overflow-y-auto shadow-xl rounded border-2">
           <ul>

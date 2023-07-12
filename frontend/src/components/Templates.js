@@ -63,6 +63,8 @@ export default function Templates() {
 
   const createTemplate = async () => {
     try {
+      if (templateName.length > 0 && selectedServices.length >0)
+      {
       setCreatingTemplate(true);
       const response = await request('post', '/template', { name: templateName });
       const template = response.data;
@@ -81,6 +83,10 @@ export default function Templates() {
       setCreatingTemplate(false);
       setTemplateName('');
       setSelectedServices([]);
+    }
+    else {
+      toast.error('Шаблон должен иметь название, а также необходимо выбрать хотя бы одну услугу для создания шаблона');
+    }
     } catch (error) {
       toast.error('Не удалось создать шаблон.');
       setCreatingTemplate(false);

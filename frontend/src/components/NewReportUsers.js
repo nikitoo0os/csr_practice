@@ -48,7 +48,7 @@ export default function NewReportUsers({ report, closeModal }) {
           reportId,
           userId,
         };
-        await request("post", "/report/data", requestData);
+        await request("post", "/report/user", requestData);
       }
       toast.success("Отчет успешно создан.");
       closeModal();
