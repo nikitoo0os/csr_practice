@@ -76,7 +76,7 @@ export default function FillReport() {
   const finishReport = async () => {
     try {
       saveData();
-      await request('put', `/report/end/${report.id}`);
+      await request('put', `/reports/end/${report.id}`);
       toast.success('Отчет успешно завершен.');
     } catch (error) {
       toast.error('Не удалось завершить отчет.');
@@ -90,12 +90,12 @@ export default function FillReport() {
           <thead>
             <tr className="bg-sky-600 text-white">
               <th className="px-4 py-2 border w-10">№</th>
-              <th className="px-4 py-2 border w-96">Наименование услуги</th>
-              <th className="px-4 py-2 border w-64">Количество обращений 1</th>
-              <th className="px-4 py-2 border w-64">Количество обращений 2</th>
-              <th className="px-4 py-2 border w-64">% обращений</th>
-              <th className="px-4 py-2 border w-64">Доля услуг</th>
-              <th className="px-4 py-2 border w-96">Наименование муниципального нормативного акта</th>
+              <th className="px-4 py-2 border w-96">Наименование услуги в Кировской области</th>
+              <th className="px-4 py-2 border w-64">Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 30.06.2023)</th>
+              <th className="px-4 py-2 border w-64">Количество обращений, поступивших в эл виде через ЕПГУ (нарастающим итогом с 01.01.2023 по 30.06.2023)</th>
+              <th className="px-4 py-2 border w-64">% обращений в эл виде через ЕПГУ (целевой показатель на 2023 год 40%) (нарастающим итогом с 01.01.2023 по 30.06.2023)</th>
+              <th className="px-4 py-2 border w-64">Доля услуг, предоставленных без нарушения регламентного срока при оказании услуги через ЕПГУ (нарастающим итогом с 01.01.2023 по 30.06.2023) (%)</th>
+              <th className="px-4 py-2 border w-96">Наименование муниципального нормативного акта (административного регламента), которые приведены в соответствие с описанием целевого состояния (ОЦС) или типовым федеральным регламентом (номер и дата документа)</th>
             </tr>
           </thead>
           <tbody>
