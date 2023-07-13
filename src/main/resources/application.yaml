@@ -1,0 +1,18 @@
+security.jwt.token.secret-key: my-secret-key
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/practic2023
+    username: postgres
+    password: 1
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      platform: postgres
+      mode: never
+      data-locations: classpath:insert.sql
