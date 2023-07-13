@@ -43,7 +43,7 @@ export default function NewReportUsers({ report, closeModal }) {
     try {
       const response = await request("post", "/reports", report);
       const reportId = response.data.id;
-      await request("post", `/report/user/${reportId}`, selectedUsers);
+      await request("post", `/reports/user/${reportId}`, selectedUsers);
       // for (const userId of selectedUsers) {
       //   const requestData = {
       //     reportId,

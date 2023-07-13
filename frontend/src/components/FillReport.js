@@ -61,6 +61,7 @@ export default function FillReport() {
         ) {
           const data = {
             id:serviceId,
+            reportId: report.id,
             count1: count1.trim() !== '' ? parseInt(count1) : null,
             count2: count2.trim() !== '' ? parseInt(count2) : null,
             percent1: percent1.trim() !== '' ? parseFloat(percent1) : null,
