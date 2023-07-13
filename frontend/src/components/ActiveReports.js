@@ -44,9 +44,9 @@ export default function ActiveReports() {
           <div>
             <strong>Дата завершения:</strong> {formatDate(report.endDate)}
           </div>
-          {report.comment !== null && (
+          {report.comment !== "" && (
             <div>
-              <strong>Комментарий:</strong> {report.comment}
+              <strong className="text-orange-500">Комментарий:</strong> {report.comment}
             </div>
           )}
           <button
