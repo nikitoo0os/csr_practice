@@ -14,9 +14,10 @@ import FillReport from './FillReport';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(getAuthToken() !== null && getAuthToken() !== "null");
   const [isAdmin, setIsAdmin] = useState(false);
-
+  
   useEffect(() => {
     if (isAuthenticated) {
+      console.log(decodeJwt());
       setIsAdmin(decodeJwt().isAdmin);
     }
   }, [isAuthenticated]);
