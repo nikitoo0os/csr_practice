@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-    @Query("SELECT r FROM Report r WHERE (r.isActive = true AND r.region.id = ?1)")
-    List<Report> getActiveReportByRegionId(Long id);
+    @Query("SELECT r FROM Report r WHERE r.isActive = true AND r.region.id = ?1")
+    List<Report> findActiveReportsByRegionId(Long id);
 
     @Query("SELECT r FROM Report r WHERE (r.isActive = false AND r.region.id = ?1)")
-    List<Report> getInactiveReportByRegionId(Long id);
+    List<Report> findInactiveReportByRegionId(Long id);
 }

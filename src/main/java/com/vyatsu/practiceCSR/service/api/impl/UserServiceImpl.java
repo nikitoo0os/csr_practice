@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
         List<UserDTO> userDTOList = new ArrayList<>();
         for(User user : users){
-            if(user.getIsActive()){
+            if(user.getIsActive() && !user.getIsAdmin()){
                 UserDTO userDTO = new UserDTO();
                 userDTO.setId(user.getId());
                 userDTO.setFirstname(user.getFirstname());

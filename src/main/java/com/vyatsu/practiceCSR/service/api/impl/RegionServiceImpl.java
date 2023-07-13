@@ -29,4 +29,5 @@ public class RegionServiceImpl implements RegionService {
         return regionRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Region not found with id: " + id));
     }
+
 }

@@ -87,4 +87,11 @@ public class ReportController {
         Report report = reportService.createReport(reportDTO);
         return ResponseEntity.ok(reportMapper.toReportDTO(report));
     }
+
+    @PostMapping("/user/{reportId}")
+    public ResponseEntity<Void> createReportsUser(@PathVariable Long reportId, @RequestBody List<Integer> usersId){
+        reportService.createReportsUser(reportId, usersId);
+        return ResponseEntity.ok().build();
+    }
+
 }
