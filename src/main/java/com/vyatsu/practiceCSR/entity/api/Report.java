@@ -18,13 +18,13 @@ public class Report {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @Getter
     @Setter
     @JoinColumn(name = "template_id", nullable = false)
     private Template template;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @Getter
     @Setter
     @JoinColumn(name = "region_id", nullable = false)

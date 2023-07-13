@@ -101,6 +101,7 @@ public class ReportServiceImpl implements ReportService {
     public List<Report> getActiveReportByUserId(Long userId) {
         User user = userRepository.findById(userId).get();
         List<Report> activeReports = reportRepository.findActiveReportsByRegionId(Long.valueOf(user.getRegion().getId()));
+        List<Report> reports = reportRepository.findAll();
         return activeReports;
     }
 

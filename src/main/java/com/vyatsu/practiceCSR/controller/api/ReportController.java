@@ -34,12 +34,12 @@ public class ReportController {
             Authentication authentication = authenticationProvider.validateToken(jwtToken);
 
             // Получаем ID аутентифицированного клиента
-            Long userId = Long.valueOf(((UserAuthDto) authentication.getPrincipal()).getId());
+            Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
 
             // Получаем профили для аутентифицированного клиента
             List<Report> reports = reportService.getActiveReportByUserId(userId);
             List<ReportDTO> reportDTOs = reportMapper.toListReportDTO(reports);
-            return new ResponseEntity<>(reportDTOs, HttpStatus.OK);
+            return ResponseEntity.ok(reportDTOs);
         } catch (Exception e) {
             // Проверка токена не удалась или произошла другая ошибка
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -56,7 +56,7 @@ public class ReportController {
             Authentication authentication = authenticationProvider.validateToken(jwtToken);
 
             // Получаем ID аутентифицированного клиента
-            Long userId = Long.valueOf(((UserDTO) authentication.getPrincipal()).getId());
+            Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
 
             // Получаем профили для аутентифицированного клиента
             List<Report> reports = reportService.getInactiveReportByUserId(userId);

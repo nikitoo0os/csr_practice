@@ -33,7 +33,6 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "*").permitAll()
                         .anyRequest().authenticated())
         ;
         return http.build();

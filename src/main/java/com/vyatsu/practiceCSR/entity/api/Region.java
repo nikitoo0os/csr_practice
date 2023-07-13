@@ -23,7 +23,6 @@ public class Region {
     private Integer id;
 
     @Size(max = 255)
-    @NotNull
     @Getter
     @Setter
     @Column(name = "name", nullable = false)

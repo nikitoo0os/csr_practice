@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 public class UserAuthDto {
 
     private Long id;
-    private String firstName;
-    private String secondName;
+    private String firstname;
+    private String surname;
     private String email;
     private String token;
 
