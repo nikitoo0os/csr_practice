@@ -47,7 +47,7 @@ export const Navbar = ({ isAuthenticated, isAdmin }) => {
               </>)}
               {isAuthenticated ? (
                 <>
-                  <li className="bg-red-600 hover:bg-red-700 flex items-center px-2 ml-auto">
+                  <li className="bg-sky-700 hover:bg-sky-800 flex items-center px-2 ml-auto">
                     <button
                       onClick={() => {
                         logout();
