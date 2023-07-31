@@ -7,7 +7,6 @@ import { getAuthToken, decodeJwt } from '../helpers/axios_helper'
 import Users from './Users';
 import MyReports from './MyReports';
 import TemplatesAndReports from './TemplatesAndReports';
-import NewReportUsers from './NewReportUsers';
 import FillReport from './FillReport';
 
 
@@ -33,7 +32,6 @@ function App() {
                   <>
                     <Route path="/users" element={<Users />} />
                     <Route path="/" element={<TemplatesAndReports />} />
-                    <Route path="/report" element={<NewReportUsers/>}/>
                   </>
                 ) : (
                   <>
