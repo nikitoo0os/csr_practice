@@ -8,7 +8,6 @@ export default function NewReport({ template, closeModal }) {
   const [comment, setComment] = useState("");
   const [regions, setRegions] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState('');
-  const [report, setReport] = useState({});
 
   useEffect(() => {
     fetchRegions();
@@ -40,9 +39,6 @@ export default function NewReport({ template, closeModal }) {
         comment,
         region,
       };
-
-      setReport(requestData);
-
       await request("post", "/reports", requestData);
       toast.success("Отчет успешно создан.");
       closeModal();

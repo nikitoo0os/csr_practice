@@ -8,6 +8,7 @@ import Users from './Users';
 import MyReports from './MyReports';
 import TemplatesAndReports from './TemplatesAndReports';
 import FillReport from './FillReport';
+import ReadReport from './ReadReport';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
                     <Route path="/fill-report" element={<FillReport/>} />
                   </>
                 )}
+                <Route path="/read-report" element={<ReadReport/>} />
               </>
             ) : (
               <>

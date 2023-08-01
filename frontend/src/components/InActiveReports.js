@@ -26,7 +26,7 @@ export default function InactiveReports() {
   };
 
   const handleViewReport = (report) => {
-    navigate(`/view-report`, { state: { report } });
+    navigate(`/read-report`, { state: { report } });
   };
 
   return (

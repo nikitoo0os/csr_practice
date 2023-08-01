@@ -110,8 +110,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<Report> getActiveReportByUserId(Long userId) {
-        System.out.println(userId);
-        List<Report> activeReports = reportRepository.findActiveReportsByUserId(Long.valueOf(userId));
+        User user = userRepository.findById(userId).get();
+        List<Report> activeReports = reportRepository.findActiveReportsByRegionId(Long.valueOf(user.getRegion().getId()));
         return activeReports;
     }
 
