@@ -103,6 +103,15 @@ export default function FillReport() {
     }
   };
 
+  const copyReportData = async () => {
+    try {
+      await request('put', `/report/data/copy/${report.id}`);
+      saveData();
+    } catch (error) {
+      toast.error('Не удалось завершить отчет.');
+    }
+  };
+
   return (
     <>
       <div className="bg-white p-4">
@@ -200,6 +209,7 @@ export default function FillReport() {
           </button>
           <button
             type="button"
+            onClick={copyReportData}
             className="bg-lime-500 hover:bg-lime-600 text-white font-bold ml-2 py-2 px-4 rounded focus:outline-none mt-4"
           >
             Скопировать данные из предыдущего отчета

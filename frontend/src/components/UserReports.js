@@ -3,7 +3,7 @@ import { request } from '../helpers/axios_helper';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-export default function InactiveReports() {
+export default function UserReports({userId,closeModal}) {
   const [reports, setReports] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5; // Number of items per page
@@ -12,12 +12,12 @@ export default function InactiveReports() {
   useEffect(() => {
     fetchUserReports();
   }, []);
-
   const fetchUserReports = async () => {
     try {
-      const response = await request('get', '/reports/inactive/user');
+      const response = await request('get', `/reports/inactive/user/${userId}`);
       setReports(response.data);
     } catch (error) {
+        console.log(error);
       toast.error('Не удалось получить неактивные отчеты пользователя.');
     }
   };
@@ -38,7 +38,7 @@ export default function InactiveReports() {
   const currentReports = reports.slice(startIndex, endIndex);
 
   return (
-    <div>
+    <div className="bg-white mx-auto max-w-screen-lg p-4 rounded">
       {currentReports.map((report) => (
         <div key={report.id} className="border border-gray-300 rounded p-4 mb-4">
           <div>
