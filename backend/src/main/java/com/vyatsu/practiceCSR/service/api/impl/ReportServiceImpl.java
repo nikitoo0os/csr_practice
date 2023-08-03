@@ -7,25 +7,26 @@ import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.*;
 import com.vyatsu.practiceCSR.service.api.RegionService;
 import com.vyatsu.practiceCSR.service.api.ReportService;
-import com.vyatsu.practiceCSR.service.api.UserReportService;
 import com.vyatsu.practiceCSR.service.scheduling.TaskSchedulingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
-    private final UserReportRepository userReportRepository;
     private final ReportMapper reportMapper;
     private final UserMapper userMapper;
     private final TaskSchedulingService taskSchedulingService;
     private final RegionService regionService;
-    private final UserReportService userReportService;
     private final TemplateDataRepository templateDataRepository;
     @Override
     public Report createReport(ReportDTO reportDTO) {
@@ -38,7 +39,6 @@ public class ReportServiceImpl implements ReportService {
 
         report = reportRepository.save(report);
 
-
         List<TemplateData> templateDataList = templateDataRepository.findListByTemplateId(Long.valueOf(report.getTemplate().getId()));
         List<ReportData> reportDataList = new ArrayList<>();
 
@@ -50,12 +50,6 @@ public class ReportServiceImpl implements ReportService {
         }
         reportDataRepository.saveAll(reportDataList);
 
-        if (report.getFrequency() != null) {
-            LocalDate endDate = report.getStartDate().plusDays(report.getActiveDays());
-            report.setEndDate(endDate);
-            report = reportRepository.save(report);
-            return extensionReport(report);
-        }
         return report;
     }
 
@@ -77,7 +71,7 @@ public class ReportServiceImpl implements ReportService {
     public Report reportRun(Report report) {
         if(report.getIsActive() && !report.getIsCompleted()) {
             //дата окончания старого отчета + дни активности отчета
-            LocalDate endDate = report.getEndDate().plusDays(report.getActiveDays());
+            LocalDate endDate = report.getEndDate();
 
             LocalDate currentDateTime = LocalDate.now();
 
@@ -111,7 +105,8 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<Report> getActiveReportByUserId(Long userId) {
         System.out.println(userId);
-        List<Report> activeReports = reportRepository.findActiveReportsByUserId(Long.valueOf(userId));
+//        List<Report> activeReports = reportRepository.findActiveReportsByUserId(Long.valueOf(userId));
+        List<Report> activeReports = reportRepository.findAll();
         return activeReports;
     }
 
@@ -125,12 +120,12 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void createReportsUser(Long reportId, List<Integer> usersId) {
         Report report = getReportById(reportId);
-        for(Integer id : usersId){
-            UserReport userReport = new UserReport();
-            userReport.setReport(report);
-            userReport.setUser(userRepository.findById(Long.valueOf(id)).get());
-            userReportRepository.save(userReport);
-        }
+//        for(Integer id : usersId){
+//            UserReport userReport = new UserReport();
+//            userReport.setReport(report);
+//            userReport.setUser(userRepository.findById(Long.valueOf(id)).get());
+//            userReportRepository.save(userReport);
+//        }
     }
 
     @Override
@@ -139,6 +134,61 @@ public class ReportServiceImpl implements ReportService {
         report.setIsActive(false);
         report.setIsCompleted(true);
         reportRepository.save(report);
+    }
+
+    @Override
+    public List<ReportData> getResultReportData(LocalDate localDateFrom, LocalDate localDateTo) {
+        List<Report> reports = reportRepository.findAll();
+
+        //фильтруем по дате
+        reports = reports.stream()
+                .filter(report -> !report.getStartDate().isBefore(localDateFrom) &&
+                        !report.getStartDate().isAfter(localDateTo))
+                .collect(Collectors.toList());
+
+        //получаем данные этих отчетов
+        List<List<ReportData>> lastReportData = new ArrayList<>();
+        for(Report report : reports){
+            lastReportData.add(reportDataRepository.findByReportId(Long.valueOf(report.getId())));
+        }
+
+        //общая логика в том, что кол-ва обращений суммируем, а ячейки с процентами находим среднее
+        //и в конце записываем в итоговый(единый) отчет эти результирующие значения
+        List<ReportData> resultReportData = new ArrayList<>();
+        for(List<ReportData> reportDataList : lastReportData){
+            for(ReportData reportData : reportDataList) {
+                ReportData resultReportDataRow = new ReportData();
+//                boolean resultReportDataIsContainsService = ;
+                if (resultReportDataRow.getService() == null) {
+                    resultReportDataRow.setService(reportData.getService());
+                    resultReportDataRow.setReport(reportData.getReport());
+                }
+                if (resultReportDataRow.getService() == reportData.getService()) {
+                    resultReportDataRow.setCount1(resultReportDataRow.getCount1() + reportData.getCount1());
+                    resultReportDataRow.setCount2(resultReportDataRow.getCount2() + reportData.getCount2());
+                    BigDecimal resultPercent1 = (resultReportDataRow.getPercent1().add(reportData.getPercent1()));
+                    BigDecimal resultPercent2 = (resultReportDataRow.getPercent2().add(reportData.getPercent2()));
+                    resultReportDataRow.setPercent1(resultPercent1);
+                    resultReportDataRow.setPercent2(resultPercent2);
+                }
+            }
+        }
+        BigDecimal countReport = BigDecimal.valueOf((long) reports.size() - 1);
+        //делим для получения среднего
+        for (ReportData reportData : resultReportData){
+            reportData.setPercent1(reportData.getPercent1().divide(countReport));
+            reportData.setPercent2(reportData.getPercent2().divide(countReport));
+        }
+        return resultReportData;
+    }
+
+    @Override
+    public boolean isLastMonth(Report report) {
+        YearMonth currentYearMonth = YearMonth.from(LocalDate.now());
+        YearMonth prevYearMonth = currentYearMonth.minusMonths(1);
+        YearMonth reportYearMonth = YearMonth.from(report.getStartDate());
+
+        return reportYearMonth.equals(prevYearMonth);
     }
 
 }

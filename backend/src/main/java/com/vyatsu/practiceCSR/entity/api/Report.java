@@ -30,10 +30,10 @@ public class Report {
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;
 
-    @Getter
-    @Setter
-    @Column(name = "frequency")
-    private Long frequency;
+//    @Getter
+//    @Setter
+//    @Column(name = "frequency")
+//    private Long frequency;
 
     @Getter
     @Setter
@@ -44,10 +44,10 @@ public class Report {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @Getter
-    @Setter
-    @Column(name = "active_days")
-    private Integer activeDays;
+//    @Getter
+//    @Setter
+//    @Column(name = "active_days")
+//    private Integer activeDays;
 
     @Getter
     @Setter
@@ -61,10 +61,6 @@ public class Report {
     @Setter
     @Column(name = "is_completed", nullable = false)
     private Boolean isCompleted;
-    @Getter
-    @Setter
-    @OneToMany(mappedBy = "report")
-    private Set<UserReport> userReports = new LinkedHashSet<>();
     @Getter
     @Setter
     @OneToMany(mappedBy = "report")

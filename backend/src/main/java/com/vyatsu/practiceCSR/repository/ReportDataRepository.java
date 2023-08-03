@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ReportDataRepository extends JpaRepository<ReportData, Long> {
-    @Query("SELECT rd FROM ReportData rd WHERE rd.report.id = ?1")
+    @Query("SELECT rd FROM ReportData rd WHERE rd.report.id = ?1 ORDER BY rd.service.name")
     List<ReportData> findByReportId(Long id);
 }

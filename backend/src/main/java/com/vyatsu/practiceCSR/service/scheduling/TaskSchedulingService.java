@@ -23,7 +23,7 @@ public class TaskSchedulingService {
     Map<Integer, ScheduledFuture<?>> jobsMap = new HashMap<>();
 
     public void scheduleATask(Report report, Runnable tasklet) {
-        System.out.println("Задача по расписанию, отчет №: " + report.getId() + " с частотой: " + report.getFrequency() + "мс");
+        System.out.println("Задача по расписанию, отчет №: " + report.getId());
 //        PeriodicTrigger periodicTrigger = new PeriodicTrigger(report.getFrequency(), TimeUnit.MILLISECONDS);
         PeriodicTrigger periodicTrigger = new PeriodicTrigger(5, TimeUnit.SECONDS);
         ScheduledFuture<?> scheduledTask = taskScheduler.schedule(tasklet, periodicTrigger);

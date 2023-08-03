@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class TemplateDataDTO {
-
-
     private Integer id;
     private Template template;
     private Service service;

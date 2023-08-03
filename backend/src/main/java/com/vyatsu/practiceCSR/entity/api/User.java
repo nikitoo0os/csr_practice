@@ -27,7 +27,7 @@ public class User {
     @NotNull
     @Getter
     @Setter
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
     @Size(max = 255)
@@ -72,9 +72,9 @@ public class User {
     @Column(name = "is_active", columnDefinition = "boolean default true")
     private Boolean isActive;
 
-    @Getter
-    @Setter
-    @OneToMany(mappedBy = "user")
-    private Set<UserReport> userReports = new LinkedHashSet<>();
+//    @Getter
+//    @Setter
+//    @OneToMany(mappedBy = "user")
+//    private Set<UserReport> userReports = new LinkedHashSet<>();
 
 }
