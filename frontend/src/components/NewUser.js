@@ -58,7 +58,7 @@ export default function NewUser({ closeModal, setIsUserAdded }) {
         toast.success('Пользователь успешно добавлен');
         closeModal();
       }  else {
-        // Обработка ошибки, если требуется
+        toast.error('Ошибка');
       }
     } catch (error) {
       // Обработка ошибки, если требуется

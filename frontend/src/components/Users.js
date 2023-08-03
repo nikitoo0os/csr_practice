@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ReactModal from "react-modal";
 import NewUser from "./NewUser";
 import EditUser from "./EditUser";
+import UserReports from "./UserReports";
 
 ReactModal.setAppElement("#root");
 
@@ -12,13 +13,24 @@ export default function Users() {
   const [users, setUsers] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editUserId, setEditUserId] = useState(null);
+  const [reportsUserId, setReportsUserId] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isUserAdded, setIsUserAdded] = useState(false);
   const [filterValue, setFilterValue] = useState("");
-  const [selectedRegion, setSelectedRegion] = useState(null);
+  const [selectedRegion, setSelectedRegion] = useState("");
   const [regions, setRegions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [isReportsModalOpen, setIsReportsModalOpen] = useState(false);
+
+  const openReportsModal = (userId) => {
+    setReportsUserId(userId);
+    setIsReportsModalOpen(true);
+  };
+
+  const closeReportsModal = () => {
+    setIsReportsModalOpen(false);
+  };
 
   const openAddModal = () => {
     setIsAddModalOpen(true);
@@ -152,23 +164,24 @@ export default function Users() {
                 <td className="border px-4 py-2">{user.email}</td>
                 <td className="border px-4 py-2">{user.region.name}</td>
                 <td className="border px-4 py-2">
-                      <button
-                        onClick={() => handleSoftDeleteUser(user.id)}
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 shadow-md"
-                      >
-                        Удалить
-                      </button>
-                      <button
-                        onClick={() => openEditModal(user.id)}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2 focus:outline-none focus:border-0 shadow-md"
-                      >
-                        Изменить
-                      </button>
-                      <button
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:border-0 shadow-md"
-                      >
-                        Отчеты
-                      </button>
+                  <button
+                    onClick={() => handleSoftDeleteUser(user.id)}
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 shadow-md"
+                  >
+                    Удалить
+                  </button>
+                  <button
+                    onClick={() => openEditModal(user.id)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2 focus:outline-none focus:border-0 shadow-md"
+                  >
+                    Изменить
+                  </button>
+                  <button
+                    onClick={() => openReportsModal(user.id)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:border-0 shadow-md"
+                  >
+                    Отчеты
+                  </button>
                 </td>
               </tr>
             ))}
@@ -234,6 +247,18 @@ export default function Users() {
           userId={editUserId}
           fetchUsers={fetchUsers}
           closeModal={closeEditModal}
+        />
+      </ReactModal>
+      <ReactModal
+        isOpen={isReportsModalOpen}
+        onRequestClose={closeReportsModal}
+        contentLabel="Отчеты пользователя"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <UserReports
+          userId={reportsUserId}
+          closeModal={closeReportsModal}
         />
       </ReactModal>
     </>
