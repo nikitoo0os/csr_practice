@@ -41,6 +41,7 @@ export default function Users() {
   };
 
   const openEditModal = (userId) => {
+
     setEditUserId(userId);
     setIsEditModalOpen(true);
   };
@@ -110,7 +111,14 @@ export default function Users() {
     return surnameMatch && regionMatch;
   });
 
-  const getTotalPages = () => Math.ceil(filteredUsers.length / pageSize);
+  const getTotalPages = () => Math.max(Math.ceil(filteredUsers.length / pageSize), 1);
+
+  useEffect(() => {
+    // Ensure current page does not exceed total pages when data changes
+    if (currentPage > getTotalPages()) {
+      setCurrentPage(getTotalPages());
+    }
+  }, [filteredUsers, currentPage]);
 
   const indexOfLastUser = currentPage * pageSize;
   const indexOfFirstUser = indexOfLastUser - pageSize;
@@ -188,44 +196,28 @@ export default function Users() {
           </tbody>
         </table>
         <div className="flex items-center mt-4 px-4 py-2">
-          {currentPage === 1 ? (
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              className="px-4 py-2 rounded-lg border bg-gray-200 mr-2"
-            >
-              ❮
-            </button>
-          ) : (
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              className="px-4 py-2 rounded-lg border bg-sky-200 mr-2 text-blue-600"
-            >
-              ❮
-            </button>
-          )}
-          <span className="font-semibold text-blue-600">
-            {currentPage}/{getTotalPages()}
-          </span>
-          {currentUsers.length < pageSize ? (
-            <button
-              disabled={currentUsers.length < pageSize}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              className="px-4 py-2 rounded-lg border bg-gray-200 ml-2"
-            >
-              ❯
-            </button>
-          ) : (
-            <button
-              disabled={currentUsers.length < pageSize}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              className="px-4 py-2 rounded-lg border bg-sky-200 ml-2 text-blue-600"
-            >
-              ❯
-            </button>
-          )}
-        </div>
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+          className={`px-4 py-2 rounded-lg border ${
+            currentPage === 1 ? "bg-gray-200" : "bg-sky-200 text-blue-600"
+          } mr-2`}
+        >
+          ❮
+        </button>
+        <span className="font-semibold text-blue-600">
+          {currentPage}/{getTotalPages()}
+        </span>
+        <button
+          disabled={currentPage >= getTotalPages()}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          className={`px-4 py-2 rounded-lg border ${
+            currentPage >= getTotalPages() ? "bg-gray-200" : "bg-sky-200 text-blue-600"
+          } ml-2`}
+        >
+          ❯
+        </button>
+      </div>
       </div>
       <ReactModal
         isOpen={isAddModalOpen}
