@@ -16,3 +16,14 @@ spring:
       platform: postgres
       mode: never
       data-locations: classpath:insert.sql
+
+
+cors:
+  allowedOrigins: 'http://172.31.100.191:4200, http://10.0.112.99, http://localhost:4200, http://localhost:3000'
+  allowedMethods: 'GET, POST, PUT, DELETE'
+  allowedHeaders: 'AUTHORIZATION, CONTENT_TYPE, ACCEPT'
+  allowedCredentials: false
+  corsConfiguration: '/**'
+  maxAge: 3600
+
+

@@ -17,13 +17,9 @@ public class ReportDTO {
     private Integer id;
     private TemplateDTO template;
     private RegionDTO region;
-//    private Long frequency;
     private LocalDate startDate;
     private LocalDate endDate;
-//    private Integer activeDays;
     private String comment;
     private Boolean isActive;
-    private Boolean isCompleted;
-
     private Long regionId;
 }
