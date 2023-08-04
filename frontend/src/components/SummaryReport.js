@@ -77,30 +77,34 @@ export default function SummaryReport({ template, closeModal }) {
           />
         </button>
         </div>
-      <div className="mb-4">
-        <label htmlFor="startDate" className="mr-2">
-          Дата начала:
-        </label>
-        <input
-          type="date"
-          id="startDate"
-          value={startDate}
-          onChange={handleStartDateChange}
-          className="border border-gray-300 rounded px-3 py-1"
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="endDate" className="mr-2">
-          Дата окончания:
-        </label>
-        <input
-          type="date"
-          id="endDate"
-          value={endDate}
-          onChange={handleEndDateChange}
-          className="border border-gray-300 rounded px-3 py-1"
-        />
-      </div>
+        <div className="mb-4">
+  <label htmlFor="startDate" className="mr-2">
+    Дата начала:
+  </label>
+  <input
+    type="date"
+    id="startDate"
+    value={startDate}
+    onChange={handleStartDateChange}
+    min="2022-01-01" // Минимальная дата начала
+    max={new Date().toISOString().split('T')[0]} // Максимальная дата начала (текущая дата)
+    className="border border-gray-300 rounded px-3 py-1"
+  />
+</div>
+<div className="mb-4">
+  <label htmlFor="endDate" className="mr-2">
+    Дата окончания:
+  </label>
+  <input
+    type="date"
+    id="endDate"
+    value={endDate}
+    onChange={handleEndDateChange}
+    min="2022-01-01" // Минимальная дата окончания
+    max={new Date().toISOString().split('T')[0]} // Максимальная дата окончания (текущая дата)
+    className="border border-gray-300 rounded px-3 py-1"
+  />
+</div>
       <button
         onClick={handleGenerateReport}
         disabled={isDownloading}
