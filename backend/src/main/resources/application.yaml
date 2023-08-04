@@ -5,7 +5,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/practic2023
     username: postgres
-    password: 1234
+    password: 1
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
@@ -17,11 +17,10 @@ spring:
       mode: never
       data-locations: classpath:insert.sql
 
-
 cors:
   allowedOrigins: 'http://172.31.100.191:4200, http://10.0.112.99, http://localhost:4200, http://localhost:3000'
   allowedMethods: 'GET, POST, PUT, DELETE'
-  allowedHeaders: 'AUTHORIZATION, CONTENT_TYPE, ACCEPT'
+  allowedHeaders: '*'
   allowedCredentials: false
   corsConfiguration: '/**'
   maxAge: 3600
