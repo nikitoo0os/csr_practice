@@ -11,7 +11,7 @@ export const setAuthHeader = (token) => {
 };
 
 
-axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 

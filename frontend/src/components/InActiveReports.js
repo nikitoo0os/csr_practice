@@ -31,7 +31,14 @@ export default function InactiveReports() {
     navigate(`/read-report`, { state: { report } });
   };
 
-  const getTotalPages = () => Math.ceil(reports.length / pageSize);
+  const getTotalPages = () => Math.max(Math.ceil(reports.length / pageSize), 1);
+
+  useEffect(() => {
+    // Ensure current page does not exceed total pages when data changes
+    if (currentPage > getTotalPages()) {
+      setCurrentPage(getTotalPages());
+    }
+  }, [reports, currentPage]);
 
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
@@ -60,43 +67,30 @@ export default function InactiveReports() {
           </button>
         </div>
       ))}
-      <div className="flex items-center mt-4 px-4 py-2">
-        {currentPage === 1 ? (
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-            className="px-4 py-2 rounded-lg border bg-gray-200 mr-2"
-          >
-            ❮
-          </button>
-        ) : (
-          <button
-            onClick={() => setCurrentPage(currentPage - 1)}
-            className="px-4 py-2 rounded-lg border bg-sky-200 mr-2 text-blue-600"
-          >
-            ❮
-          </button>
-        )}
+    <div className="flex items-center mt-4 px-4 py-2">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+          className={`px-4 py-2 rounded-lg border ${
+            currentPage === 1 ? "bg-gray-200" : "bg-sky-200 text-blue-600"
+          } mr-2`}
+        >
+          ❮
+        </button>
         <span className="font-semibold text-blue-600">
           {currentPage}/{getTotalPages()}
         </span>
-        {currentPage === getTotalPages() ? (
-          <button
-            disabled={currentPage === getTotalPages()}
-            onClick={() => setCurrentPage(currentPage + 1)}
-            className="px-4 py-2 rounded-lg border bg-gray-200 ml-2"
-          >
-            ❯
-          </button>
-        ) : (
-          <button
-            onClick={() => setCurrentPage(currentPage + 1)}
-            className="px-4 py-2 rounded-lg border bg-sky-200 ml-2 text-blue-600"
-          >
-            ❯
-          </button>
-        )}
+        <button
+          disabled={currentPage >= getTotalPages()}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          className={`px-4 py-2 rounded-lg border ${
+            currentPage >= getTotalPages() ? "bg-gray-200" : "bg-sky-200 text-blue-600"
+          } ml-2`}
+        >
+          ❯
+        </button>
       </div>
+
     </div>
   );
 }
