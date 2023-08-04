@@ -30,37 +30,26 @@ public class Report {
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;
 
-//    @Getter
-//    @Setter
-//    @Column(name = "frequency")
-//    private Long frequency;
-
     @Getter
     @Setter
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
+
     @Getter
     @Setter
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-//    @Getter
-//    @Setter
-//    @Column(name = "active_days")
-//    private Integer activeDays;
-
     @Getter
     @Setter
     @Column(name = "comment", length = 2000)
     private String comment;
+
     @Getter
     @Setter
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
-    @Getter
-    @Setter
-    @Column(name = "is_completed", nullable = false)
-    private Boolean isCompleted;
+
     @Getter
     @Setter
     @OneToMany(mappedBy = "report")

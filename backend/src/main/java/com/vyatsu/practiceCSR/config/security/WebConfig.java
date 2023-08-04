@@ -1,40 +1,42 @@
 package com.vyatsu.practiceCSR.config.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebMvc
 public class WebConfig {
 
-    private static final Long MAX_AGE = 3600L;
+    @Value("${cors.allowedOrigins}")
+    private List<String> allowedOrigins;
+    @Value("${cors.allowedHeaders}")
+    private List<String> allowedHeaders;
+    @Value("${cors.allowedMethods}")
+    private List<String> allowedMethods;
+    @Value("${cors.allowedCredentials}")
+    private boolean allowedCredentials;
+    @Value("${cors.maxAge}")
+    private Long MAX_AGE;
     private static final int CORS_FILTER_ORDER = -102;
 
     @Bean
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000");
-        config.setAllowedHeaders(Arrays.asList(
-                HttpHeaders.AUTHORIZATION,
-                HttpHeaders.CONTENT_TYPE,
-                HttpHeaders.ACCEPT));
-        config.setAllowedMethods(Arrays.asList(
-                HttpMethod.GET.name(),
-                HttpMethod.POST.name(),
-                HttpMethod.PUT.name(),
-                HttpMethod.DELETE.name()));
+        config.setAllowCredentials(allowedCredentials);
+        config.setAllowedOrigins(allowedOrigins);
+        config.setAllowedHeaders(allowedHeaders);
+        config.setAllowedMethods(allowedMethods);
         config.setMaxAge(MAX_AGE);
+
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
 

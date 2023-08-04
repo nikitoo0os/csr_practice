@@ -32,7 +32,7 @@ public class ReportServiceImpl implements ReportService {
     public Report createReport(ReportDTO reportDTO) {
         Report report = reportMapper.toReport(reportDTO);
         report.setIsActive(true);
-        report.setIsCompleted(false);
+      //  report.setIsCompleted(false);
 
         LocalDate currentDateTime = LocalDate.now();
         report.setStartDate(currentDateTime);
@@ -69,7 +69,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     public Report reportRun(Report report) {
-        if(report.getIsActive() && !report.getIsCompleted()) {
+        if(report.getIsActive()) {
             //дата окончания старого отчета + дни активности отчета
             LocalDate endDate = report.getEndDate();
 
@@ -78,10 +78,10 @@ public class ReportServiceImpl implements ReportService {
             report.setId(null);
             report.setStartDate(currentDateTime);
             report.setEndDate(endDate);
-            report.setIsCompleted(false);
+          //  report.setIsCompleted(false);
             report.setIsActive(true);
 
-            report.setIsCompleted(true);
+        //    report.setIsCompleted(true);
             reportRepository.save(report);
 
             //записываем новый(продленный старый) отчет
@@ -131,7 +131,7 @@ public class ReportServiceImpl implements ReportService {
     public void updateStatusToEnd(Long reportId) {
         Report report = reportRepository.findById(reportId).get();
         report.setIsActive(false);
-        report.setIsCompleted(true);
+       // report.setIsCompleted(true);
         reportRepository.save(report);
     }
 
