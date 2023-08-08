@@ -42,7 +42,7 @@ export default function SummaryReport({ template, closeModal }) {
       setIsDownloading(true);
 
       // Отправляем HTTP-запрос на формирование отчета
-      const response = await request("post", "/generate-summary-report", {
+      const response = await request("post", "/reports/summary", {
         startDate: startDate,
         endDate: endDate,
         templateId: template.id,
