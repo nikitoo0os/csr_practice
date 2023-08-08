@@ -2,18 +2,21 @@ package com.vyatsu.practiceCSR.controller.api;
 
 import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
-import com.vyatsu.practiceCSR.dto.api.UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
+import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.repository.ReportRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -115,5 +118,12 @@ public class ReportController {
         return ResponseEntity.ok().build();
     }
 
-
+    @PostMapping("/summary")
+    public ResponseEntity<byte[]> generateSummaryReport(@RequestBody OptionsSummaryReportDTO options) throws IOException {
+        byte[] excelBytes = reportService.getResultReportData(options.getStartDate(), options.getEndDate(), options.getTemplateId());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "report_data.xlsx");
+        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
+    }
 }

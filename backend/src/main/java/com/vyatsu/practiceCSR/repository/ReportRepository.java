@@ -15,6 +15,8 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 //    List<Report> findActiveReportsByUserId(Long id);
 
 
+    List<Report> findByTemplateId(Long id);
+
     @Query("SELECT r FROM Report r WHERE (r.isActive = false AND r.region.id = ?1)")
     List<Report> findInactiveReportByRegionId(Long id);
 
