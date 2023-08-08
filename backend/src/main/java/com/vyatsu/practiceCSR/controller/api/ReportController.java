@@ -2,8 +2,8 @@ package com.vyatsu.practiceCSR.controller.api;
 
 import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
-import com.vyatsu.practiceCSR.dto.api.UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
+import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.repository.ReportRepository;
@@ -113,6 +113,11 @@ public class ReportController {
     public ResponseEntity<Void> updateStatusReportByReportId(@PathVariable Long id){
         reportService.updateStatusToEnd(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/summary")
+    public void generateSummaryReport(@RequestBody OptionsSummaryReportDTO options){
+        reportService.getResultReportData(options.getLocalDateFrom(), options.getLocalDateTo(), options.getTemplateId());
     }
 
 

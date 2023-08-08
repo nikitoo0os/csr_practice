@@ -24,7 +24,7 @@ public interface ReportService {
 
     void updateStatusToEnd(Long reportId);
 
-    List<ReportData> getResultReportData(LocalDate localDateFrom, LocalDate localDateTo);
+    List<ReportData> getResultReportData(LocalDate localDateFrom, LocalDate localDateTo, Long templateId);
 
     boolean isLastMonth(Report reportFrom);
 }

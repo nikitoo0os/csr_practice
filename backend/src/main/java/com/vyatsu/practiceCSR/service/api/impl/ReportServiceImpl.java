@@ -136,8 +136,8 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<ReportData> getResultReportData(LocalDate localDateFrom, LocalDate localDateTo) {
-        List<Report> reports = reportRepository.findAll();
+    public List<ReportData> getResultReportData(LocalDate localDateFrom, LocalDate localDateTo, Long templateId) {
+        List<Report> reports = reportRepository.findByTemplate(templateId);
 
         //фильтруем по дате
         reports = reports.stream()
@@ -154,6 +154,21 @@ public class ReportServiceImpl implements ReportService {
         //общая логика в том, что кол-ва обращений суммируем, а ячейки с процентами находим среднее
         //и в конце записываем в итоговый(единый) отчет эти результирующие значения
         List<ReportData> resultReportData = new ArrayList<>();
+        if(lastReportData.size() > 0){
+            resultReportData = lastReportData.get(0);
+        }
+
+        for(int i = 0; i < resultReportData.size(); i++){
+            for(int j = 0; j < lastReportData.size(); j++){
+                resultReportData.get(i).setCount1(resultReportData.get(i).getCount1() + lastReportData.get(j).get(i).getCount1());
+                resultReportData.get(i).setCount2(resultReportData.get(i).getCount2() + lastReportData.get(j).get(i).getCount2());
+                BigDecimal percent1 = BigDecimal.valueOf(resultReportData.get(i).getCount2()).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(resultReportData.get(i).getCount1()));
+                resultReportData.get(i).setPercent1(percent1);
+                resultReportData.get(i).setPercent2(resultReportData.get(i).getPercent2().add(lastReportData.get(j).get(i).getPercent2()));
+            }
+        }
+
+
         for(List<ReportData> reportDataList : lastReportData){
             for(ReportData reportData : reportDataList) {
                 ReportData resultReportDataRow = new ReportData();

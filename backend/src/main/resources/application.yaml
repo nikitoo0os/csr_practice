@@ -17,6 +17,9 @@ spring:
       mode: never
       data-locations: classpath:insert.sql
 
+server:
+  port: 8080
+
 cors:
   allowedOrigins: 'http://172.31.100.191:4200, http://10.0.112.99, http://localhost:4200, http://localhost:3000'
   allowedMethods: 'GET, POST, PUT, DELETE'

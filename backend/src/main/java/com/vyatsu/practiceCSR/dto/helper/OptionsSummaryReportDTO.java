@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GenerateSummaryReportDTO {
+public class OptionsSummaryReportDTO {
         private LocalDate localDateFrom;
         private LocalDate localDateTo;
         private Long templateId;
