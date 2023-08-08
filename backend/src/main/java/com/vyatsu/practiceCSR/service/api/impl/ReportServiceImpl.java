@@ -1,19 +1,24 @@
 package com.vyatsu.practiceCSR.service.api.impl;
 
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
-import com.vyatsu.practiceCSR.entity.api.*;
+import com.vyatsu.practiceCSR.entity.api.Report;
+import com.vyatsu.practiceCSR.entity.api.ReportData;
+import com.vyatsu.practiceCSR.entity.api.TemplateData;
+import com.vyatsu.practiceCSR.entity.api.User;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.*;
 import com.vyatsu.practiceCSR.service.api.RegionService;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.service.scheduling.TaskSchedulingService;
+import com.vyatsu.practiceCSR.service.utils.XLSUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.Year;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +41,6 @@ public class ReportServiceImpl implements ReportService {
 
         LocalDate currentDateTime = LocalDate.now();
         report.setStartDate(currentDateTime);
-
         report = reportRepository.save(report);
 
         List<TemplateData> templateDataList = templateDataRepository.findListByTemplateId(Long.valueOf(report.getTemplate().getId()));
@@ -136,8 +140,8 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<ReportData> getResultReportData(LocalDate localDateFrom, LocalDate localDateTo, Long templateId) {
-        List<Report> reports = reportRepository.findByTemplate(templateId);
+    public byte[] getResultReportData(LocalDate localDateFrom, LocalDate localDateTo, Long templateId) throws IOException {
+        List<Report> reports = reportRepository.findByTemplateId(templateId);
 
         //фильтруем по дате
         reports = reports.stream()
@@ -151,8 +155,6 @@ public class ReportServiceImpl implements ReportService {
             lastReportData.add(reportDataRepository.findByReportId(Long.valueOf(report.getId())));
         }
 
-        //общая логика в том, что кол-ва обращений суммируем, а ячейки с процентами находим среднее
-        //и в конце записываем в итоговый(единый) отчет эти результирующие значения
         List<ReportData> resultReportData = new ArrayList<>();
         if(lastReportData.size() > 0){
             resultReportData = lastReportData.get(0);
@@ -160,40 +162,43 @@ public class ReportServiceImpl implements ReportService {
 
         for(int i = 0; i < resultReportData.size(); i++){
             for(int j = 0; j < lastReportData.size(); j++){
-                resultReportData.get(i).setCount1(resultReportData.get(i).getCount1() + lastReportData.get(j).get(i).getCount1());
-                resultReportData.get(i).setCount2(resultReportData.get(i).getCount2() + lastReportData.get(j).get(i).getCount2());
-                BigDecimal percent1 = BigDecimal.valueOf(resultReportData.get(i).getCount2()).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(resultReportData.get(i).getCount1()));
-                resultReportData.get(i).setPercent1(percent1);
-                resultReportData.get(i).setPercent2(resultReportData.get(i).getPercent2().add(lastReportData.get(j).get(i).getPercent2()));
+                var count1 = resultReportData.get(i).getCount1();
+                if(count1 == null){
+                    count1 = 0;
+                }
+                var count2 = resultReportData.get(i).getCount2();
+                if(count2 == null){
+                    count2 = 0;
+                }
+
+                var lastCount1 = lastReportData.get(j).get(i).getCount1();
+                if(lastCount1 == null){
+                    lastCount1 = 0;
+                }
+                var lastCount2 = lastReportData.get(j).get(i).getCount2();
+                if(lastCount2 == null){
+                    lastCount2 = 0;
+                }
+
+                resultReportData.get(i).setCount1(count1 + lastCount1);
+                resultReportData.get(i).setCount2(count2 + lastCount2);
+
+                if(count1 != 0){
+                    BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
+                    resultReportData.get(i).setPercent1(percent1);
+                    // resultReportData.get(i).setPercent2(resultReportData.get(i).getPercent2().add(lastReportData.get(j).get(i).getPercent2()));
+                }
+
             }
         }
-
-
-        for(List<ReportData> reportDataList : lastReportData){
-            for(ReportData reportData : reportDataList) {
-                ReportData resultReportDataRow = new ReportData();
-//                boolean resultReportDataIsContainsService = ;
-                if (resultReportDataRow.getService() == null) {
-                    resultReportDataRow.setService(reportData.getService());
-                    resultReportDataRow.setReport(reportData.getReport());
-                }
-                if (resultReportDataRow.getService() == reportData.getService()) {
-                    resultReportDataRow.setCount1(resultReportDataRow.getCount1() + reportData.getCount1());
-                    resultReportDataRow.setCount2(resultReportDataRow.getCount2() + reportData.getCount2());
-                    BigDecimal resultPercent1 = (resultReportDataRow.getPercent1().add(reportData.getPercent1()));
-                    BigDecimal resultPercent2 = (resultReportDataRow.getPercent2().add(reportData.getPercent2()));
-                    resultReportDataRow.setPercent1(resultPercent1);
-                    resultReportDataRow.setPercent2(resultPercent2);
-                }
-            }
-        }
-        BigDecimal countReport = BigDecimal.valueOf((long) reports.size() - 1);
-        //делим для получения среднего
-        for (ReportData reportData : resultReportData){
-            reportData.setPercent1(reportData.getPercent1().divide(countReport));
-            reportData.setPercent2(reportData.getPercent2().divide(countReport));
-        }
-        return resultReportData;
+        return XLSUtil.writeDataToByteArray(resultReportData,
+                new String[]{"№",
+                        "Наименование услуги в Кировской области",
+                        "Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 31.07.2023)",
+                        "Количество обращений, поступивших в эл виде через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023)",
+                        "% обращений в эл виде через ЕПГУ (целевой показатель на 2023 год 40%) (нарастающим итогом с 01.01.2023 по 31.07.2023)",
+                        "Доля услуг, предоставленных без нарушения регламентного срока при оказании услуги через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023) (%)"
+                });
     }
 
     @Override

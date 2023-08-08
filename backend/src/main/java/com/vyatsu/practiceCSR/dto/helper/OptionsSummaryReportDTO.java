@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class OptionsSummaryReportDTO {
-        private LocalDate localDateFrom;
-        private LocalDate localDateTo;
+        private LocalDate startDate;
+        private LocalDate endDate;
         private Long templateId;
 }
