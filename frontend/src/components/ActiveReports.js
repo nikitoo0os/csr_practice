@@ -52,12 +52,19 @@ export default function ActiveReports() {
   return (
     <div>
       {currentReports.map((report) => (
-        <div key={report.id} className="border border-gray-300 rounded p-4 mb-4">
+        <div
+          key={report.id}
+          className={`border border-gray-300 rounded p-4 mb-4 ${new Date() > new Date(report.endDate) ? 'bg-red-200' : ''
+            }`}
+        >
           <div>
             <strong>Дата начала:</strong> {formatDate(report.startDate)}
           </div>
           <div>
             <strong>Дата завершения:</strong> {formatDate(report.endDate)}
+            {new Date() > new Date(report.endDate) && (
+              <span className="text-red-500 ml-2">(Просрочен)</span>
+            )}
           </div>
           {report.comment !== "" && (
             <div>
@@ -72,13 +79,12 @@ export default function ActiveReports() {
           </button>
         </div>
       ))}
-       <div className="flex items-center mt-4 px-4 py-2">
+      <div className="flex items-center mt-4 px-4 py-2">
         <button
           disabled={currentPage === 1}
           onClick={() => setCurrentPage(currentPage - 1)}
-          className={`px-4 py-2 rounded-lg border ${
-            currentPage === 1 ? "bg-gray-200" : "bg-sky-200 text-blue-600"
-          } mr-2`}
+          className={`px-4 py-2 rounded-lg border ${currentPage === 1 ? "bg-gray-200" : "bg-sky-200 text-blue-600"
+            } mr-2`}
         >
           ❮
         </button>
@@ -88,9 +94,8 @@ export default function ActiveReports() {
         <button
           disabled={currentPage >= getTotalPages()}
           onClick={() => setCurrentPage(currentPage + 1)}
-          className={`px-4 py-2 rounded-lg border ${
-            currentPage >= getTotalPages() ? "bg-gray-200" : "bg-sky-200 text-blue-600"
-          } ml-2`}
+          className={`px-4 py-2 rounded-lg border ${currentPage >= getTotalPages() ? "bg-gray-200" : "bg-sky-200 text-blue-600"
+            } ml-2`}
         >
           ❯
         </button>
