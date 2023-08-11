@@ -31,7 +31,7 @@ deploy-all:
     - chmod 700 ~/.ssh
     - ssh-keyscan $SERVER_URL >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-  script:su
+  script:
     - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_URL "systemctl --user stop uslugi.service"
     - scp -o StrictHostKeyChecking=no backend/target/practiceCSR-0.0.1-SNAPSHOT.jar $SERVER_USER@$SERVER_URL:/home/uslugi
     - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_URL "systemctl --user start uslugi.service"
