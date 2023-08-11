@@ -9,6 +9,10 @@ build-java:
   script:
     - cd backend
     - mvn clean install -Dmaven.test.skip
+  artifacts:
+    paths:
+      - backend/target/*.jar
+    expire_in: 30 minutes
 
 #Билдим реакт, плюс подсовываем env
 build-react:
@@ -19,6 +23,10 @@ build-react:
     - cd frontend
     - npm install
     - npm run build
+  artifacts:
+    paths:
+      - frontend/build/
+    expire_in: 30 minutes
 
 #Деплоим по примеру из интернетика (ага, нет):3
 deploy-all: 
@@ -27,4 +35,4 @@ deploy-all:
     - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_URL "systemctl --user stop uslugi.service"
     - scp -o StrictHostKeyChecking=no backend/target/practiceCSR-0.0.1-SNAPSHOT.jar $SERVER_USER@$SERVER_URL:/home/uslugi
     - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_URL "systemctl --user start uslugi.service"
-    - scp -o StrictHostKeyChecking=no -r frontend/** $SERVER_USER@$SERVER_URL:/var/www/html
+    - scp -o StrictHostKeyChecking=no -r frontend/build/** $SERVER_USER@$SERVER_URL:/var/www/html
