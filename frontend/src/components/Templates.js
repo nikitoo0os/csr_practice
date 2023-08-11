@@ -35,16 +35,36 @@ export default function Templates() {
     return `${day}.${month}.${year}`; // Форматирование в 'день.месяц.год'
   };
 
-  const filteredTemplates = templates.filter((template) => {
-    if (filterDate === '') {
-      return true; // Вернуть все шаблоны, если фильтр по дате не задан
-    }
-    // Преобразовать дату шаблона и значения фильтра в соответствующий формат
-    const templateDate = formatTemplateDate(template.date);
-    const formattedFilterDate = formatFilterDate(filterDate);
-    return templateDate === formattedFilterDate;
-  });
+  const [filterDateFrom, setFilterDateFrom] = useState('');
+  const [filterDateTo, setFilterDateTo] = useState('');
 
+  const handleFilterDateFromChange = (event) => {
+    setFilterDateFrom(event.target.value);
+  };
+
+  const handleFilterDateToChange = (event) => {
+    setFilterDateTo(event.target.value);
+  };
+
+  const filteredTemplates = templates.filter((template) => {
+    if (!filterDateFrom && !filterDateTo) {
+      return true; // Если оба поля пустые, вернуть все шаблоны
+    }
+
+    const templateDate = new Date(template.date);
+    const startDate = filterDateFrom ? new Date(filterDateFrom) : null;
+    const endDate = filterDateTo ? new Date(filterDateTo) : null;
+
+    if (startDate && endDate) {
+      return templateDate >= startDate && templateDate <= endDate;
+    } else if (startDate) {
+      return templateDate >= startDate;
+    } else if (endDate) {
+      return templateDate <= endDate;
+    }
+
+    return true;
+  });
   useEffect(() => {
     fetchServices();
     fetchTemplates();
@@ -209,15 +229,27 @@ export default function Templates() {
         </div>
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">Список шаблонов</h2>
-          <div className="flex items-center">
-          <input
+          <h2 className="text-lg font-semibold mb-2">Фильтр по дате</h2>
+          <div className="flex items-center mb-2">
+            <p className="mr-2">от</p>
+            <input
               type="date"
-              value={filterDate}
-              onChange={handleFilterDateChange}
-              min={minDate.toISOString().split('T')[0]} // Установка минимальной даты
-              max={currentDate.toISOString().split('T')[0]} // Установка максимальной даты
+              value={filterDateFrom}
+              onChange={handleFilterDateFromChange}
+              min={minDate.toISOString().split('T')[0]}
+              max={filterDateTo || currentDate.toISOString().split('T')[0]}
+              className="border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2 mr-4"
+              placeholder="Дата от"
+            />
+            <p className="mr-2">до</p>
+            <input
+              type="date"
+              value={filterDateTo}
+              onChange={handleFilterDateToChange}
+              min={filterDateFrom || minDate.toISOString().split('T')[0]}
+              max={currentDate.toISOString().split('T')[0]}
               className="border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2"
-              placeholder="Фильтр по дате"
+              placeholder="Дата до"
             />
           </div>
           <div className="space-y-4">

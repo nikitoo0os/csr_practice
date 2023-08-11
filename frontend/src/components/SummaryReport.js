@@ -24,21 +24,24 @@ export default function SummaryReport({ template, closeModal }) {
         endDate: endDate,
         templateId: template.id,
       }, {
-        responseType: "blob", // This is important for receiving a binary blob response
+        responseType: "blob",
       });
 
       const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       const url = window.URL.createObjectURL(blob);
+
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "summary-report.xlsx");
+      link.download = "summary-report.xlsx"; // Use "download" attribute
       document.body.appendChild(link);
       link.click();
       link.remove();
+
       window.URL.revokeObjectURL(url);
 
       setIsDownloading(false);
     } catch (error) {
+      console.error("Error generating report:", error);
       toast.error("Ошибка при формировании отчета.");
       setIsDownloading(false);
     }
