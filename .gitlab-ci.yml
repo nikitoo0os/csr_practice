@@ -20,17 +20,9 @@ build-react:
     - npm install
     - npm run build
 
-#Деплоим по примеру из интернетика :3
+#Деплоим по примеру из интернетика (ага, нет):3
 deploy-all: 
   stage: deploy
-  before_script:
-    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )' 
-    - eval $(ssh-agent -s)
-    - echo "$SERVER_USER_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - ssh-keyscan $SERVER_URL >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
   script:
     - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_URL "systemctl --user stop uslugi.service"
     - scp -o StrictHostKeyChecking=no backend/target/practiceCSR-0.0.1-SNAPSHOT.jar $SERVER_USER@$SERVER_URL:/home/uslugi
