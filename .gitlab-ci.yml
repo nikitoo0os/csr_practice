@@ -6,9 +6,6 @@ stages:
 #Билдим джаву
 build-java:
   stage: build
-  cache:
-    paths:
-      - .m2/repository
   script:
     - cd backend
     - mvn clean install -Dmaven.test.skip
