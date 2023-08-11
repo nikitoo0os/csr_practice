@@ -6,6 +6,9 @@ stages:
 #Билдим джаву
 build-java:
   stage: build
+  cache:
+    paths:
+      - .m2/repository
   script:
     - cd backend
     - mvn clean install -Dmaven.test.skip
@@ -14,9 +17,9 @@ build-java:
 build-react:
   stage: build
   script:
+    - echo "REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL" > .env
     - cd frontend
     - npm install
-    - echo "REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL" > .env
     - npm run build
 
 #Деплоим по примеру из интернетика :3
