@@ -11,8 +11,12 @@ import com.vyatsu.practiceCSR.repository.*;
 import com.vyatsu.practiceCSR.service.api.RegionService;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.service.scheduling.TaskSchedulingService;
-import com.vyatsu.practiceCSR.service.utils.XLSUtil;
+import com.vyatsu.practiceCSR.utils.XLSUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -140,7 +144,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public byte[] getResultReportData(LocalDate localDateFrom, LocalDate localDateTo, Long templateId) throws IOException {
+    public HttpEntity<ByteArrayResource> getResultReportData(LocalDate localDateFrom, LocalDate localDateTo, Long templateId) throws IOException {
         List<Report> reports = reportRepository.findByTemplateId(templateId);
 
         //фильтруем по дате
@@ -191,7 +195,7 @@ public class ReportServiceImpl implements ReportService {
 
             }
         }
-        return XLSUtil.writeDataToByteArray(resultReportData,
+        byte[] excelContent = XLSUtil.writeDataToByteArray(resultReportData,
                 new String[]{"№",
                         "Наименование услуги в Кировской области",
                         "Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 31.07.2023)",
@@ -199,6 +203,12 @@ public class ReportServiceImpl implements ReportService {
                         "% обращений в эл виде через ЕПГУ (целевой показатель на 2023 год 40%) (нарастающим итогом с 01.01.2023 по 31.07.2023)",
                         "Доля услуг, предоставленных без нарушения регламентного срока при оказании услуги через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023) (%)"
                 });
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "force-download"));
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=filex.clsx");
+
+        return new HttpEntity<>(new ByteArrayResource(excelContent), headers);
     }
 
     @Override
