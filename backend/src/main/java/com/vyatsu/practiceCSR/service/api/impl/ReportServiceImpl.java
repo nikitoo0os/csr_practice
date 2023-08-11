@@ -209,8 +209,10 @@ public class ReportServiceImpl implements ReportService {
                 });
 
         HttpHeaders headers = new HttpHeaders();
+
         headers.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=filex.xlsx");
+
 
         return new HttpEntity<>(new ByteArrayResource(excelContent), headers);
     }

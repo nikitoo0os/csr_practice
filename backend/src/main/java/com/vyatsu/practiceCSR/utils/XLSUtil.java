@@ -31,7 +31,6 @@ public class XLSUtil {
                 row.createCell(4).setCellValue(data.getPercent1().doubleValue());
                 row.createCell(5).setCellValue(data.getPercent2().doubleValue());
                 row.createCell(6).setCellValue(data.getRegularAct());
-
             }
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -39,5 +38,4 @@ public class XLSUtil {
             return outputStream.toByteArray();
         }
     }
-
 }
