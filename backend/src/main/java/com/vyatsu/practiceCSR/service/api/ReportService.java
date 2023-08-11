@@ -12,8 +12,6 @@ import java.util.List;
 public interface ReportService {
     Report createReport(ReportDTO reportDTO);
 
-    Report extensionReport(Report report);
-
     Report getReportById(Long id);
 
     List<Report> getActiveReportByUserId(Long userId);

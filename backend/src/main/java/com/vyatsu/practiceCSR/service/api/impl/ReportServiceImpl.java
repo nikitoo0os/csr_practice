@@ -10,7 +10,6 @@ import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.*;
 import com.vyatsu.practiceCSR.service.api.RegionService;
 import com.vyatsu.practiceCSR.service.api.ReportService;
-import com.vyatsu.practiceCSR.service.scheduling.TaskSchedulingService;
 import com.vyatsu.practiceCSR.utils.XLSUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -34,7 +33,6 @@ public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
     private final ReportMapper reportMapper;
     private final UserMapper userMapper;
-    private final TaskSchedulingService taskSchedulingService;
     private final RegionService regionService;
     private final TemplateDataRepository templateDataRepository;
     @Override
@@ -66,15 +64,6 @@ public class ReportServiceImpl implements ReportService {
     private final RegionRepository regionRepository;
     private final ReportDataRepository reportDataRepository;
 
-    @Override
-    public Report extensionReport(Report report) {
-
-        taskSchedulingService.scheduleATask(
-                report,
-                () -> report1 = reportRun(report)
-        );
-        return report1;
-    }
 
     public Report reportRun(Report report) {
         if(report.getIsActive()) {
@@ -175,6 +164,21 @@ public class ReportServiceImpl implements ReportService {
                     count2 = 0;
                 }
 
+                var percent1_ = resultReportData.get(i).getPercent1();
+                if(percent1_ == null){
+                    count1 = count1 == 0 ? 1 : count1;
+                    BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
+                    resultReportData.get(i).setPercent1(percent1);
+                }
+
+                var percent2_ = resultReportData.get(i).getPercent2();
+                if(percent2_ == null){
+                    count2 = count2 == 0 ? 1 : count2;
+                    BigDecimal percent2 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count2), 10, RoundingMode.HALF_UP);
+                    resultReportData.get(i).setPercent2(percent2);
+                }
+
+
                 var lastCount1 = lastReportData.get(j).get(i).getCount1();
                 if(lastCount1 == null){
                     lastCount1 = 0;
@@ -187,15 +191,15 @@ public class ReportServiceImpl implements ReportService {
                 resultReportData.get(i).setCount1(count1 + lastCount1);
                 resultReportData.get(i).setCount2(count2 + lastCount2);
 
-                if(count1 != 0){
-                    BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
-                    resultReportData.get(i).setPercent1(percent1);
-                    // resultReportData.get(i).setPercent2(resultReportData.get(i).getPercent2().add(lastReportData.get(j).get(i).getPercent2()));
-                }
+//                if(count1 != 0){
+//                    BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
+//                    resultReportData.get(i).setPercent1(percent1);
+//                    resultReportData.get(i).setPercent2(percent1);
+//                }
 
             }
         }
-        byte[] excelContent = XLSUtil.writeDataToByteArray(resultReportData,
+        byte[] excelContent = XLSUtil.writeReportDataToByteArray(resultReportData,
                 new String[]{"№",
                         "Наименование услуги в Кировской области",
                         "Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 31.07.2023)",
@@ -205,8 +209,8 @@ public class ReportServiceImpl implements ReportService {
                 });
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "force-download"));
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=filex.clsx");
+        headers.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=filex.xlsx");
 
         return new HttpEntity<>(new ByteArrayResource(excelContent), headers);
     }

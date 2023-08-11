@@ -121,3 +121,4 @@ public class ReportController {
         return reportService.getResultReportData(options.getStartDate(), options.getEndDate(), options.getTemplateId());
     }
 }
+    
