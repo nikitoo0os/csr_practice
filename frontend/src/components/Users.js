@@ -22,6 +22,9 @@ export default function Users() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [isReportsModalOpen, setIsReportsModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+
 
   const openReportsModal = (userId) => {
     setReportsUserId(userId);
@@ -83,19 +86,10 @@ export default function Users() {
     fetchRegions();
   }, [isUserAdded]);
 
-  const handleSoftDeleteUser = async (userId) => {
-    try {
-      const response = await request("delete", `/users/${userId}`);
-      if (response.status === 200) {
-        fetchUsers();
-        toast.success("Пользователь успешно удален");
-      } else {
-        // Обработка ошибки, если требуется
-      }
-    } catch (error) {
-      // Обработка ошибки, если требуется
-    }
+  const handleSoftDeleteUser = (user) => {
+    setUserToDelete(user);
   };
+
 
   const handleFilterChange = (event) => {
     setCurrentPage(1);
@@ -123,6 +117,21 @@ export default function Users() {
   const indexOfLastUser = currentPage * pageSize;
   const indexOfFirstUser = indexOfLastUser - pageSize;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+  const handleSoftDeleteUserConfirmed = async (user) => {
+    try {
+      const response = await request("delete", `/users/${user.id}`);
+      if (response.status === 200) {
+        fetchUsers();
+        toast.success("Пользователь успешно удален");
+      } else {
+        // Обработка ошибки, если требуется
+      }
+    } catch (error) {
+      // Обработка ошибки, если требуется
+    }
+  };
+
 
   return (
     <>
@@ -173,11 +182,12 @@ export default function Users() {
                 <td className="border px-4 py-2">{user.region.name}</td>
                 <td className="border px-4 py-2">
                   <button
-                    onClick={() => handleSoftDeleteUser(user.id)}
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 shadow-md"
+                    onClick={() => handleSoftDeleteUser(user)}
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 shadow-md focus:outline-none focus:border-0"
                   >
                     Удалить
                   </button>
+
                   <button
                     onClick={() => openEditModal(user.id)}
                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2 focus:outline-none focus:border-0 shadow-md"
@@ -196,28 +206,26 @@ export default function Users() {
           </tbody>
         </table>
         <div className="flex items-center mt-4 px-4 py-2">
-        <button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
-          className={`px-4 py-2 rounded-lg border ${
-            currentPage === 1 ? "bg-gray-200" : "bg-sky-200 text-blue-600"
-          } mr-2`}
-        >
-          ❮
-        </button>
-        <span className="font-semibold text-blue-600">
-          {currentPage}/{getTotalPages()}
-        </span>
-        <button
-          disabled={currentPage >= getTotalPages()}
-          onClick={() => setCurrentPage(currentPage + 1)}
-          className={`px-4 py-2 rounded-lg border ${
-            currentPage >= getTotalPages() ? "bg-gray-200" : "bg-sky-200 text-blue-600"
-          } ml-2`}
-        >
-          ❯
-        </button>
-      </div>
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+            className={`px-4 py-2 rounded-lg border ${currentPage === 1 ? "bg-gray-200" : "bg-sky-200 text-blue-600"
+              } mr-2`}
+          >
+            ❮
+          </button>
+          <span className="font-semibold text-blue-600">
+            {currentPage}/{getTotalPages()}
+          </span>
+          <button
+            disabled={currentPage >= getTotalPages()}
+            onClick={() => setCurrentPage(currentPage + 1)}
+            className={`px-4 py-2 rounded-lg border ${currentPage >= getTotalPages() ? "bg-gray-200" : "bg-sky-200 text-blue-600"
+              } ml-2`}
+          >
+            ❯
+          </button>
+        </div>
       </div>
       <ReactModal
         isOpen={isAddModalOpen}
@@ -253,6 +261,35 @@ export default function Users() {
           closeModal={closeReportsModal}
         />
       </ReactModal>
+      <ReactModal
+        isOpen={userToDelete !== null}
+        onRequestClose={() => setUserToDelete(null)}
+        contentLabel="Подтвердите удаление"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <div className="text-center bg-white w-1/3 mx-auto p-4 rounded">
+          <p>Вы действительно хотите удалить пользователя {userToDelete?.surname} {userToDelete?.firstname} {userToDelete?.patronymic}?</p>
+          <div className="mt-4">
+            <button
+              onClick={() => {
+                handleSoftDeleteUserConfirmed(userToDelete);
+                setUserToDelete(null);
+              }}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2 shadow-md"
+            >
+              Подтвердить
+            </button>
+            <button
+              onClick={() => setUserToDelete(null)}
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded shadow-md"
+            >
+              Отмена
+            </button>
+          </div>
+        </div>
+      </ReactModal>
+
     </>
   );
 }
