@@ -16,8 +16,6 @@ export default function SummaryReport({ template, closeModal }) {
   };
 
   const handleGenerateReport = async () => {
-    // Validation and report generation code here...
-
     try {
       setIsDownloading(true);
 
@@ -25,17 +23,19 @@ export default function SummaryReport({ template, closeModal }) {
         startDate: startDate,
         endDate: endDate,
         templateId: template.id,
+      }, {
+        responseType: "blob", // This is important for receiving a binary blob response
       });
 
-      if (response.data && response.data.fileUrl) {
-        const downloadLink = document.createElement("a");
-        downloadLink.href = response.data.fileUrl;
-        downloadLink.target = "_blank";
-        downloadLink.download = "summary-report.xlsx";
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-      }
+      const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "summary-report.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
 
       setIsDownloading(false);
     } catch (error) {
@@ -84,31 +84,12 @@ export default function SummaryReport({ template, closeModal }) {
         />
       </div>
       <button
-        id="downloadButton"
         onClick={handleGenerateReport}
         disabled={isDownloading}
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
       >
         {isDownloading ? "Формирование..." : "Сформировать"}
       </button>
-      <script>
-        {`
-        document.getElementById('downloadButton').addEventListener('click', function() {
-          fetch('/downloadExcel') // Update the URL to your actual download route
-            .then(response => response.blob())
-            .then(blob => {
-              const url = window.URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.style.display = 'none';
-              a.href = url;
-              a.download = 'summary-report.xlsx';
-              document.body.appendChild(a);
-              a.click();
-              window.URL.revokeObjectURL(url);
-            });
-        });
-        `}
-      </script>
     </div>
   );
 }
