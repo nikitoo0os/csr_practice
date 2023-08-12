@@ -7,6 +7,13 @@ export default function ServiceList() {
   const [services, setServices] = useState([]);
   const [name, setServiceName] = useState('');
   const [serviceToDelete, setServiceToDelete] = useState(null);
+  const [filterText, setFilterText] = useState('');
+
+  const handleFilterChange = (event) => {
+    setFilterText(event.target.value);
+  };
+
+
 
   useEffect(() => {
     fetchServices();
@@ -95,25 +102,35 @@ export default function ServiceList() {
         </form>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Список услуг</h2>
         <div className="max-w-7xl max-h-96 overflow-y-auto shadow-xl rounded border-2 p-2">
+          <input
+            type="text"
+            value={filterText}
+            onChange={handleFilterChange}
+            placeholder="Фильтр по названию услуги"
+            className="w-full border border-gray-300 focus:outline-none rounded-md px-4 py-2 mb-2 focus:border-sky-500"
+          />
           <ul>
-            {services.map((service, index) => (
-              <li
-                key={service.id}
-                className={`mb-2 flex items-center ${
-                  index % 2 === 0 ? 'bg-gray-200' : 'bg-white'
-                }`}
-              >
-                <span className="w-10/12 p-1">
-                  {index + 1}. {service.name}
-                </span>
-                <button
-                  onClick={() => openDeleteConfirmationModal(service.id)}
-                  className="w-2/12 p-1 mr-2 text-red-500 hover:text-red-600 focus:outline-none text-right"
+            {services
+              .filter((service) =>
+                service.name.toLowerCase().includes(filterText.toLowerCase())
+              )
+              .map((service, index) => (
+                <li
+                  key={service.id}
+                  className={`mb-2 flex items-center ${index % 2 === 0 ? 'bg-gray-200' : 'bg-white'
+                    }`}
                 >
-                  Удалить
-                </button>
-              </li>
-            ))}
+                  <span className="w-10/12 p-1">
+                    {index + 1}. {service.name}
+                  </span>
+                  <button
+                    onClick={() => openDeleteConfirmationModal(service.id)}
+                    className="w-2/12 p-1 mr-2 text-red-500 hover:text-red-600 focus:outline-none text-right"
+                  >
+                    Удалить
+                  </button>
+                </li>
+              ))}
           </ul>
         </div>
       </div>
