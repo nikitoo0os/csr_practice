@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { request } from "../helpers/axios_helper";
 import { toast } from "react-toastify";
+import Select from 'react-select';
 
 export default function NewReport({ template, closeModal }) {
   const [startDate, setStartDate] = useState("");
@@ -22,22 +23,26 @@ export default function NewReport({ template, closeModal }) {
     }
   };
 
-  const handleRegionChange = (event) => {
-    setSelectedRegion(event.target.value);    
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+  
+    if (selectedRegion.length === 0) {
+      toast.error("Выберите хотя бы один регион.");
+      return;
+    }
+  
     try {
-      const response = await request("get", `/regions/${selectedRegion}`);
-      const region = response.data;
-
+      const selectedRegionsData = selectedRegion.map(regionOption => {
+        return regions.find(region => region.id === regionOption.value);
+      });
+  
       const requestData = {
         template,
         startDate,
         endDate,
         comment,
-        region,
+        regions: selectedRegionsData,
       };
       await request("post", "/reports", requestData);
       toast.success("Отчет успешно создан.");
@@ -46,11 +51,12 @@ export default function NewReport({ template, closeModal }) {
       toast.error("Не удалось создать отчет.");
     }
   };
+  
+
 
   const handleStartDateChange = (event) => {
     const selectedStartDate = event.target.value;
-    if (endDate === '')
-    {
+    if (endDate === '') {
       setStartDate(selectedStartDate);
     }
     else if (selectedStartDate >= endDate) {
@@ -118,19 +124,17 @@ export default function NewReport({ template, closeModal }) {
 
         <div className="mb-4">
           <label className="block font-bold mb-2">Регион:</label>
-          <select
+          <Select
+            options={regions.map(region => ({
+              value: region.id,
+              label: region.name
+            }))}
             value={selectedRegion}
-            onChange={handleRegionChange}
-            className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
+            onChange={selectedOptions => setSelectedRegion(selectedOptions)}
+            isMulti
+            className="w-full"
             required
-          >
-            <option value="">Выберите регион</option>
-            {regions.map((region) => (
-              <option key={region.id} value={region.id}>
-                {region.name}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         <button
           type="submit"
