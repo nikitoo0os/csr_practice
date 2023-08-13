@@ -14,25 +14,13 @@ export default function Templates() {
   const [templateName, setTemplateName] = useState('');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [filterDate, setFilterDate] = useState('');
   const [isSumReportModalOpen, setIsSumReportModalOpen] = useState(false);
 
-  const handleFilterDateChange = (event) => {
-    setFilterDate(event.target.value);
-  };
 
   const formatTemplateDate = (date) => {
     const templateDate = new Date(date);
     const formattedDate = templateDate.toLocaleDateString(); // Форматирование в стандартный формат даты
     return formattedDate;
-  };
-
-  const formatFilterDate = (date) => {
-    const filterDate = new Date(date);
-    const day = String(filterDate.getDate()).padStart(2, '0');
-    const month = String(filterDate.getMonth() + 1).padStart(2, '0');
-    const year = filterDate.getFullYear();
-    return `${day}.${month}.${year}`; // Форматирование в 'день.месяц.год'
   };
 
   const [filterDateFrom, setFilterDateFrom] = useState('');
