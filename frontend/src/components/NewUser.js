@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { request } from '../helpers/axios_helper'
+import Select from 'react-select';
+
 
 export default function NewUser({ closeModal, setIsUserAdded }) {
   const [surname, setSurname] = useState('');
@@ -57,7 +59,7 @@ export default function NewUser({ closeModal, setIsUserAdded }) {
         setIsUserAdded(true);
         toast.success('Пользователь успешно добавлен');
         closeModal();
-      }  else {
+      } else {
         toast.error('Ошибка');
       }
     } catch (error) {
@@ -69,13 +71,13 @@ export default function NewUser({ closeModal, setIsUserAdded }) {
     <>
       <div className="w-1/4 bg-white rounded p-4 mx-auto mt-56">
         <div className="flex justify-end">
-        <button onClick={() => closeModal() }>
-          <img
-            className="h-6 md:border-0 hover:brightness-90"
-            src={require("../pictures/close.png")}
-            alt="Войти"
-          />
-        </button>
+          <button onClick={() => closeModal()}>
+            <img
+              className="h-6 md:border-0 hover:brightness-90"
+              src={require("../pictures/close.png")}
+              alt="Войти"
+            />
+          </button>
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Добавить пользователя</h2>
         <form onSubmit={handleSubmit}>
@@ -153,21 +155,17 @@ export default function NewUser({ closeModal, setIsUserAdded }) {
             <label className="block text-sm font-medium text-gray-800" htmlFor="region">
               Район
             </label>
-            <select
-              id="region"
-              name="region"
-              value={region_id}
-              onChange={(e) => setRegion(e.target.value)}
-              className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
+            <Select
+              options={regionList}
+              value={regionList.find(region => region.id === region_id)}
+              onChange={selectedOption => setRegion(selectedOption.id)}
+              getOptionLabel={region => region.name}
+              getOptionValue={region => region.id}
+              placeholder="Выберите район"
+              isSearchable
               required
-            >
-              <option value="">Выберите район</option>
-              {regionList.map((region) => (
-                <option key={region.id} value={region.id}>
-                  {region.name}
-                </option>
-              ))}
-            </select>
+            />
+
           </div>
           <button
             type="submit"
