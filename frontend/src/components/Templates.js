@@ -229,6 +229,7 @@ export default function Templates() {
         </div>
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">Список шаблонов</h2>
+          <div className="border-2 rounded p-2 w-96 mb-4 shadow-lg">
           <h2 className="text-lg font-semibold mb-2">Фильтр по дате</h2>
           <div className="flex items-center mb-2">
             <p className="mr-2">от</p>
@@ -251,6 +252,7 @@ export default function Templates() {
               className="border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2"
               placeholder="Дата до"
             />
+            </div>
           </div>
           <div className="space-y-4">
             {currentTemplates.map((template, index) => (
