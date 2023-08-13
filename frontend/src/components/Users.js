@@ -20,6 +20,7 @@ export default function Users() {
   const [isUserAdded, setIsUserAdded] = useState(false);
   const [filterValue, setFilterValue] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedRegionValue, setSelectedRegionValue] = useState(null);
   const [regions, setRegions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -133,7 +134,10 @@ export default function Users() {
       // Обработка ошибки, если требуется
     }
   };
-
+  const handleResetRegion = () => {
+    setSelectedRegion("");
+    setSelectedRegionValue(null); // Сбрасываем значение в состоянии
+  };
 
   return (
     <>
@@ -149,20 +153,23 @@ export default function Users() {
           <div className="flex flex-col mt-4">
             <label className="text-sm mb-1">Регион</label>
             <div className="flex">
-              <Select
-                value={regions.find(region => region.value === selectedRegion)}
-                options={regions.map(region => ({ value: region.id, label: region.name }))}
-                onChange={selectedOption => setSelectedRegion(selectedOption.value)}
-                placeholder="Выберите регион"
-                className="w-64"
-              />
+            <Select
+              value={selectedRegionValue} // Используем новое состояние для значения
+              options={regions.map(region => ({ value: region.id, label: region.name }))}
+              onChange={selectedOption => {
+                setSelectedRegionValue(selectedOption); // Обновляем состояние значения
+                setSelectedRegion(selectedOption.value);
+              }}
+              placeholder="Выберите регион"
+              className="w-64"
+            />
               {selectedRegion && (
                 <button
-                  onClick={() => setSelectedRegion("")}
-                  className="text-blue-600 underline ml-2 focus:outline-none"
-                >
-                  Сбросить
-                </button>
+                onClick={handleResetRegion}
+                className="text-blue-600 underline ml-2 focus:outline-none"
+              >
+                Сбросить
+              </button>
               )}
             </div>
           </div>
