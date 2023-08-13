@@ -6,6 +6,8 @@ import ReactModal from "react-modal";
 import NewUser from "./NewUser";
 import EditUser from "./EditUser";
 import UserReports from "./UserReports";
+import Select from "react-select";
+
 
 ReactModal.setAppElement("#root");
 
@@ -142,30 +144,40 @@ export default function Users() {
         >
           Добавить нового пользователя
         </button>
-        <div className="border-2 w-1/2 p-2 mb-2 ml-2 mt-4 shadow-lg">
+        <div className="border-2 w-1/3 p-2 mb-2 ml-2 mt-4 shadow-lg">
           <h2 className="font-semibold border-b-2">Фильтр</h2>
-          <label>Регион</label>
-          <select
-            value={selectedRegion}
-            onChange={(e) => setSelectedRegion(e.target.value)}
-            className="border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mt-4 mb-2 m-2"
-          >
-            <option value="">Все регионы</option>
-            {regions.map((region) => (
-              <option key={region.id} value={region.id}>
-                {region.name}
-              </option>
-            ))}
-          </select>
-          <label className="ml-2">Фамилия</label>
-          <input
-            type="text"
-            value={filterValue}
-            onChange={handleFilterChange}
-            className="border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2 m-2"
-            placeholder="Фильтр по фамилии"
-          />
+          <div className="flex flex-col mt-4">
+            <label className="text-sm mb-1">Регион</label>
+            <div className="flex">
+              <Select
+                value={regions.find(region => region.value === selectedRegion)}
+                options={regions.map(region => ({ value: region.id, label: region.name }))}
+                onChange={selectedOption => setSelectedRegion(selectedOption.value)}
+                placeholder="Выберите регион"
+                className="w-64"
+              />
+              {selectedRegion && (
+                <button
+                  onClick={() => setSelectedRegion("")}
+                  className="text-blue-600 underline ml-2 focus:outline-none"
+                >
+                  Сбросить
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-col mt-4">
+            <label className="text-sm mb-1">Фамилия</label>
+            <input
+              type="text"
+              value={filterValue}
+              onChange={handleFilterChange}
+              className="border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2 w-64"
+              placeholder="Фильтр по фамилии"
+            />
+          </div>
         </div>
+
         <table className="table-auto w-full">
           <thead>
             <tr className="bg-sky-600 text-white">
