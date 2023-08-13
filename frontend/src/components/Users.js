@@ -148,7 +148,7 @@ export default function Users() {
         >
           Добавить нового пользователя
         </button>
-        <div className="border-2 w-1/3 p-2 mb-2 ml-2 mt-4 shadow-lg">
+        <div className="border-2 w-1/3 p-2 mb-2 ml-2 mt-4 shadow-lg rounded">
           <h2 className="font-semibold border-b-2">Фильтр</h2>
           <div className="flex flex-col mt-4">
             <label className="text-sm mb-1">Регион</label>

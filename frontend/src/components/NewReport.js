@@ -134,6 +134,7 @@ export default function NewReport({ template, closeModal }) {
             isMulti
             className="w-full"
             required
+            placeholder="Выберите регионы"
           />
         </div>
         <button

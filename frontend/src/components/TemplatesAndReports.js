@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Templates from './Templates';
 import ServiceList from './ServiceList';
+import NewTemplate from './NewTemplate';
 
 export default function TemplatesAndReports() {
   const [activeTab, setActiveTab] = useState(0);
@@ -17,12 +18,19 @@ export default function TemplatesAndReports() {
             }`}
           onClick={() => handleTabClick(0)}
         >
-          Шаблоны
+          Список шаблонов
         </button>
         <button
           className={`py-2 px-4 text-sm font-medium ${activeTab === 1 ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700'
             }`}
           onClick={() => handleTabClick(1)}
+        >
+          Создание шаблона
+        </button>
+        <button
+          className={`py-2 px-4 text-sm font-medium ${activeTab === 2 ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700'
+            }`}
+          onClick={() => handleTabClick(2)}
         >
           Справочник услуг
         </button>
@@ -32,8 +40,12 @@ export default function TemplatesAndReports() {
         <div className="p-4">
           <Templates />
         </div>}
-
-      {activeTab === 1 &&
+        {activeTab === 1 &&
+        <div className="p-4">
+          <NewTemplate />
+        </div>}
+        
+      {activeTab === 2 &&
         <div className="p-4">
           <ServiceList />
         </div>}

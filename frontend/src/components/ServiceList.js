@@ -80,7 +80,7 @@ export default function ServiceList() {
   return (
     <>
       <div className="mx-auto bg-white p-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Добавление услуги</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Добавление услуги</h2>
         <form onSubmit={addService}>
           <div className="mb-4">
             <textarea
@@ -100,15 +100,21 @@ export default function ServiceList() {
             </button>
           </div>
         </form>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Список услуг</h2>
-        <div className="max-w-7xl max-h-96 overflow-y-auto shadow-xl rounded border-2 p-2">
-          <input
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Список услуг</h2>
+        <div className="border-2 w-full p-2 mb-2 mt-4 shadow-lg rounded">
+        <h2 className="font-semibold border-b-2">Фильтр</h2>
+        <div className="flex flex-col mt-4">
+        <label className="text-sm mb-1">Название услуги</label>
+        <input
             type="text"
             value={filterText}
             onChange={handleFilterChange}
-            placeholder="Фильтр по названию услуги"
+            placeholder="Введите название услуги"
             className="w-full border border-gray-300 focus:outline-none rounded-md px-4 py-2 mb-2 focus:border-sky-500"
           />
+        </div>
+        </div>
+        <div className="max-w-7xl max-h-96 overflow-y-auto shadow-xl rounded border-2 p-2">
           <ul>
             {services
               .filter((service) =>
