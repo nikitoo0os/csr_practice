@@ -142,7 +142,9 @@ export default function Users() {
         >
           Добавить нового пользователя
         </button>
-        <div>
+        <div className="border-2 w-1/2 p-2 mb-2 ml-2 mt-4 shadow-lg">
+          <h2 className="font-semibold border-b-2">Фильтр</h2>
+          <label>Регион</label>
           <select
             value={selectedRegion}
             onChange={(e) => setSelectedRegion(e.target.value)}
@@ -155,6 +157,7 @@ export default function Users() {
               </option>
             ))}
           </select>
+          <label className="ml-2">Фамилия</label>
           <input
             type="text"
             value={filterValue}

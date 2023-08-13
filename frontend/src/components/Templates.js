@@ -218,8 +218,8 @@ export default function Templates() {
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">Список шаблонов</h2>
           <div className="border-2 rounded p-2 w-96 mb-4 shadow-lg">
-          <h2 className="text-lg font-semibold mb-2">Фильтр по дате</h2>
-          <div className="flex items-center mb-2">
+          <h2 className="text-lg font-semibold mb-2 border-b-2">Фильтр по дате</h2>
+          <div className="flex items-center mt-4">
             <p className="mr-2">от</p>
             <input
               type="date"
