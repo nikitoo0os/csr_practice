@@ -10,6 +10,10 @@ export default function NewTemplate() {
   const [creatingTemplate, setCreatingTemplate] = useState(false);
   const [templateName, setTemplateName] = useState("");
   const [serviceFilter, setServiceFilter] = useState("");
+  const [column1, setColumn1] = useState("");
+  const [column2, setColumn2] = useState("");
+  const [column3, setColumn3] = useState("");
+  const [column4, setColumn4] = useState("");
 
   useEffect(() => {
     fetchServices();
@@ -47,6 +51,10 @@ export default function NewTemplate() {
         setCreatingTemplate(true);
         const response = await request("post", "/template", {
           name: templateName,
+          column1,
+          column2,
+          column3,
+          column4,
         });
         const template = response.data;
 
@@ -91,66 +99,97 @@ export default function NewTemplate() {
             />
             <h2>Услуги</h2>
             <div className="border-2 rounded p-2 mb-4 shadow-lg">
-            <div className="border-2 w-full p-2 mb-2 mt-1 shadow-lg rounded">
-              <h2 className="font-semibold border-b-2">Фильтр</h2>
-              <div className="flex flex-col mt-4">
-                <label className="text-sm mb-1">Название услуги</label>
-                <input
-                  type="text"
-                  value={serviceFilter}
-                  onChange={(e) => setServiceFilter(e.target.value)}
-                  placeholder="Введите название услуги"
-                  className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2"
-                />
+              <div className="border-2 w-full p-2 mb-2 mt-1 shadow-lg rounded">
+                <h2 className="font-semibold border-b-2">Фильтр</h2>
+                <div className="flex flex-col mt-4">
+                  <label className="text-sm mb-1">Название услуги</label>
+                  <input
+                    type="text"
+                    value={serviceFilter}
+                    onChange={(e) => setServiceFilter(e.target.value)}
+                    placeholder="Введите название услуги"
+                    className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2 max-w-7xl max-h-96 overflow-y-auto border shadow-lg p-2">
+                {services
+                  .filter((service) =>
+                    service.name
+                      .toLowerCase()
+                      .includes(serviceFilter.toLowerCase())
+                  )
+                  .map((service, index) => (
+                    <div
+                      key={service.id}
+                      className={`flex items-center ${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-200"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        value={service}
+                        checked={selectedServices.includes(service)}
+                        onChange={(event) =>
+                          handleServiceSelection(event, service)
+                        }
+                        className="form-checkbox mr-2"
+                      />
+                      <label className="text-gray-700">{`${index + 1}. ${
+                        service.name
+                      }`}</label>
+                    </div>
+                  ))}
+              </div>
+
+              <div className="flex items-center mb-1 border border-gray-300 rounded bg-gray-200 shadow-lg p-1">
+                <button
+                  type="button"
+                  onClick={handleSelectAllServices}
+                  className="text-blue-600 underline ml-2 focus:outline-none"
+                >
+                  Выбрать все
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeselectAllServices}
+                  className="text-blue-600 underline ml-4 focus:outline-none"
+                >
+                  Снять выбор
+                </button>
               </div>
             </div>
-            <div className="space-y-2 max-w-7xl max-h-96 overflow-y-auto border shadow-lg p-2">
-              {services
-                .filter((service) =>
-                  service.name
-                    .toLowerCase()
-                    .includes(serviceFilter.toLowerCase())
-                )
-                .map((service, index) => (
-                  <div
-                    key={service.id}
-                    className={`flex items-center ${
-                      index % 2 === 0 ? "bg-white" : "bg-gray-200"
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      value={service}
-                      checked={selectedServices.includes(service)}
-                      onChange={(event) =>
-                        handleServiceSelection(event, service)
-                      }
-                      className="form-checkbox mr-2"
-                    />
-                    <label className="text-gray-700">{`${index + 1}. ${
-                      service.name
-                    }`}</label>
-                  </div>
-                ))}
+            <div>
+              <label>Название первого столбца для заполнения</label>
+              <textarea
+                value={column1}
+                onChange={(e) => setColumn1(e.target.value)}
+                className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2 max-h-32"
+                required
+              />
+              <label>Название второго столбца для заполнения</label>
+              <textarea
+                value={column2}
+                onChange={(e) => setColumn2(e.target.value)}
+                className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2 max-h-32"
+                required
+              />
+              <label>Название третьего столбца для заполнения</label>
+              <textarea
+                value={column3}
+                onChange={(e) => setColumn3(e.target.value)}
+                className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2 max-h-32"
+                required
+              />
+              <label>Название четвертого столбца для заполнения</label>
+              <textarea
+                value={column4}
+                onChange={(e) => setColumn4(e.target.value)}
+                className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2 mb-2 max-h-32"
+                required
+              />
             </div>
 
-            <div className="flex items-center mb-1 border border-gray-300 rounded bg-gray-200 shadow-lg p-1">
-              <button
-                type="button"
-                onClick={handleSelectAllServices}
-                className="text-blue-600 underline ml-2 focus:outline-none"
-              >
-                Выбрать все
-              </button>
-              <button
-                type="button"
-                onClick={handleDeselectAllServices}
-                className="text-blue-600 underline ml-4 focus:outline-none"
-              >
-                Снять выбор
-              </button>
-            </div>
-            </div>
             <button
               type="button"
               onClick={createTemplate}
