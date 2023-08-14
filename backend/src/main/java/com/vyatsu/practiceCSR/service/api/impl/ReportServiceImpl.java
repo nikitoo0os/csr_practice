@@ -16,6 +16,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -213,8 +214,12 @@ public class ReportServiceImpl implements ReportService {
         headers.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=filex.xlsx");
 
-
-        return new HttpEntity<>(new ByteArrayResource(excelContent), headers);
+        ByteArrayResource resource = new ByteArrayResource(excelContent);
+        
+        return ResponseEntity.ok()
+                .contentLength(excelContent.length)
+                .header("Content-Disposition", "attachment; filename=report.xlsx")
+                .body(resource);
     }
 
     @Override
