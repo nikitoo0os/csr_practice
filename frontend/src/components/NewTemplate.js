@@ -51,10 +51,10 @@ export default function NewTemplate() {
         setCreatingTemplate(true);
         const response = await request("post", "/template", {
           name: templateName,
-          count_all_requests: column1,
-          count_epgu_requests: column2,
-          percent_epgu_requests: column3,
-          percent_not_violation_epgu_requests: column4,
+          countAllRequests: column1,
+          countEPGURequests: column2,
+          percentEPGURequests: column3,
+          percentNotViolationEPGURequests: column4,
         });
         const template = response.data;
 
