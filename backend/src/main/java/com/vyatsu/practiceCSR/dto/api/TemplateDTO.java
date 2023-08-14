@@ -1,9 +1,7 @@
 package com.vyatsu.practiceCSR.dto.api;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Column;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -15,4 +13,8 @@ public class TemplateDTO {
     private int id;
     private Timestamp date;
     private String name;
+    private String countAllRequests;
+    private String countEPGURequests;
+    private String percentEPGURequests;
+    private String percentNotViolationEPGURequests;
 }

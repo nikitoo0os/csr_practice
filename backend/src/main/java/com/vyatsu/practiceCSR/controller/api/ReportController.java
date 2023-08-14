@@ -100,8 +100,8 @@ public class ReportController {
 
     @PostMapping
     public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportDTO){
-        Report report = reportService.createReport(reportDTO);
-        return ResponseEntity.ok(reportMapper.toReportDTO(report));
+        reportService.createReport(reportDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/user/{reportId}")

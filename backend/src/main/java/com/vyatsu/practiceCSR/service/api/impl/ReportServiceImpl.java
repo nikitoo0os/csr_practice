@@ -1,10 +1,9 @@
 package com.vyatsu.practiceCSR.service.api.impl;
 
+import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
-import com.vyatsu.practiceCSR.entity.api.Report;
-import com.vyatsu.practiceCSR.entity.api.ReportData;
-import com.vyatsu.practiceCSR.entity.api.TemplateData;
-import com.vyatsu.practiceCSR.entity.api.User;
+import com.vyatsu.practiceCSR.entity.api.*;
+import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.*;
@@ -33,60 +32,30 @@ import java.util.stream.Collectors;
 public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
     private final ReportMapper reportMapper;
-    private final UserMapper userMapper;
-    private final RegionService regionService;
+    private final RegionMapper regionMapper;
     private final TemplateDataRepository templateDataRepository;
-    @Override
-    public Report createReport(ReportDTO reportDTO) {
-        Report report = reportMapper.toReport(reportDTO);
-        report.setIsActive(true);
-      //  report.setIsCompleted(false);
-
-        LocalDate currentDateTime = LocalDate.now();
-        report.setStartDate(currentDateTime);
-        report = reportRepository.save(report);
-
-        List<TemplateData> templateDataList = templateDataRepository.findListByTemplateId(Long.valueOf(report.getTemplate().getId()));
-        List<ReportData> reportDataList = new ArrayList<>();
-
-        for(TemplateData templateData : templateDataList){
-            ReportData reportData = new ReportData();
-            reportData.setReport(report);
-            reportData.setService(templateData.getService());
-            reportDataList.add(reportData);
-        }
-        reportDataRepository.saveAll(reportDataList);
-
-        return report;
-    }
-
-    private Report report1;
     private final UserRepository userRepository;
-    private final RegionRepository regionRepository;
     private final ReportDataRepository reportDataRepository;
 
-
-    public Report reportRun(Report report) {
-        if(report.getIsActive()) {
-            //дата окончания старого отчета + дни активности отчета
-            LocalDate endDate = report.getEndDate();
-
-            LocalDate currentDateTime = LocalDate.now();
-
-            report.setId(null);
-            report.setStartDate(currentDateTime);
-            report.setEndDate(endDate);
-          //  report.setIsCompleted(false);
+    @Override
+    public void createReport(ReportDTO reportDTO) {
+        for(RegionDTO regionDTO : reportDTO.getRegions()) {
+            Report report = reportMapper.toReport(reportDTO);
             report.setIsActive(true);
+            report.setRegion(regionMapper.toRegion(regionDTO));
+            report.setStartDate(LocalDate.now());
+            report = reportRepository.save(report);
 
-        //    report.setIsCompleted(true);
-            reportRepository.save(report);
-
-            //записываем новый(продленный старый) отчет
-            System.out.println("Создан отчет");
-            return reportRepository.save(report);
+            List<TemplateData> templateDataList = templateDataRepository.findListByTemplateId(Long.valueOf(report.getTemplate().getId()));
+            List<ReportData> reportDataList = new ArrayList<>();
+            for (TemplateData templateData : templateDataList) {
+                ReportData reportData = new ReportData();
+                reportData.setReport(report);
+                reportData.setService(templateData.getService());
+                reportDataList.add(reportData);
+            }
+            reportDataRepository.saveAll(reportDataList);
         }
-        return report;
     }
 
     @Override

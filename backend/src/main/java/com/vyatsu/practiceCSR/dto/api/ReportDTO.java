@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 public class ReportDTO {
     private Integer id;
     private TemplateDTO template;
-    private RegionDTO region;
+    private List<RegionDTO> regions;
     private LocalDate startDate;
     private LocalDate endDate;
     private String comment;

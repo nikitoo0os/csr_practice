@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ReportService {
-    Report createReport(ReportDTO reportDTO);
+    void createReport(ReportDTO reportDTO);
 
     Report getReportById(Long id);
 
