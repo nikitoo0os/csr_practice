@@ -8,6 +8,17 @@ export default function InactiveReports() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5; // Number of items per page
   const navigate = useNavigate();
+  const [filterText, setFilterText] = useState('');
+
+  const handleFilterChange = (event) => {
+    const newText = event.target.value;
+    setFilterText(newText);
+    setCurrentPage(1); // Reset page number when changing filter
+  };
+
+  const filteredReports = reports.filter(report =>
+    report.template.name.toLowerCase().includes(filterText.toLowerCase())
+  );
 
   useEffect(() => {
     fetchUserReports();
@@ -31,18 +42,18 @@ export default function InactiveReports() {
     navigate(`/read-report`, { state: { report } });
   };
 
-  const getTotalPages = () => Math.max(Math.ceil(reports.length / pageSize), 1);
+  const getTotalPages = () => Math.max(Math.ceil(filteredReports.length / pageSize), 1);
 
   useEffect(() => {
     // Ensure current page does not exceed total pages when data changes
     if (currentPage > getTotalPages()) {
       setCurrentPage(getTotalPages());
     }
-  }, [reports, currentPage]);
+  }, [filteredReports, currentPage]);
 
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const currentReports = reports.slice(startIndex, endIndex);
+  const currentReports = filteredReports.slice(startIndex, endIndex);
 
   return (
     <div>
@@ -50,7 +61,20 @@ export default function InactiveReports() {
         <p>Список отчетов пуст.</p>
       ) : (
         <>
-          {currentReports.map((report) => (
+         <div className="border-2 w-full p-2 mb-2 mt-4 shadow-lg rounded">
+        <h2 className="font-semibold border-b-2">Фильтр</h2>
+        <div className="flex flex-col mt-4">
+          <label className="text-sm mb-1">Название отчета</label>
+          <input
+            type="text"
+            value={filterText}
+            onChange={handleFilterChange}
+            placeholder="Введите название отчета"
+            className="w-full border border-gray-300 focus:outline-none rounded-md px-4 py-2 mb-2 focus:border-sky-500"
+          />
+        </div>
+      </div>
+          {filteredReports.map((report) => (
             <div key={report.id} className="border border-gray-300 rounded p-4 mb-4">
               <div>
                 <div className="font-bold text-lg border-b-2">{report.template.name}</div>
