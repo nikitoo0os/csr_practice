@@ -1,10 +1,10 @@
 package com.vyatsu.practiceCSR.service.api.impl;
 
+import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
-import com.vyatsu.practiceCSR.entity.api.Report;
-import com.vyatsu.practiceCSR.entity.api.ReportData;
-import com.vyatsu.practiceCSR.entity.api.TemplateData;
-import com.vyatsu.practiceCSR.entity.api.User;
+import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
+import com.vyatsu.practiceCSR.entity.api.*;
+import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.*;
@@ -12,12 +12,15 @@ import com.vyatsu.practiceCSR.service.api.RegionService;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.utils.XLSUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.util.IOUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -32,60 +35,30 @@ import java.util.stream.Collectors;
 public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
     private final ReportMapper reportMapper;
-    private final UserMapper userMapper;
-    private final RegionService regionService;
+    private final RegionMapper regionMapper;
     private final TemplateDataRepository templateDataRepository;
-    @Override
-    public Report createReport(ReportDTO reportDTO) {
-        Report report = reportMapper.toReport(reportDTO);
-        report.setIsActive(true);
-      //  report.setIsCompleted(false);
-
-        LocalDate currentDateTime = LocalDate.now();
-        report.setStartDate(currentDateTime);
-        report = reportRepository.save(report);
-
-        List<TemplateData> templateDataList = templateDataRepository.findListByTemplateId(Long.valueOf(report.getTemplate().getId()));
-        List<ReportData> reportDataList = new ArrayList<>();
-
-        for(TemplateData templateData : templateDataList){
-            ReportData reportData = new ReportData();
-            reportData.setReport(report);
-            reportData.setService(templateData.getService());
-            reportDataList.add(reportData);
-        }
-        reportDataRepository.saveAll(reportDataList);
-
-        return report;
-    }
-
-    private Report report1;
     private final UserRepository userRepository;
-    private final RegionRepository regionRepository;
     private final ReportDataRepository reportDataRepository;
 
-
-    public Report reportRun(Report report) {
-        if(report.getIsActive()) {
-            //дата окончания старого отчета + дни активности отчета
-            LocalDate endDate = report.getEndDate();
-
-            LocalDate currentDateTime = LocalDate.now();
-
-            report.setId(null);
-            report.setStartDate(currentDateTime);
-            report.setEndDate(endDate);
-          //  report.setIsCompleted(false);
+    @Override
+    public void createReport(CreateReportDTO createReportDTO) {
+        for(RegionDTO regionDTO : createReportDTO.getRegions()) {
+            Report report = reportMapper.toReport(createReportDTO);
             report.setIsActive(true);
+            report.setRegion(regionMapper.toRegion(regionDTO));
+            report.setStartDate(LocalDate.now());
+            report = reportRepository.save(report);
 
-        //    report.setIsCompleted(true);
-            reportRepository.save(report);
-
-            //записываем новый(продленный старый) отчет
-            System.out.println("Создан отчет");
-            return reportRepository.save(report);
+            List<TemplateData> templateDataList = templateDataRepository.findListByTemplateId(Long.valueOf(report.getTemplate().getId()));
+            List<ReportData> reportDataList = new ArrayList<>();
+            for (TemplateData templateData : templateDataList) {
+                ReportData reportData = new ReportData();
+                reportData.setReport(report);
+                reportData.setService(templateData.getService());
+                reportDataList.add(reportData);
+            }
+            reportDataRepository.saveAll(reportDataList);
         }
-        return report;
     }
 
     @Override
@@ -211,10 +184,22 @@ public class ReportServiceImpl implements ReportService {
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=filex.xlsx");
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=file.xls");
 
 
-        return new HttpEntity<>(new ByteArrayResource(excelContent), headers);
+        ByteArrayResource resource = new ByteArrayResource(excelContent);
+
+        try (FileOutputStream outputStream = new FileOutputStream("C:/example.xlsx")) {
+            byte[] data = new byte[Math.toIntExact(resource.contentLength())];
+            resource.getInputStream().read(data);
+            outputStream.write(data);
+        } catch (IOException e) {
+            e.printStackTrace(); // Обработка ошибок записи
+        }
+        
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=file.xlsx")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(resource);
     }
 
     @Override

@@ -20,7 +20,8 @@ public class TemplateController {
 
     @PostMapping
     public ResponseEntity<TemplateDTO> createTemplate(@RequestBody TemplateDTO templateDTO){
-        TemplateDTO templateDTO1 = templateService.createTemplate(templateMapper.toTemplate(templateDTO));
+        Template template = templateMapper.toTemplate(templateDTO);
+        TemplateDTO templateDTO1 = templateService.createTemplate(template);
         return ResponseEntity.ok(templateDTO1);
     }
 

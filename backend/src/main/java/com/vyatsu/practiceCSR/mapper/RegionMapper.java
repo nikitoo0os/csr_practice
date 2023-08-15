@@ -10,5 +10,6 @@ import java.util.List;
 public interface RegionMapper {
     RegionDTO toRegionDTO(Region regionList);
 
+    Region toRegion(RegionDTO regionDTO);
     List<RegionDTO> toListRegionDTO(List<Region> regionList);
 }

@@ -1,4 +1,5 @@
-INSERT INTO region_list(name) VALUES ('Регион1'),
+INSERT INTO region_list(name) VALUES
+('Регион1'),
 ('Регион2'),
 ('Регион3'),
 ('Регион4'),

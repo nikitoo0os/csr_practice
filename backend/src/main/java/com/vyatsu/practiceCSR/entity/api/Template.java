@@ -31,6 +31,26 @@ public class Template {
 
     @Getter
     @Setter
+    @Column(name = "count_all_requests", nullable = false)
+    private String countAllRequests;
+
+    @Getter
+    @Setter
+    @Column(name = "count_epgu_requests", nullable = false)
+    private String countEPGURequests;
+
+    @Getter
+    @Setter
+    @Column(name = "percent_epgu_requests", nullable = false)
+    private String percentEPGURequests;
+
+    @Getter
+    @Setter
+    @Column(name = "percent_not_violation_epgu_requests", nullable = false)
+    private String percentNotViolationEPGURequests;
+
+    @Getter
+    @Setter
     @OneToMany(mappedBy = "template")
     private Set<TemplateData> templateData = new LinkedHashSet<>();
 
