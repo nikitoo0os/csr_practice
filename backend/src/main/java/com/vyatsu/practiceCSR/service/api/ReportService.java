@@ -1,6 +1,7 @@
 package com.vyatsu.practiceCSR.service.api;
 
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
+import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ReportService {
-    void createReport(ReportDTO reportDTO);
+    void createReport(CreateReportDTO createReportDTO);
 
     Report getReportById(Long id);
 

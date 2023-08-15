@@ -3,6 +3,7 @@ package com.vyatsu.practiceCSR.controller.api;
 import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
+import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
 import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
@@ -99,8 +100,8 @@ public class ReportController {
     }
 
     @PostMapping
-    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportDTO){
-        reportService.createReport(reportDTO);
+    public ResponseEntity<ReportDTO> createReport(@RequestBody CreateReportDTO createReportDTO){
+        reportService.createReport(createReportDTO);
         return ResponseEntity.ok().build();
     }
 

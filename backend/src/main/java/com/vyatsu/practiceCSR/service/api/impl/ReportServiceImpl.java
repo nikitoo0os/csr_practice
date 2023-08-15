@@ -2,6 +2,7 @@ package com.vyatsu.practiceCSR.service.api.impl;
 
 import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
+import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
 import com.vyatsu.practiceCSR.entity.api.*;
 import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
@@ -11,6 +12,7 @@ import com.vyatsu.practiceCSR.service.api.RegionService;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.utils.XLSUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.util.IOUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -38,9 +41,9 @@ public class ReportServiceImpl implements ReportService {
     private final ReportDataRepository reportDataRepository;
 
     @Override
-    public void createReport(ReportDTO reportDTO) {
-        for(RegionDTO regionDTO : reportDTO.getRegions()) {
-            Report report = reportMapper.toReport(reportDTO);
+    public void createReport(CreateReportDTO createReportDTO) {
+        for(RegionDTO regionDTO : createReportDTO.getRegions()) {
+            Report report = reportMapper.toReport(createReportDTO);
             report.setIsActive(true);
             report.setRegion(regionMapper.toRegion(regionDTO));
             report.setStartDate(LocalDate.now());
@@ -181,13 +184,21 @@ public class ReportServiceImpl implements ReportService {
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=filex.xlsx");
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=file.xls");
+
 
         ByteArrayResource resource = new ByteArrayResource(excelContent);
+
+        try (FileOutputStream outputStream = new FileOutputStream("C:/example.xlsx")) {
+            byte[] data = new byte[Math.toIntExact(resource.contentLength())];
+            resource.getInputStream().read(data);
+            outputStream.write(data);
+        } catch (IOException e) {
+            e.printStackTrace(); // Обработка ошибок записи
+        }
         
-        return ResponseEntity.ok()
-                .contentLength(excelContent.length)
-                .header("Content-Disposition", "attachment; filename=report.xlsx")
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=file.xlsx")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(resource);
     }
 

@@ -17,7 +17,7 @@ import java.util.List;
 public class ReportDTO {
     private Integer id;
     private TemplateDTO template;
-    private List<RegionDTO> regions;
+    private RegionDTO region;
     private LocalDate startDate;
     private LocalDate endDate;
     private String comment;

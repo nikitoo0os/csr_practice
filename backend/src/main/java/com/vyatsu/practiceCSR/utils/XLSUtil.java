@@ -38,11 +38,6 @@ public class XLSUtil {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
 
-
-            try (OutputStream fileOutputStream = new FileOutputStream("C:/report.xlsx")) {
-                outputStream.writeTo(fileOutputStream);
-            }
-
             return outputStream.toByteArray();
         }
     }
