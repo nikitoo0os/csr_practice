@@ -62,24 +62,40 @@ export default function FillReport() {
           ...item,
           [fieldName]: event.target.value,
         };
-
+  
         if (fieldName === 'count1' || fieldName === 'count2') {
           const count1 = parseFloat(updatedItem.count1);
           const count2 = parseFloat(updatedItem.count2);
-
+  
           if (!isNaN(count1) && !isNaN(count2) && count1 !== 0) {
-            updatedItem.percent1 = ((count2 * 100) / count1).toFixed(1);
+            const newPercent1 = (count2 * 100) / count1;
+            if (newPercent1 <= 100) {
+              updatedItem.percent1 = newPercent1.toFixed(1);
+            } else {
+              // Adjust count2 to ensure percent1 is not greater than 100
+              updatedItem.count2 = ((count1 * 100) / 100).toFixed(1);
+              updatedItem.percent1 = 100;
+            }
           } else {
             updatedItem.percent1 = '';
           }
         }
-
+  
+        if (fieldName === 'percent2') {
+          const newPercent2 = parseFloat(updatedItem.percent2);
+          if (!isNaN(newPercent2)) {
+            updatedItem.percent2 = Math.min(newPercent2, 100).toFixed(1);
+          }
+        }
+  
         return updatedItem;
       }
       return item;
     });
     setFormData(updatedData);
   };
+  
+  
 
   const saveData = async () => {
     try {
@@ -184,7 +200,7 @@ export default function FillReport() {
                     type="number"
                     min="0.0"
                     max="100.0"
-                    step="0.1"
+                    step="0.5"
                     value={formData[index].percent2}
                     onChange={(e) => handleInputChange(e, reportData.service, 'percent2')}
                     className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
