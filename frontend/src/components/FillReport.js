@@ -2,6 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { request } from '../helpers/axios_helper';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
+import ReactModal from 'react-modal';
+import { useHistory } from 'react-router-dom';
+
 
 export default function FillReport() {
   const [reportsData, setReportsData] = useState([]);
@@ -14,6 +17,15 @@ export default function FillReport() {
 
   // Calculate the percent1 for the total row
   const totalPercent1 = totalCount1 !== 0 ? ((totalCount2 * 100) / totalCount1).toFixed(1) : '';
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  <button
+    type="button"
+    onClick={() => setIsConfirmationModalOpen(true)}
+    className="bg-green-500 hover:bg-green-600 text-white font-bold ml-2 py-2 px-4 rounded focus:outline-none mt-4"
+  >
+    Завершить
+  </button>
+
 
 
   useEffect(() => {
@@ -92,16 +104,21 @@ export default function FillReport() {
     }
   };
 
-
-  const finishReport = async () => {
+  const handleFinishReport = async () => {
+    setIsConfirmationModalOpen(false);
     try {
       saveData();
       await request('put', `/reports/end/${report.id}`);
       toast.success('Отчет успешно завершен.');
+      window.location.href = '/';
     } catch (error) {
       toast.error('Не удалось завершить отчет.');
     }
   };
+  const handleCloseConfirmationModal = () => {
+    setIsConfirmationModalOpen(false);
+  };
+
 
   const copyReportData = async () => {
     try {
@@ -202,7 +219,7 @@ export default function FillReport() {
           </button>
           <button
             type="button"
-            onClick={finishReport}
+            onClick={() => setIsConfirmationModalOpen(true)}
             className="bg-green-500 hover:bg-green-600 text-white font-bold ml-2 py-2 px-4 rounded focus:outline-none mt-4"
           >
             Завершить
@@ -216,6 +233,31 @@ export default function FillReport() {
           </button>
         </div>
       </div>
+      <ReactModal
+        isOpen={isConfirmationModalOpen}
+        onRequestClose={handleCloseConfirmationModal}
+        contentLabel="Confirmation Modal"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <div className="bg-white w-96 mx-auto p-4 rounded">
+          <p className="text-center">Вы уверены, что хотите завершить отчет?</p>
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={handleFinishReport}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-2 shadow-md"
+            >
+              Да
+            </button>
+            <button
+              onClick={handleCloseConfirmationModal}
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded shadow-md"
+            >
+              Отмена
+            </button>
+          </div>
+        </div>
+      </ReactModal>
     </>
   );
 }

@@ -46,54 +46,57 @@ export default function InactiveReports() {
 
   return (
     <div>
-      {currentReports.map((report) => (
-        <div key={report.id} className="border border-gray-300 rounded p-4 mb-4">
+      {reports.length === 0 ? (
+        <p>Список отчетов пуст.</p>
+      ) : (
+        <>
+          {currentReports.map((report) => (
+            <div key={report.id} className="border border-gray-300 rounded p-4 mb-4">
+              <div>
+                <div className="font-bold text-lg border-b-2">{report.template.name}</div>
+              </div>
+              <div>
+                <span className="font-semibold">Дата начала:</span> {formatDate(report.startDate)}
+              </div>
+              <div>
+                <span className="font-semibold">Дата завершения:</span> {formatDate(report.endDate)}
+              </div>
+              {report.comment !== null && (
                 <div>
-            <div className="font-bold text-lg border-b-2">{report.template.name}</div>
-          </div>
-          <div>
-            <span className="font-semibold">Дата начала:</span> {formatDate(report.startDate)}
-          </div>
-          <div>
-            <span className="font-semibold">Дата завершения:</span> {formatDate(report.endDate)}
-          </div>
-          {report.comment !== null && (
-            <div>
-              <strong>Комментарий:</strong> {report.comment}
+                  <strong>Комментарий:</strong> {report.comment}
+                </div>
+              )}
+              <button
+                onClick={() => handleViewReport(report)}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none mt-4"
+              >
+                Посмотреть
+              </button>
             </div>
-          )}
-          <button
-            onClick={() => handleViewReport(report)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none mt-4"
-          >
-            Посмотреть
-          </button>
-        </div>
-      ))}
-    <div className="flex items-center mt-4 px-4 py-2">
-        <button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
-          className={`px-4 py-2 rounded-lg border ${
-            currentPage === 1 ? "bg-gray-200" : "bg-sky-200 text-blue-600"
-          } mr-2`}
-        >
-          ❮
-        </button>
-        <span className="font-semibold text-blue-600">
-          {currentPage}/{getTotalPages()}
-        </span>
-        <button
-          disabled={currentPage >= getTotalPages()}
-          onClick={() => setCurrentPage(currentPage + 1)}
-          className={`px-4 py-2 rounded-lg border ${
-            currentPage >= getTotalPages() ? "bg-gray-200" : "bg-sky-200 text-blue-600"
-          } ml-2`}
-        >
-          ❯
-        </button>
-      </div>
-
+          ))}
+          <div className="flex items-center mt-4 px-4 py-2">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              className={`px-4 py-2 rounded-lg border ${currentPage === 1 ? "bg-gray-200" : "bg-sky-200 text-blue-600"
+                } mr-2`}
+            >
+              ❮
+            </button>
+            <span className="font-semibold text-blue-600">
+              {currentPage}/{getTotalPages()}
+            </span>
+            <button
+              disabled={currentPage >= getTotalPages()}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              className={`px-4 py-2 rounded-lg border ${currentPage >= getTotalPages() ? "bg-gray-200" : "bg-sky-200 text-blue-600"
+                } ml-2`}
+            >
+              ❯
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
