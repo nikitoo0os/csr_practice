@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import ReactModal from 'react-modal';
 import { useHistory } from 'react-router-dom';
+import CopyReportData from './CopyReportData';
 
 
 export default function FillReport() {
@@ -18,15 +19,7 @@ export default function FillReport() {
   // Calculate the percent1 for the total row
   const totalPercent1 = totalCount1 !== 0 ? ((totalCount2 * 100) / totalCount1).toFixed(1) : '';
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  <button
-    type="button"
-    onClick={() => setIsConfirmationModalOpen(true)}
-    className="bg-green-500 hover:bg-green-600 text-white font-bold ml-2 py-2 px-4 rounded focus:outline-none mt-4"
-  >
-    Завершить
-  </button>
-
-
+  const [isCopyDataModalOpen, setIsCopyDataModalOpen] = useState(false);
 
   useEffect(() => {
     fetchReportData();
@@ -134,15 +127,13 @@ export default function FillReport() {
   const handleCloseConfirmationModal = () => {
     setIsConfirmationModalOpen(false);
   };
+  const handleCloseCopyDataModal = () => {
+    setIsCopyDataModalOpen(false);
+  };
 
 
   const copyReportData = async () => {
-    try {
-      await request('put', `/report/data/copy/${report.id}`);
-      saveData();
-    } catch (error) {
-      toast.error('Не удалось завершить отчет.');
-    }
+    setIsCopyDataModalOpen(true);
   };
 
   return (
@@ -273,6 +264,15 @@ export default function FillReport() {
             </button>
           </div>
         </div>
+      </ReactModal>
+      <ReactModal
+        isOpen={isCopyDataModalOpen}
+        onRequestClose={handleCloseCopyDataModal}
+        contentLabel="Copy data Modal"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <CopyReportData reportToCopy={report} closeModal={handleCloseCopyDataModal} fetchReportDATA={fetchReportData}/>
       </ReactModal>
     </>
   );
