@@ -48,11 +48,14 @@ export default function InactiveReports() {
     <div>
       {currentReports.map((report) => (
         <div key={report.id} className="border border-gray-300 rounded p-4 mb-4">
-          <div>
-            <strong>Дата начала:</strong> {formatDate(report.startDate)}
+                <div>
+            <div className="font-bold text-lg border-b-2">{report.template.name}</div>
           </div>
           <div>
-            <strong>Дата завершения:</strong> {formatDate(report.endDate)}
+            <span className="font-semibold">Дата начала:</span> {formatDate(report.startDate)}
+          </div>
+          <div>
+            <span className="font-semibold">Дата завершения:</span> {formatDate(report.endDate)}
           </div>
           {report.comment !== null && (
             <div>
