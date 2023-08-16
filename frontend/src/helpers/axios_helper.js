@@ -16,20 +16,33 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 
 // запрос с валидацией токена на бэкэнде
-export const request = (method, url, data) => {
-
+export const request = async (method, url, data) => {
     let headers = {};
     if (getAuthToken() !== null && getAuthToken() !== "null") {
         headers = { 'Authorization': `Bearer ${getAuthToken()}` };
     }
 
-    return axios({
-        method: method,
-        url: url,
-        headers: headers,
-        data: data
-    });
+    try {
+        const response = await axios({
+            method: method,
+            url: url,
+            headers: headers,
+            data: data
+        });
+
+        return response;
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            // Обработка ошибки 401 (Unauthorized)
+            // Сброс токена
+            setAuthHeader(null);
+            window.location.href = '/';
+        } else {
+            throw error; // Прокидываем другие ошибки дальше
+        }
+    }
 };
+
 
 //Декодирование JWT
 export const decodeJwt = () => {
