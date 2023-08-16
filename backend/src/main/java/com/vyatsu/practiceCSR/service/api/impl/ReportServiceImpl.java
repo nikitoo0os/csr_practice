@@ -139,16 +139,24 @@ public class ReportServiceImpl implements ReportService {
 
                 var percent1_ = resultReportData.get(i).getPercent1();
                 if(percent1_ == null){
-                    count1 = count1 == 0 ? 1 : count1;
-                    BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
-                    resultReportData.get(i).setPercent1(percent1);
+
+                   // count1 = count1 == 0 ? 1 : count1;
+                    if(count1 > 0){
+                        BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
+                        resultReportData.get(i).setPercent1(percent1);
+                    }
+
                 }
 
                 var percent2_ = resultReportData.get(i).getPercent2();
                 if(percent2_ == null){
-                    count2 = count2 == 0 ? 1 : count2;
-                    BigDecimal percent2 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count2), 10, RoundingMode.HALF_UP);
-                    resultReportData.get(i).setPercent2(percent2);
+                    //count2 = count2 == 0 ? 1 : count2;
+
+                    if(count2 > 0){
+                        BigDecimal percent2 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count2), 10, RoundingMode.HALF_UP);
+                        resultReportData.get(i).setPercent2(percent2);
+                    }
+
                 }
 
 
@@ -173,7 +181,7 @@ public class ReportServiceImpl implements ReportService {
             }
         }
         byte[] excelContent = XLSUtil.writeReportDataToByteArray(resultReportData,
-                new String[]{"№",
+                new String[]{
                         "Наименование услуги в Кировской области",
                         "Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 31.07.2023)",
                         "Количество обращений, поступивших в эл виде через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023)",
