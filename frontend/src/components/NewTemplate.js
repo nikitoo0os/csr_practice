@@ -45,9 +45,10 @@ export default function NewTemplate() {
     setSelectedServices([]);
   };
 
-  const createTemplate = async () => {
+  const createTemplate = async (e) => {
+    e.preventDefault();
     try {
-      if (templateName.length > 0 && selectedServices.length > 0) {
+      if (selectedServices.length > 0) {
         setCreatingTemplate(true);
         const response = await request("post", "/template", {
           name: templateName,
@@ -70,10 +71,14 @@ export default function NewTemplate() {
         toast.success("Шаблон успешно создан.");
         setCreatingTemplate(false);
         setTemplateName("");
+        setColumn1("");
+        setColumn2("");
+        setColumn3("");
+        setColumn4("");
         setSelectedServices([]);
       } else {
         toast.error(
-          "Шаблон должен иметь название, а также необходимо выбрать хотя бы одну услугу для создания шаблона"
+          "Необходимо выбрать хотя бы одну услугу для создания шаблона"
         );
       }
     } catch (error) {
@@ -87,7 +92,7 @@ export default function NewTemplate() {
       <div className="mx-auto p-4">
         <div>
           <h2 className="text-xl font-bold mb-4">Создание шаблона</h2>
-          <form>
+          <form onSubmit={createTemplate}>
             <label>Название шаблона</label>
             <input
               type="text"
@@ -191,8 +196,7 @@ export default function NewTemplate() {
             </div>
 
             <button
-              type="button"
-              onClick={createTemplate}
+              type="submit"
               disabled={creatingTemplate}
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
             >
