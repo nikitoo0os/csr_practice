@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { request } from '../helpers/axios_helper';
-import Select from 'react-select';
 
 export default function EditUser({ closeModal, fetchUsers, userId }) {
   const [surname, setSurname] = useState('');
@@ -12,7 +11,7 @@ export default function EditUser({ closeModal, fetchUsers, userId }) {
   const [regionList, setRegionList] = useState([]);
   const [changePassword, setChangePassword] = useState(false);
   const [password, setPassword] = useState('');
-  
+
 
 
   useEffect(() => {
@@ -25,7 +24,7 @@ export default function EditUser({ closeModal, fetchUsers, userId }) {
           setFirstname(user.firstname);
           setPatronymic(user.patronymic);
           setEmail(user.email);
-          setRegion(user.region);
+          setRegion(user.region.id);
         } else {
           // Обработка ошибки, если требуется
         }
@@ -53,22 +52,23 @@ export default function EditUser({ closeModal, fetchUsers, userId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const id = userId;
+      const selectedRegion = regionList.find(regionItem => regionItem.id === parseInt(region));
       const user = {
         id,
         surname,
         firstname,
         patronymic,
         email,
-        region,
+        region: selectedRegion,
         password: changePassword ? password : '' // Include the new password or empty string
       };
-  
+      console.log(user);
       // Отправляем данные на сервер
       const response = await request('put', `/users`, user);
-  
+
       // Проверяем успешный статус ответа
       if (response.status === 200) {
         toast.success('Данные пользователя успешно изменены');
@@ -81,7 +81,7 @@ export default function EditUser({ closeModal, fetchUsers, userId }) {
       // Обработка ошибки, если требуется
     }
   };
-  
+
 
   return (
     <>
@@ -157,14 +157,21 @@ export default function EditUser({ closeModal, fetchUsers, userId }) {
             <label className="block text-sm font-medium text-gray-800" htmlFor="region">
               Район
             </label>
-            <Select
+            <select
               id="region"
               name="region"
-              value={regionList.find(region => region.value === region)}
-              options={regionList.map(region => ({ value: region, label: region.name }))}
-              onChange={selectedOption => setRegion(selectedOption.value)}
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
               required
-            />
+            >
+              <option value="">Выберите район</option>
+              {regionList.map((regionItem) => (
+                <option key={regionItem.id} value={regionItem.id}>
+                  {regionItem.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="mb-4 flex">
             <label className="block text-sm font-medium text-gray-800" htmlFor="changePassword">
