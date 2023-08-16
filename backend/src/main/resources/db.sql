@@ -1,4 +1,6 @@
+\! chcp 1251
 CREATE DATABASE practic2023;
+\c practic2023
 
 CREATE TABLE region_list(
     id SERIAL PRIMARY KEY,
@@ -10,19 +12,27 @@ CREATE TABLE user_(
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     region_id INT REFERENCES region_list(id),
-    first_name VARCHAR(100),
-    second_name VARCHAR(100),
-    is_admin BOOLEAN
+    surname VARCHAR(100),
+    firstname VARCHAR(100),
+    patronymic VARCHAR(100),
+    is_admin BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE service(
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE template(
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES user_(id)
+    name VARCHAR(255),
+    date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    count_all_requests TEXT,
+    count_epgu_requests TEXT,
+    percent_epgu_requests TEXT,
+    percent_not_violation_epgu_requests TEXT
 );
 
 CREATE TABLE template_data(
@@ -35,19 +45,10 @@ CREATE TABLE report(
     id SERIAL PRIMARY KEY,
     template_id INT REFERENCES template(id),
     region_id INT REFERENCES region_list(id),
-    frequency BIGINT NOT NULL,
     start_date DATE,
     end_date DATE,
-    active_days INT,
     comment TEXT,
-    is_active BOOLEAN,
-    is_completed BOOLEAN
-);
-
-CREATE TABLE user_report(
-    id SERIAL PRIMARY KEY,
-    user_id int REFERENCES user_(id),
-    report_id int REFERENCES report(id)
+    is_active BOOLEAN
 );
 
 CREATE TABLE report_data(

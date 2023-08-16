@@ -66,8 +66,8 @@ export default function Templates() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const indexOfLastTemplate = Math.min(currentPage * itemsPerPage, filteredTemplates.length);
-  const indexOfFirstTemplate = indexOfLastTemplate - itemsPerPage;
+  const indexOfFirstTemplate = (currentPage - 1) * itemsPerPage;
+  const indexOfLastTemplate = indexOfFirstTemplate + itemsPerPage;
   const currentTemplates = filteredTemplates.slice(indexOfFirstTemplate, indexOfLastTemplate);
 
   const handleCreateReport = (template) => {

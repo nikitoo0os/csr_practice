@@ -27,6 +27,7 @@ export default function FillReport() {
 
   const fetchReportData = useCallback(async () => {
     try {
+      console.log(report.template);
       const response = await request('get', `/report/data/services/${report.id}`);
       setReportsData(response.data);
       initializeFormData(response.data);
@@ -144,10 +145,10 @@ export default function FillReport() {
             <tr className="bg-sky-600 text-white">
               <th className="px-4 py-2 border w-10">№</th>
               <th className="px-4 py-2 border w-96">service name</th>
-              <th className="px-4 py-2 border w-64">count1</th>
-              <th className="px-4 py-2 border w-64">count2</th>
-              <th className="px-4 py-2 border w-64">percent1</th>
-              <th className="px-4 py-2 border w-64">percent2</th>
+              <th className="px-4 py-2 border w-64">{report.template.countAllRequests}</th>
+              <th className="px-4 py-2 border w-64">{report.template.countEPGURequests}</th>
+              <th className="px-4 py-2 border w-64">{report.template.percentEPGURequests}</th>
+              <th className="px-4 py-2 border w-64">{report.template.percentNotViolationEPGURequests}</th>
               <th className="px-4 py-2 border w-96">regular act</th>
             </tr>
           </thead>

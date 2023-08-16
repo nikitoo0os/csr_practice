@@ -82,7 +82,7 @@ export default function ActiveReports() {
           {filteredReports.map((report) => (
             <div
               key={report.id}
-              className={`border border-gray-300 rounded p-4 mb-4 ${new Date() > new Date(report.endDate) ? 'bg-red-200' : ''
+              className={`border border-gray-300 rounded shadow-lg p-4 mb-4 ${new Date() > new Date(report.endDate) ? 'bg-red-200' : ''
                 }`}
             >
               <div>

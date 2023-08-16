@@ -75,7 +75,7 @@ export default function InactiveReports() {
         </div>
       </div>
           {filteredReports.map((report) => (
-            <div key={report.id} className="border border-gray-300 rounded p-4 mb-4">
+            <div key={report.id} className="border border-gray-300 shadow-lg rounded p-4 mb-4">
               <div>
                 <div className="font-bold text-lg border-b-2">{report.template.name}</div>
               </div>
