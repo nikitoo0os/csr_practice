@@ -65,7 +65,6 @@ export default function EditUser({ closeModal, fetchUsers, userId }) {
         region: selectedRegion,
         password: changePassword ? password : '' // Include the new password or empty string
       };
-      console.log(user);
       // Отправляем данные на сервер
       const response = await request('put', `/users`, user);
 
