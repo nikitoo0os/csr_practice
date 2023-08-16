@@ -63,6 +63,9 @@ public class UserController {
         user.setPatronymic(userDTO.getPatronymic());
         user.setEmail(userDTO.getEmail());
         user.setRegion(regionService.getRegionById((long) userDTO.getRegion().getId()));
+        if(userDTO.getPassword() != null && !user.getPassword().equals(userDTO.getPassword())){
+            user.setPassword(userDTO.getPassword());
+        }
         userService.updateUser(user);
         return ResponseEntity.ok().build();
     }
