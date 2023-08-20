@@ -14,7 +14,7 @@ export default function UserReports({ userId, closeModal }) {
   }, []);
   const fetchUserReports = async () => {
     try {
-      const response = await request("get", `/reports/active/user/${userId}`);
+      const response = await request("get", `/reports/inactive/user/${userId}`);
       setReports(response.data);
     } catch (error) {
       console.log(error);
