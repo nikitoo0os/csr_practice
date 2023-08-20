@@ -161,4 +161,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByRegionId(id);
     }
 
+    @Override
+    public void changePassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(password)));
+        updateUser(user);
+    }
+
 }

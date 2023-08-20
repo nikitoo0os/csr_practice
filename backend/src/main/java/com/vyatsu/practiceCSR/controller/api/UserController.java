@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.nio.CharBuffer;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -65,6 +66,10 @@ public class UserController {
         user.setRegion(regionService.getRegionById((long) userDTO.getRegion().getId()));
         if(userDTO.getPassword() != null && !user.getPassword().equals(userDTO.getPassword())){
             user.setPassword(userDTO.getPassword());
+            userService.changePassword(user, userDTO.getPassword());
+        }
+        else{
+            return ResponseEntity.badRequest().build();
         }
         userService.updateUser(user);
         return ResponseEntity.ok().build();

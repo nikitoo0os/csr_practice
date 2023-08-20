@@ -33,4 +33,6 @@ public interface UserService {
     User getUserByEmail(String email);
 
     List<User> getUserByRegionId(Long id);
+
+    void changePassword(User user, String password);
 }
