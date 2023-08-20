@@ -192,12 +192,12 @@ export default function FillReport() {
           <thead>
             <tr className="bg-sky-600 text-white">
               <th className="px-4 py-2 border w-10">№</th>
-              <th className="px-4 py-2 border w-96">service name</th>
+              <th className="px-4 py-2 border w-96">Наименование услуги в Кировской области</th>
               <th className="px-4 py-2 border w-64">{report.template.countAllRequests}</th>
               <th className="px-4 py-2 border w-64">{report.template.countEPGURequests}</th>
               <th className="px-4 py-2 border w-64">{report.template.percentEPGURequests}</th>
               <th className="px-4 py-2 border w-64">{report.template.percentNotViolationEPGURequests}</th>
-              <th className="px-4 py-2 border w-96">regular act</th>
+              <th className="px-4 py-2 border w-96">Наименование муниципального нормативного акта (административного регламента), которые приведены в соответствие с описанием целевого состояния (ОЦС) или типовым федеральным регламентом (номер и дата документа)</th>
             </tr>
             <tr className="bg-sky-600">
               <th className="px-4 py-2 border w-10"></th>
