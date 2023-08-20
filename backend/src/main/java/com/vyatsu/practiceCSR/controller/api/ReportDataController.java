@@ -40,8 +40,9 @@ public class ReportDataController {
     }
 
     @PutMapping("/copy/{reportId}")
-    public ResponseEntity<ReportDTO> copyReportData(@PathVariable Long reportId){
-        Report reportFrom = reportService.getReportById(reportId);
+    public ResponseEntity<ReportDTO> copyReportData(@PathVariable Long reportIdTo, @RequestBody Long reportIdFrom){
+        Report reportFrom = reportService.getReportById(reportIdFrom);
+
         boolean reportIsLastMonth = reportService.isLastMonth(reportFrom);
         Report cloneReport = null;
         if(reportIsLastMonth){
