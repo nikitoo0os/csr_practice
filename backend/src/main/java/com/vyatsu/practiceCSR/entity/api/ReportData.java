@@ -16,7 +16,7 @@ public class ReportData {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @Getter
     @Setter
     @JoinColumn(name = "service_id")

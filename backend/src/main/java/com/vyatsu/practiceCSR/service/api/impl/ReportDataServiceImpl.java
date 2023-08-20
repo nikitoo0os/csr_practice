@@ -33,20 +33,17 @@ public class ReportDataServiceImpl implements ReportDataService {
     @Override
     public void createReportFromPrevious(Report reportFrom, Report reportTo) {
         List<ReportData> fromReportData = reportDataRepository.findByReportId(Long.valueOf(reportFrom.getId()));
-        List<ReportData> toReportData = new ArrayList<>();
+        List<ReportData> toReportData = reportDataRepository.findByReportId(Long.valueOf(reportTo.getId()));
 
         if(reportFrom.getTemplate() == reportTo.getTemplate()){
-            for(ReportData reportData : fromReportData){
-                ReportData reportData1 = new ReportData();
-                reportData1.setService(reportData.getService());
-                reportData1.setReport(reportTo);
-                reportData1.setCount1(reportData.getCount1());
-                reportData1.setCount2(reportData.getCount2());
-                reportData1.setPercent1(reportData1.getPercent1());
-                reportData1.setPercent2(reportData1.getPercent2());
-                reportData1.setRegularAct(reportData1.getRegularAct());
-
-                toReportData.add(reportData1);
+            for(int i = 0; i < fromReportData.stream().count(); i++){
+                if(fromReportData.get(i).getService().getName().equals(toReportData.get(i).getService().getName())){
+                    toReportData.get(i).setCount1(fromReportData.get(i).getCount1());
+                    toReportData.get(i).setCount2(fromReportData.get(i).getCount2());
+                    toReportData.get(i).setPercent1(fromReportData.get(i).getPercent1());
+                    toReportData.get(i).setPercent2(fromReportData.get(i).getPercent2());
+                    toReportData.get(i).setRegularAct(fromReportData.get(i).getRegularAct());
+                }
             }
             reportDataRepository.saveAll(toReportData);
         }
