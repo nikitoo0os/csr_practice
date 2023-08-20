@@ -384,7 +384,7 @@ export default function FillReport() {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <CopyReportData reportToCopy={report} closeModal={handleCloseCopyDataModal} fetchReportDATA={fetchReportData} />
+        <CopyReportData reportToCopy={report} closeModal={handleCloseCopyDataModal} fetchReportData={fetchReportData} />
       </ReactModal>
     </>
   );

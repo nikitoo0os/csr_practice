@@ -28,6 +28,9 @@ export default function CopyReportData({reportToCopy,closeModal,fetchReportData}
   const copyReportData = async (selectedReport) => {
     try {
       await request('put', `/report/data/copy/${reportToCopy.id}`, selectedReport.id);
+      toast.success("Данные успешно скопированы");
+      fetchReportData();
+      closeModal();
     } catch (error) {
       toast.error('Не удалось завершить отчет.');
     }
