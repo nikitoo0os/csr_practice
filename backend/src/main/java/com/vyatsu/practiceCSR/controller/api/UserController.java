@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.nio.CharBuffer;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @RestController
@@ -64,7 +65,7 @@ public class UserController {
         user.setPatronymic(userDTO.getPatronymic());
         user.setEmail(userDTO.getEmail());
         user.setRegion(regionService.getRegionById((long) userDTO.getRegion().getId()));
-        if(userDTO.getPassword() != null && !user.getPassword().equals(userDTO.getPassword())){
+        if(!Objects.equals(userDTO.getPassword(), "") && !user.getPassword().equals(userDTO.getPassword())){
             user.setPassword(userDTO.getPassword());
             userService.changePassword(user, userDTO.getPassword());
         }

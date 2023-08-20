@@ -1,4 +1,4 @@
-INSERT INTO region_list(name) VALUES 
+INSERT INTO region_list(name) VALUES
 ('Арбажский'),
 ('Афанасьевский'),
 ('Белохолуницкий'),
@@ -51,14 +51,12 @@ INSERT INTO user_(email,password,region_id,surname,firstname,patronymic,is_admin
 ('user1@gmail.com','$2a$12$NiAIWGHdDVl0ljm8e5TRru9sm.hRV81S/o.b6nCRY0JmcmDXjBAPS',1,'Смирнова','Виктория','Андреевна',false),
 ('user2@gmail.com','$2a$12$Wuc3k/s9RE1XFuve51K9Z.beXiPazEhYJn2GT3SW1xvj9z2dSsaAi',2,'Чернов','Петр','Максимович',false),
 ('user3@gmail.com','$2a$12$Yc0ejJ2orsMsLUseFUKy1OrEO5y1wezSDESQWWkTdT.feWXE09Uwy',3,'Акимова','Елизавета','Марковна',false);
-/*
- пароли соответственно
- admin
- user1
- user2
- user3
-*/
 
+-- пароли соответственно
+-- admin
+-- user1
+-- user2
+-- user3
 
 INSERT INTO service(name) VALUES 
 ('Выдача разрешения на ввод объекта в эксплуатацию'),

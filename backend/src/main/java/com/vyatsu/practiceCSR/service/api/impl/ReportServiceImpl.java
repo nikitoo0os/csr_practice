@@ -27,7 +27,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -42,6 +45,13 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public void createReport(CreateReportDTO createReportDTO) {
+        List<RegionDTO> regions = createReportDTO.getRegions()
+                .stream()
+                .collect(Collectors.toMap(RegionDTO::getName, Function.identity(), (existing, replacement) -> existing))
+                .values()
+                .stream()
+                .toList();
+
         for(RegionDTO regionDTO : createReportDTO.getRegions()) {
             Report report = reportMapper.toReport(createReportDTO);
             report.setIsActive(true);

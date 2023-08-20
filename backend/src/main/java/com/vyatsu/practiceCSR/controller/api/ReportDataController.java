@@ -2,6 +2,7 @@ package com.vyatsu.practiceCSR.controller.api;
 
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
 import com.vyatsu.practiceCSR.dto.api.ReportDataDTO;
+import com.vyatsu.practiceCSR.dto.helper.CopyReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.entity.api.ReportData;
 import com.vyatsu.practiceCSR.exception.AppException;
@@ -39,16 +40,15 @@ public class ReportDataController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/copy/{reportId}")
-    public ResponseEntity<ReportDTO> copyReportData(@PathVariable Long reportIdTo, @RequestBody Long reportIdFrom){
-        Report reportFrom = reportService.getReportById(reportIdFrom);
+    @PutMapping("/copy/{reportIdTo}")
+    public ResponseEntity<Void> copyReportData(@PathVariable Long reportIdTo, @RequestBody String id){
+        Report reportFrom = reportService.getReportById(Long.valueOf(id));
+        Report reportTo = reportService.getReportById(reportIdTo);
 
         boolean reportIsLastMonth = reportService.isLastMonth(reportFrom);
-        Report cloneReport = null;
-        if(reportIsLastMonth){
-            cloneReport = reportDataService.createReportFromPrevious(reportFrom);
-        }
-        return ResponseEntity.ok(reportMapper.toReportDTO(cloneReport));
+        reportDataService.createReportFromPrevious(reportFrom, reportTo);
+
+        return ResponseEntity.ok().build();
     }
 
 

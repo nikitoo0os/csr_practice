@@ -10,5 +10,5 @@ public interface ReportDataService {
 
     void saveReportData(List<ReportData> reportData);
 
-    Report createReportFromPrevious(Report reportFrom);
+    void createReportFromPrevious(Report reportFrom, Report reportTo);
 }

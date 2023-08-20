@@ -7,6 +7,7 @@ import com.vyatsu.practiceCSR.repository.ReportRepository;
 import com.vyatsu.practiceCSR.service.api.ReportDataService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
@@ -30,14 +31,25 @@ public class ReportDataServiceImpl implements ReportDataService {
     }
 
     @Override
-    public Report createReportFromPrevious(Report fromReport) {
-        Report cloneReport = reportRepository.save(new Report());
-        List<ReportData> fromReportData = reportDataRepository.findByReportId(Long.valueOf(fromReport.getId()));
-        for (ReportData reportData : fromReportData) {
-            reportData.setReport(cloneReport);
+    public void createReportFromPrevious(Report reportFrom, Report reportTo) {
+        List<ReportData> fromReportData = reportDataRepository.findByReportId(Long.valueOf(reportFrom.getId()));
+        List<ReportData> toReportData = new ArrayList<>();
+
+        if(reportFrom.getTemplate() == reportTo.getTemplate()){
+            for(ReportData reportData : fromReportData){
+                ReportData reportData1 = new ReportData();
+                reportData1.setService(reportData.getService());
+                reportData1.setReport(reportTo);
+                reportData1.setCount1(reportData.getCount1());
+                reportData1.setCount2(reportData.getCount2());
+                reportData1.setPercent1(reportData1.getPercent1());
+                reportData1.setPercent2(reportData1.getPercent2());
+                reportData1.setRegularAct(reportData1.getRegularAct());
+
+                toReportData.add(reportData1);
+            }
+            reportDataRepository.saveAll(toReportData);
         }
-        reportDataRepository.saveAll(fromReportData);
-        return cloneReport;
     }
 
 }
