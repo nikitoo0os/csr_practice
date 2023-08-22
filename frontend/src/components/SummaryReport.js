@@ -27,7 +27,7 @@ export default function SummaryReport({ template, closeModal }) {
         responseType: "blob",
       });
 
-      const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const blob = new Blob([response.data]);
       const url = window.URL.createObjectURL(blob);
 
       const link = document.createElement("a");

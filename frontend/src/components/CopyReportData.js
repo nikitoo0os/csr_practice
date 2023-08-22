@@ -13,7 +13,7 @@ export default function CopyReportData({reportToCopy,closeModal,fetchReportData}
 
   const fetchUserReports = async () => {
     try {
-      const response = await request('get', '/reports/inactive/user');
+      const response = await request('get', `/reports/inactive/user/template/${reportToCopy.template.id}`);
       setReports(response.data);
     } catch (error) {
       toast.error('Не удалось получить неактивные отчеты пользователя.');

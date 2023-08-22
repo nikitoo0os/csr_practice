@@ -36,7 +36,6 @@ export default function FillReport() {
 
   const fetchReportData = useCallback(async () => {
     try {
-      console.log(report.template);
       const response = await request('get', `/report/data/services/${report.id}`);
       setReportsData(response.data);
       initializeFormData(response.data);
