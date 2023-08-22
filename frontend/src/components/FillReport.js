@@ -102,6 +102,13 @@ export default function FillReport() {
 
   const saveData = async () => {
     try {
+      setServiceNameFilter('');
+      setCount1Filter('');
+      setCount2Filter('');
+      setPercent1Filter('');
+      setPercent2Filter('');
+      setRegularActFilter('');
+      filterData('');
       const requestData = formData.map((item) => {
         const { id, service, count1, count2, percent1, percent2, regularAct } = item;
         return {
@@ -153,10 +160,10 @@ export default function FillReport() {
   const filterData = () => {
     const filtered = reportsData.filter((item) => {
       const serviceNameMatch = !serviceNameFilter || item.service.name?.toLowerCase().includes(serviceNameFilter.toLowerCase());
-      const count1Match = !count1Filter || item.count1?.toString().includes(count1Filter);
-      const count2Match = !count2Filter || item.count2?.toString().includes(count2Filter);
-      const percent1Match = !percent1Filter || item.percent1?.toString().includes(percent1Filter);
-      const percent2Match = !percent2Filter || item.percent2?.toString().includes(percent2Filter);
+      const count1Match = !count1Filter || item.count1?.toString() === count1Filter;
+      const count2Match = !count2Filter || item.count2?.toString() === count2Filter;
+      const percent1Match = !percent1Filter || item.percent1?.toString() === percent1Filter;
+      const percent2Match = !percent2Filter || item.percent2?.toString() === percent2Filter;
       const regularActMatch = !regularActFilter || item.regularAct?.toLowerCase().includes(regularActFilter.toLowerCase());
   
       return serviceNameMatch && count1Match && count2Match && percent1Match && percent2Match && regularActMatch;
