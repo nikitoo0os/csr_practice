@@ -19,15 +19,18 @@ export default function SummaryReport({ template, closeModal }) {
     try {
       setIsDownloading(true);
 
-      const response = await request("post", "/reports/summary", {
+      const params = {
         startDate: startDate,
         endDate: endDate,
         templateId: template.id,
-      }, {
+      };
+
+      const response = await request("get", `/reports/summary`, {
+        params: params,
         responseType: "blob",
       });
 
-      const blob = new Blob([response.data]);
+      const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       const url = window.URL.createObjectURL(blob);
 
       const link = document.createElement("a");
