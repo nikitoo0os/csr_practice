@@ -19,11 +19,7 @@ export default function SummaryReport({ template, closeModal }) {
     try {
       setIsDownloading(true);
 
-      const response = await request("get", `/reports/summary`, {
-        startDate: startDate,
-        endDate: endDate,
-        templateId: template.id,   
-      });
+      const response = await request("get", `/reports/summary?startDate=${startDate}&endDate=${endDate}&templateId=${template.id}`);
 
       const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       const url = window.URL.createObjectURL(blob);
