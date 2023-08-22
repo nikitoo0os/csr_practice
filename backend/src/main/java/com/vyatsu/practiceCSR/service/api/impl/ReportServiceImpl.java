@@ -149,26 +149,20 @@ public class ReportServiceImpl implements ReportService {
 
                 var percent1_ = resultReportData.get(i).getPercent1();
                 if(percent1_ == null){
-
-                   // count1 = count1 == 0 ? 1 : count1;
                     if(count1 > 0){
                         BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
                         resultReportData.get(i).setPercent1(percent1);
                     }
-
                 }
 
                 var percent2_ = resultReportData.get(i).getPercent2();
                 if(percent2_ == null){
-                    //count2 = count2 == 0 ? 1 : count2;
-
                     if(count2 > 0){
                         BigDecimal percent2 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count2), 10, RoundingMode.HALF_UP);
                         resultReportData.get(i).setPercent2(percent2);
                     }
 
                 }
-
 
                 var lastCount1 = lastReportData.get(j).get(i).getCount1();
                 if(lastCount1 == null){
@@ -181,13 +175,6 @@ public class ReportServiceImpl implements ReportService {
 
                 resultReportData.get(i).setCount1(count1 + lastCount1);
                 resultReportData.get(i).setCount2(count2 + lastCount2);
-
-//                if(count1 != 0){
-//                    BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
-//                    resultReportData.get(i).setPercent1(percent1);
-//                    resultReportData.get(i).setPercent2(percent1);
-//                }
-
             }
         }
         byte[] excelContent = XLSUtil.writeReportDataToByteArray(resultReportData,
@@ -199,12 +186,6 @@ public class ReportServiceImpl implements ReportService {
                         "Доля услуг, предоставленных без нарушения регламентного срока при оказании услуги через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023) (%)"
                 });
 
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=file.xls");
-
-
         ByteArrayResource resource = new ByteArrayResource(excelContent);
 
         try (FileOutputStream outputStream = new FileOutputStream("C:/example.xlsx")) {
@@ -212,11 +193,11 @@ public class ReportServiceImpl implements ReportService {
             resource.getInputStream().read(data);
             outputStream.write(data);
         } catch (IOException e) {
-            e.printStackTrace(); // Обработка ошибок записи
+            e.printStackTrace();
         }
         
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=file.xlsx")
-                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=file.xlsx")
                 .body(resource);
     }
 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -78,6 +79,25 @@ public class ReportController {
             // Получаем профили для аутентифицированного клиента
             List<Report> reports = reportService.getInactiveReportByUserId(userId);
             List<ReportDTO> reportDTOs = reportMapper.toListReportDTO(reports);
+            return new ResponseEntity<>(reportDTOs, HttpStatus.OK);
+        } catch (Exception e) {
+            // Проверка токена не удалась или произошла другая ошибка
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+    @GetMapping("/inactive/user/template/{idTemplate}")
+    public ResponseEntity<List<ReportDTO>> getInactiveReportByTemplate(@RequestHeader("Authorization") String token, @PathVariable Long idTemplate){
+        try {
+            String jwtToken = token.substring(7); // Предполагается, что токен имеет формат "Bearer <токен>"
+            Authentication authentication = authenticationProvider.validateToken(jwtToken);
+            Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
+
+            List<Report> reports = reportService.getInactiveReportByUserId(userId);
+            List<ReportDTO> reportDTOs = reportMapper.toListReportDTO(reports);
+
+            reportDTOs = reportDTOs.stream()
+                    .filter(x -> x.getTemplate().getId() == idTemplate)
+                    .collect(Collectors.toList());
             return new ResponseEntity<>(reportDTOs, HttpStatus.OK);
         } catch (Exception e) {
             // Проверка токена не удалась или произошла другая ошибка
