@@ -28,7 +28,7 @@ build-react:
       - frontend/build/
     expire_in: 30 minutes
 
-#Деплоим по примеру из интернетика (ага, нет):3
+#Деплоим по примеру из интернетика (ага, нет) :3
 deploy-all:
   stage: deploy
   script:
