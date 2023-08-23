@@ -5,13 +5,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import ReactModal from 'react-modal';
 import NewReport from './NewReport';
 import SummaryReport from './SummaryReport';
+import { useNavigate } from 'react-router-dom';
 
 export default function Templates() {
   const [templates, setTemplates] = useState([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [isSumReportModalOpen, setIsSumReportModalOpen] = useState(false);
-
+  const navigate = useNavigate();
 
   const formatTemplateDate = (date) => {
     const templateDate = new Date(date);
@@ -80,6 +81,9 @@ export default function Templates() {
     setIsSumReportModalOpen(true);
   };
 
+  const handleEditTemplate = (template) => {
+    navigate(`/edit-template`, { state: { template } });
+  };
 
   const closeReportModal = () => {
     setSelectedTemplate(null);
@@ -137,9 +141,15 @@ export default function Templates() {
                   <div className="ml-4 font-semibold">{template.name}</div>
                 </div>
                 <div className="ml-auto">
+                <button
+                    onClick={() => handleEditTemplate(template)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none mr-4"
+                  >
+                    Редактировать
+                  </button>
                   <button
                     onClick={() => handleCreateReport(template)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none mr-4"
+                    className="bg-lime-500 hover:bg-lime-600 text-white font-bold py-2 px-4 rounded focus:outline-none mr-4"
                   >
                     Создать отчет
                   </button>
