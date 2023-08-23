@@ -18,9 +18,9 @@ build-java:
 build-react:
   stage: build
   script:
-    - echo "REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL" > .env
-    - unset CI
     - cd frontend
+    - unset CI
+    - echo "REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL" > .env
     - npm install
     - npm run build
   artifacts:
@@ -29,7 +29,7 @@ build-react:
     expire_in: 30 minutes
 
 #Деплоим по примеру из интернетика (ага, нет):3
-deploy-all: 
+deploy-all:
   stage: deploy
   script:
     - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_URL "systemctl --user stop uslugi.service"
