@@ -9,6 +9,8 @@ export default function NewReport({ template, closeModal }) {
   const [comment, setComment] = useState("");
   const [regions, setRegions] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState('');
+  const [selectAllRegions, setSelectAllRegions] = useState(false);
+
 
   useEffect(() => {
     fetchRegions();
@@ -23,20 +25,48 @@ export default function NewReport({ template, closeModal }) {
     }
   };
 
+  const selectStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      maxHeight: '200px',
+    }),
+    menu: provided => ({
+      ...provided,
+      maxHeight: '150px',
+    }),
+    menuList: provided => ({
+      ...provided,
+      maxHeight: '150px',
+    }),
+    multiValue: provided => ({
+      ...provided,
+      maxWidth: '80%',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    }),
+    valueContainer: provided => ({
+      ...provided,
+      flexWrap: 'wrap',
+      maxHeight: '80px',
+      overflowY: 'auto',
+    }),
+  };
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (selectedRegion.length === 0) {
       toast.error("Выберите хотя бы один регион.");
       return;
     }
-  
+
     try {
       const selectedRegionsData = selectedRegion.map(regionOption => {
         return regions.find(region => region.id === regionOption.value);
       });
-  
+
       const requestData = {
         template,
         startDate,
@@ -51,7 +81,7 @@ export default function NewReport({ template, closeModal }) {
       toast.error("Не удалось создать отчет.");
     }
   };
-  
+
 
 
   const handleStartDateChange = (event) => {
@@ -135,7 +165,28 @@ export default function NewReport({ template, closeModal }) {
             className="w-full"
             required
             placeholder="Выберите регионы"
+            styles={selectStyles}
           />
+          <button
+            className="text-blue-600 underline focus:outline-none"
+            onClick={(event) => {
+              event.preventDefault(); // Предотвращаем отправку формы
+              if (selectAllRegions) {
+                setSelectedRegion([]);
+              } else {
+                setSelectedRegion(
+                  regions.map(region => ({
+                    value: region.id,
+                    label: region.name
+                  }))
+                );
+              }
+              setSelectAllRegions(!selectAllRegions);
+            }}
+          >
+            {selectAllRegions ? "Отменить выбор всех регионов" : "Выбрать все регионы"}
+          </button>
+
         </div>
         <button
           type="submit"
