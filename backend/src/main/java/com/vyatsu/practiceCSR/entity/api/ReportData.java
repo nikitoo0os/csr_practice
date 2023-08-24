@@ -39,12 +39,12 @@ public class ReportData {
 
     @Getter
     @Setter
-    @Column(name = "percent_1", precision = 3, scale = 1)
+    @Column(name = "percent_1", precision = 4, scale = 1)
     private BigDecimal percent1;
 
     @Getter
     @Setter
-    @Column(name = "percent_2", precision = 3, scale = 1)
+    @Column(name = "percent_2", precision = 4, scale = 1)
     private BigDecimal percent2;
     @Getter
     @Setter
