@@ -66,6 +66,14 @@ export default function FillReport() {
         };
 
         if (fieldName === 'count1' || fieldName === 'count2') {
+
+          let newValue = parseInt(event.target.value, 10); // Parse input as integer
+
+          // Ensure the value is within the valid range (0 to 2147483646)
+          newValue = Math.max(0, Math.min(newValue, 2147483646));
+
+          updatedItem[fieldName] = newValue;
+
           const count1 = parseFloat(updatedItem.count1);
           const count2 = parseFloat(updatedItem.count2);
 
@@ -151,7 +159,7 @@ export default function FillReport() {
   const copyReportData = async () => {
     setIsCopyDataModalOpen(true);
   };
-  
+
   useEffect(() => {
     filterData();
   }, [reportsData, serviceNameFilter, count1Filter, count2Filter, percent1Filter, percent2Filter, regularActFilter]);
@@ -164,12 +172,12 @@ export default function FillReport() {
       const percent1Match = !percent1Filter || item.percent1?.toString() === percent1Filter;
       const percent2Match = !percent2Filter || item.percent2?.toString() === percent2Filter;
       const regularActMatch = !regularActFilter || item.regularAct?.toLowerCase().includes(regularActFilter.toLowerCase());
-  
+
       return serviceNameMatch && count1Match && count2Match && percent1Match && percent2Match && regularActMatch;
     });
-  
+
     setFilteredData(filtered);
-  
+
     const updatedFormData = filtered.map((item) => {
       const existingFormEntry = formData.find((formItem) => formItem.id === item.id);
       if (existingFormEntry) {
@@ -185,10 +193,10 @@ export default function FillReport() {
         regularAct: item.regularAct,
       };
     });
-  
+
     setFormData(updatedFormData);
   };
-  
+
 
   return (
     <>
@@ -212,8 +220,10 @@ export default function FillReport() {
                   type="text"
                   placeholder="Фильтр"
                   value={serviceNameFilter}
-                  onChange={(e) => {setServiceNameFilter(e.target.value);
-                    filterData();}}
+                  onChange={(e) => {
+                    setServiceNameFilter(e.target.value);
+                    filterData();
+                  }}
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
                 />
               </th>
@@ -222,8 +232,10 @@ export default function FillReport() {
                   type="number"
                   placeholder="Фильтр"
                   value={count1Filter}
-                  onChange={(e) => {setCount1Filter(e.target.value);
-                    filterData();}}
+                  onChange={(e) => {
+                    setCount1Filter(e.target.value);
+                    filterData();
+                  }}
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
                 />
               </th>
@@ -232,8 +244,10 @@ export default function FillReport() {
                   type="number"
                   placeholder="Фильтр"
                   value={count2Filter}
-                  onChange={(e) => {setCount2Filter(e.target.value);
-                    filterData();}}
+                  onChange={(e) => {
+                    setCount2Filter(e.target.value);
+                    filterData();
+                  }}
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
                 />
               </th>
@@ -242,8 +256,10 @@ export default function FillReport() {
                   type="number"
                   placeholder="Фильтр"
                   value={percent1Filter}
-                  onChange={(e) => {setPercent1Filter(e.target.value);
-                    filterData();}}
+                  onChange={(e) => {
+                    setPercent1Filter(e.target.value);
+                    filterData();
+                  }}
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
                 />
               </th>
@@ -252,8 +268,10 @@ export default function FillReport() {
                   type="number"
                   placeholder="Фильтр"
                   value={percent2Filter}
-                  onChange={(e) => {setPercent2Filter(e.target.value);
-                    filterData();}}
+                  onChange={(e) => {
+                    setPercent2Filter(e.target.value);
+                    filterData();
+                  }}
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
                 />
               </th>
@@ -262,8 +280,10 @@ export default function FillReport() {
                   type="text"
                   placeholder="Фильтр"
                   value={regularActFilter}
-                  onChange={(e) => {setRegularActFilter(e.target.value);
-                    filterData();}}
+                  onChange={(e) => {
+                    setRegularActFilter(e.target.value);
+                    filterData();
+                  }}
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
                 />
               </th>
