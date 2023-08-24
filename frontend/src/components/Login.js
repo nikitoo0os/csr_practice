@@ -13,6 +13,7 @@ export default class Login extends React.Component {
       patronymic: "",
       email: "",
       password: "",
+      showPassword: false,
     };
   }
   onChangeHandler = (event) => {
@@ -24,25 +25,25 @@ export default class Login extends React.Component {
   onLogin(e, email, password) {
     e.preventDefault();
     request(
-        "POST",
-        "/login",
-        {
-            email: email,
-            password: password
-        }).then(
-            (response) => {
-                setAuthHeader(response.data.token);
-                window.location.reload();
-            }).catch(
-                (error) => {
-                    setAuthHeader(null);
-                    toast.error('Неверный логин или пароль!', {
-                        position: toast.POSITION.TOP_RIGHT,
-                        autoClose: 3000,
-                    });
-                }
-            );
-};
+      "POST",
+      "/login",
+      {
+        email: email,
+        password: password
+      }).then(
+        (response) => {
+          setAuthHeader(response.data.token);
+          window.location.reload();
+        }).catch(
+          (error) => {
+            setAuthHeader(null);
+            toast.error('Неверный логин или пароль!', {
+              position: toast.POSITION.TOP_RIGHT,
+              autoClose: 3000,
+            });
+          }
+        );
+  };
 
   onSubmitLogin = (e) => {
     e.preventDefault();
@@ -55,6 +56,12 @@ export default class Login extends React.Component {
       });
     }
   };
+
+  togglePasswordVisibility = () => {
+    this.setState((prevState) => ({
+      showPassword: !prevState.showPassword,
+    }));
+  }
 
   render() {
     return (
@@ -84,13 +91,20 @@ export default class Login extends React.Component {
                   Пароль
                 </label>
                 <input
-                  type="password"
+                  type={this.state.showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
                   onChange={this.onChangeHandler}
                   required
                 />
+                <button
+                  type="button"
+                  className="text-blue-600 underline focus:outline-none"
+                  onClick={this.togglePasswordVisibility}
+                >
+                  {this.state.showPassword ? "Скрыть пароль" : "Показать пароль"}
+                </button>
               </div>
 
               <button
