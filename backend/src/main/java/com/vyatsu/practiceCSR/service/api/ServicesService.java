@@ -16,8 +16,8 @@ public interface ServicesService {
 
     void updateService(Service service);
 
-    ResponseEntity<Void> softDeleteById(Long id);
+    ResponseEntity<Void> softDeleteById(String token, Long id);
 
-    ResponseEntity<Void> createService(ServiceDTO serviceDTO);
+    ResponseEntity<Void> createService(String token, ServiceDTO serviceDTO);
 
 }

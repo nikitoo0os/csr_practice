@@ -7,6 +7,8 @@ import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.Region;
 import com.vyatsu.practiceCSR.exception.AppException;
+import com.vyatsu.practiceCSR.logger.EnumWarnLog;
+import com.vyatsu.practiceCSR.logger.LoggerCSR;
 import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.RegionRepository;
@@ -38,34 +40,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserAuthDto login(CredentialsDto credentialsDto) {
+
         User user = userRepository.findByEmail(credentialsDto.getEmail())
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
+            LoggerCSR.createWarnMsg(EnumWarnLog.AUTH_USER, null, Long.valueOf(user.getId()));
             return userMapper.toUserAuthDto(user);
         }
+        LoggerCSR.createWarnMsg(EnumWarnLog.BAD_AUTH_USER, null, null);
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    public UserAuthDto register(SignUpDto userDto) {
+    public UserAuthDto register(String token, SignUpDto userDto) {
         Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
-
         if (optionalUser.isPresent()) {
             throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
         }
 
         User user = userMapper.signUpToUser(userDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
-
         user.setIsAdmin(false);
         user.setIsActive(true);
 
         user.setRegion(regionRepository.findById(userDto.getRegion_id())
                 .orElseThrow(() -> new AppException("Регион с таким идентификатором не найден", HttpStatus.BAD_REQUEST)));
-
         User savedUser = userRepository.save(user);
 
+        LoggerCSR.createWarnMsg(EnumWarnLog.CREATE_USER, 0L, Long.valueOf(savedUser.getId()));
         return userMapper.toUserAuthDto(savedUser);
     }
 
@@ -124,8 +127,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String token, Long id) {
         userRepository.deleteById(id);
+        LoggerCSR.createWarnMsg(EnumWarnLog.DROP_USER, 0L, id);
     }
 
     @Override

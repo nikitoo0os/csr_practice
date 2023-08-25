@@ -1,12 +1,17 @@
 package com.vyatsu.practiceCSR.service.api.impl;
 
+import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.ServiceDTO;
+import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
+import com.vyatsu.practiceCSR.logger.EnumWarnLog;
+import com.vyatsu.practiceCSR.logger.LoggerCSR;
 import com.vyatsu.practiceCSR.mapper.ServiceMapper;
 import com.vyatsu.practiceCSR.repository.ServiceRepository;
 import com.vyatsu.practiceCSR.service.api.ServicesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +21,7 @@ import java.util.List;
 public class ServicesServiceImpl implements ServicesService {
     private final ServiceRepository serviceRepository;
     private final ServiceMapper serviceMapper;
+    private final UserAuthenticationProvider authenticationProvider;
 
     @Override
     public List<ServiceDTO> getAllServices() {
@@ -46,18 +52,27 @@ public class ServicesServiceImpl implements ServicesService {
     }
 
     @Override
-    public ResponseEntity<Void> softDeleteById(Long id) {
+    public ResponseEntity<Void> softDeleteById(String token, Long id) {
+        String jwtToken = token.substring(7);
+        Authentication authentication = authenticationProvider.validateToken(jwtToken);
+        Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
+
         com.vyatsu.practiceCSR.entity.api.Service service = getServiceById(id);
         if (service == null) {
             return ResponseEntity.notFound().build();
         }
         service.setIsActive(false);
         updateService(service);
+        LoggerCSR.createWarnMsg(EnumWarnLog.DROP_SERVICE, userId, id);
         return ResponseEntity.ok().build();
     }
 
     @Override
-    public ResponseEntity createService(ServiceDTO serviceDTO) {
+    public ResponseEntity createService(String token, ServiceDTO serviceDTO) {
+        String jwtToken = token.substring(7);
+        Authentication authentication = authenticationProvider.validateToken(jwtToken);
+        Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
+
         if (serviceRepository.existsByName(serviceDTO.getName())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Услуга с таким именем уже существует");
@@ -66,8 +81,9 @@ public class ServicesServiceImpl implements ServicesService {
         com.vyatsu.practiceCSR.entity.api.Service service = new com.vyatsu.practiceCSR.entity.api.Service();
         service.setName(serviceDTO.getName());
         service.setIsActive(true);
-        serviceRepository.save(service);
+        service = serviceRepository.save(service);
 
+        LoggerCSR.createWarnMsg(EnumWarnLog.CREATE_SERVICE, userId, Long.valueOf(service.getId()));
         return ResponseEntity.ok("Услуга успешно добавлена");
     }
 }

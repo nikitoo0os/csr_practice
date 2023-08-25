@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ReportService {
-    void createReport(CreateReportDTO createReportDTO);
+    void createReport(String token, CreateReportDTO createReportDTO);
 
     Report getReportById(Long id);
 
@@ -21,9 +21,9 @@ public interface ReportService {
 
     void createReportsUser(Long reportId, List<Integer> userDTOs);
 
-    void updateStatusToEnd(Long reportId);
+    void updateStatusToEnd(String token, Long reportId);
 
-    HttpEntity<ByteArrayResource> getResultReportData(LocalDate localDateFrom, LocalDate localDateTo, Long templateId) throws IOException;
+    HttpEntity<ByteArrayResource> getResultReportData(String token, LocalDate localDateFrom, LocalDate localDateTo, Long templateId) throws IOException;
 
     boolean isLastMonth(Report reportFrom);
 }

@@ -8,7 +8,7 @@ import java.util.List;
 public interface ReportDataService {
     List<ReportData> getReportDataByReportId(Long id);
 
-    void saveReportData(List<ReportData> reportData);
+    void saveReportData(String token, List<ReportData> reportData);
 
     void createReportFromPrevious(Report reportFrom, Report reportTo);
 }

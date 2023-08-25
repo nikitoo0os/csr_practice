@@ -20,12 +20,12 @@ public class ServiceController {
         return ResponseEntity.ok(serviceDTOList);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> softDeleteUser(@PathVariable Long id) {
-        return servicesService.softDeleteById(id);
+    public ResponseEntity<Void> softDeleteUser(@RequestHeader("Authorization") String token, @PathVariable Long id) {
+        return servicesService.softDeleteById(token, id);
     }
 
     @PostMapping
-    public ResponseEntity<Void> createService(@RequestBody ServiceDTO serviceDTO){
-        return servicesService.createService(serviceDTO);
+    public ResponseEntity<Void> createService(@RequestHeader("Authorization") String token, @RequestBody ServiceDTO serviceDTO){
+        return servicesService.createService(token, serviceDTO);
     }
 }

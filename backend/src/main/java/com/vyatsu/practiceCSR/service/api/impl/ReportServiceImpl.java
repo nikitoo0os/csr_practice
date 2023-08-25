@@ -1,23 +1,29 @@
 package com.vyatsu.practiceCSR.service.api.impl;
 
+import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.RegionDTO;
-import com.vyatsu.practiceCSR.dto.api.ReportDTO;
+import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
-import com.vyatsu.practiceCSR.entity.api.*;
+import com.vyatsu.practiceCSR.entity.api.Report;
+import com.vyatsu.practiceCSR.entity.api.ReportData;
+import com.vyatsu.practiceCSR.entity.api.TemplateData;
+import com.vyatsu.practiceCSR.entity.api.User;
+import com.vyatsu.practiceCSR.logger.EnumWarnLog;
+import com.vyatsu.practiceCSR.logger.LoggerCSR;
 import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
-import com.vyatsu.practiceCSR.mapper.UserMapper;
-import com.vyatsu.practiceCSR.repository.*;
-import com.vyatsu.practiceCSR.service.api.RegionService;
+import com.vyatsu.practiceCSR.repository.ReportDataRepository;
+import com.vyatsu.practiceCSR.repository.ReportRepository;
+import com.vyatsu.practiceCSR.repository.TemplateDataRepository;
+import com.vyatsu.practiceCSR.repository.UserRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.utils.XLSUtil;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.util.IOUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
@@ -27,9 +33,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,9 +46,14 @@ public class ReportServiceImpl implements ReportService {
     private final TemplateDataRepository templateDataRepository;
     private final UserRepository userRepository;
     private final ReportDataRepository reportDataRepository;
+    private final UserAuthenticationProvider authenticationProvider;
 
     @Override
-    public void createReport(CreateReportDTO createReportDTO) {
+    public void createReport(String token, CreateReportDTO createReportDTO) {
+        String jwtToken = token.substring(7);
+        Authentication authentication = authenticationProvider.validateToken(jwtToken);
+        Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
+
         List<RegionDTO> regions = createReportDTO.getRegions()
                 .stream()
                 .collect(Collectors.toMap(RegionDTO::getName, Function.identity(), (existing, replacement) -> existing))
@@ -68,6 +77,7 @@ public class ReportServiceImpl implements ReportService {
                 reportDataList.add(reportData);
             }
             reportDataRepository.saveAll(reportDataList);
+            LoggerCSR.createWarnMsg(EnumWarnLog.CREATE_REPORT, userId, Long.valueOf(report.getId()));
         }
     }
 
@@ -108,15 +118,29 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void updateStatusToEnd(Long reportId) {
+    public void updateStatusToEnd(String token, Long reportId) {
+        String jwtToken = token.substring(7);
+        Authentication authentication = authenticationProvider.validateToken(jwtToken);
+        Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
+
         Report report = reportRepository.findById(reportId).get();
         report.setIsActive(false);
-       // report.setIsCompleted(true);
         reportRepository.save(report);
+        LocalDate currentLocalDate = LocalDate.now();
+        if(currentLocalDate.isAfter(report.getEndDate())){
+            LoggerCSR.createWarnMsg(EnumWarnLog.COMPLETE_REPORT, userId, Long.valueOf(report.getId()));
+        }
+        else{
+            LoggerCSR.createWarnMsg(EnumWarnLog.COMPLETE_TIMEOUT_REPORT, userId, Long.valueOf(report.getId()));
+        }
     }
 
     @Override
-    public HttpEntity<ByteArrayResource> getResultReportData(LocalDate localDateFrom, LocalDate localDateTo, Long templateId) throws IOException {
+    public HttpEntity<ByteArrayResource> getResultReportData(String token, LocalDate localDateFrom, LocalDate localDateTo, Long templateId) throws IOException {
+        String jwtToken = token.substring(7);
+        Authentication authentication = authenticationProvider.validateToken(jwtToken);
+        Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
+
         List<Report> reports = reportRepository.findByTemplateId(templateId);
 
         //фильтруем по дате
@@ -154,14 +178,12 @@ public class ReportServiceImpl implements ReportService {
                         resultReportData.get(i).setPercent1(percent1);
                     }
                 }
-
                 var percent2_ = resultReportData.get(i).getPercent2();
                 if(percent2_ == null){
                     if(count2 > 0){
                         BigDecimal percent2 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count2), 10, RoundingMode.HALF_UP);
                         resultReportData.get(i).setPercent2(percent2);
                     }
-
                 }
 
                 var lastCount1 = lastReportData.get(j).get(i).getCount1();
@@ -195,6 +217,8 @@ public class ReportServiceImpl implements ReportService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        LoggerCSR.createWarnMsg(EnumWarnLog.GENERATE_SUMMARY_REPORT, userId, templateId);
         
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=file.xlsx")
