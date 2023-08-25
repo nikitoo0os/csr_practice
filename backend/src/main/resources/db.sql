@@ -57,7 +57,7 @@ CREATE TABLE report_data(
     report_id INT REFERENCES report(id),
     count_1 INT,
     count_2 INT,
-    percent_1 NUMERIC(3,1),
-    percent_2 NUMERIC(3,1),
+    percent_1 NUMERIC(4,1),
+    percent_2 NUMERIC(4,1),
     regular_act TEXT
 );
