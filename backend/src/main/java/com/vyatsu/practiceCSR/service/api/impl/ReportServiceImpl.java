@@ -8,9 +8,8 @@ import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.entity.api.ReportData;
 import com.vyatsu.practiceCSR.entity.api.TemplateData;
 import com.vyatsu.practiceCSR.entity.api.User;
+import com.vyatsu.practiceCSR.logger.EnumWarnLog;
 import com.vyatsu.practiceCSR.logger.LoggerCSR;
-import com.vyatsu.practiceCSR.logger.enumDebugLog;
-import com.vyatsu.practiceCSR.logger.enumInfoLog;
 import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.repository.ReportDataRepository;
@@ -78,7 +77,7 @@ public class ReportServiceImpl implements ReportService {
                 reportDataList.add(reportData);
             }
             reportDataRepository.saveAll(reportDataList);
-            LoggerCSR.createDebugMsg(enumDebugLog.CREATE_REPORT, userId, Long.valueOf(report.getId()));
+            LoggerCSR.createWarnMsg(EnumWarnLog.CREATE_REPORT, userId, Long.valueOf(report.getId()));
         }
     }
 
@@ -129,10 +128,10 @@ public class ReportServiceImpl implements ReportService {
         reportRepository.save(report);
         LocalDate currentLocalDate = LocalDate.now();
         if(currentLocalDate.isAfter(report.getEndDate())){
-            LoggerCSR.createDebugMsg(enumDebugLog.COMPLETE_REPORT, userId, Long.valueOf(report.getId()));
+            LoggerCSR.createWarnMsg(EnumWarnLog.COMPLETE_REPORT, userId, Long.valueOf(report.getId()));
         }
         else{
-            LoggerCSR.createDebugMsg(enumDebugLog.COMPLETE_TIMEOUT_REPORT, userId, Long.valueOf(report.getId()));
+            LoggerCSR.createWarnMsg(EnumWarnLog.COMPLETE_TIMEOUT_REPORT, userId, Long.valueOf(report.getId()));
         }
     }
 
@@ -219,7 +218,7 @@ public class ReportServiceImpl implements ReportService {
             e.printStackTrace();
         }
 
-        LoggerCSR.createInfoMsg(enumInfoLog.GENERATE_SUMMARY_REPORT, userId, templateId);
+        LoggerCSR.createWarnMsg(EnumWarnLog.GENERATE_SUMMARY_REPORT, userId, templateId);
         
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=file.xlsx")

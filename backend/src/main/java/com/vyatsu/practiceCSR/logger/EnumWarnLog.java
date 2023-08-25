@@ -1,6 +1,6 @@
 package com.vyatsu.practiceCSR.logger;
 
-public enum enumDebugLog {
+public enum EnumWarnLog {
     CREATE_USER,
     CREATE_SERVICE,
     CREATE_REPORT,
@@ -13,5 +13,11 @@ public enum enumDebugLog {
     COMPLETE_TIMEOUT_REPORT,
     DROP_USER,
     DROP_SERVICE,
-    DROP_TEMPLATE
+    DROP_TEMPLATE,
+
+    AUTH_USER,
+    VIEW_USER_REPORT,
+    GENERATE_SUMMARY_REPORT,
+
+    BAD_AUTH_USER
 }

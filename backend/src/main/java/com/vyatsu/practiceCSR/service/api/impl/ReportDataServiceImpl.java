@@ -4,21 +4,15 @@ import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.entity.api.ReportData;
+import com.vyatsu.practiceCSR.logger.EnumWarnLog;
 import com.vyatsu.practiceCSR.logger.LoggerCSR;
-import com.vyatsu.practiceCSR.logger.enumDebugLog;
 import com.vyatsu.practiceCSR.repository.ReportDataRepository;
 import com.vyatsu.practiceCSR.repository.ReportRepository;
 import com.vyatsu.practiceCSR.service.api.ReportDataService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -40,7 +34,7 @@ public class ReportDataServiceImpl implements ReportDataService {
         Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
         reportDataRepository.saveAll(reportData);
 
-        LoggerCSR.createDebugMsg(enumDebugLog.SAVE_REPORT, userId, Long.valueOf(reportData.get(0).getReport().getId()));
+        LoggerCSR.createWarnMsg(EnumWarnLog.SAVE_REPORT, userId, Long.valueOf(reportData.get(0).getReport().getId()));
     }
 
     @Override
@@ -60,7 +54,7 @@ public class ReportDataServiceImpl implements ReportDataService {
             }
             reportDataRepository.saveAll(toReportData);
         }
-        LoggerCSR.createDebugMsg(enumDebugLog.COPY_REPORT, Long.valueOf(reportFrom.getId()), Long.valueOf(reportTo.getId()));
+        LoggerCSR.createWarnMsg(EnumWarnLog.COPY_REPORT, Long.valueOf(reportFrom.getId()), Long.valueOf(reportTo.getId()));
     }
 
 }

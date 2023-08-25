@@ -1,6 +1,5 @@
 package com.vyatsu.practiceCSR.service.api.impl;
 
-import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.dto.api.UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.CredentialsDto;
@@ -8,10 +7,8 @@ import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.Region;
 import com.vyatsu.practiceCSR.exception.AppException;
+import com.vyatsu.practiceCSR.logger.EnumWarnLog;
 import com.vyatsu.practiceCSR.logger.LoggerCSR;
-import com.vyatsu.practiceCSR.logger.enumDebugLog;
-import com.vyatsu.practiceCSR.logger.enumErrLog;
-import com.vyatsu.practiceCSR.logger.enumInfoLog;
 import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.RegionRepository;
@@ -21,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import com.vyatsu.practiceCSR.entity.api.User;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,10 +45,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
-            LoggerCSR.createInfoMsg(enumInfoLog.AUTH_USER, null, Long.valueOf(user.getId()));
+            LoggerCSR.createWarnMsg(EnumWarnLog.AUTH_USER, null, Long.valueOf(user.getId()));
             return userMapper.toUserAuthDto(user);
         }
-        LoggerCSR.createErrMsg(enumErrLog.BAD_AUTH_USER, null);
+        LoggerCSR.createWarnMsg(EnumWarnLog.BAD_AUTH_USER, null, null);
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
     }
 
@@ -72,7 +68,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException("Регион с таким идентификатором не найден", HttpStatus.BAD_REQUEST)));
         User savedUser = userRepository.save(user);
 
-        LoggerCSR.createDebugMsg(enumDebugLog.CREATE_USER, 0L, Long.valueOf(savedUser.getId()));
+        LoggerCSR.createWarnMsg(EnumWarnLog.CREATE_USER, 0L, Long.valueOf(savedUser.getId()));
         return userMapper.toUserAuthDto(savedUser);
     }
 
@@ -133,7 +129,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(String token, Long id) {
         userRepository.deleteById(id);
-        LoggerCSR.createDebugMsg(enumDebugLog.DROP_USER, 0L, id);
+        LoggerCSR.createWarnMsg(EnumWarnLog.DROP_USER, 0L, id);
     }
 
     @Override

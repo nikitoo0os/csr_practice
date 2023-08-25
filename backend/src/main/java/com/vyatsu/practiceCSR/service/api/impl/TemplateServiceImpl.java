@@ -4,8 +4,8 @@ import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.TemplateDTO;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.Template;
+import com.vyatsu.practiceCSR.logger.EnumWarnLog;
 import com.vyatsu.practiceCSR.logger.LoggerCSR;
-import com.vyatsu.practiceCSR.logger.enumDebugLog;
 import com.vyatsu.practiceCSR.mapper.TemplateMapper;
 import com.vyatsu.practiceCSR.repository.TemplateRepository;
 import com.vyatsu.practiceCSR.service.api.TemplateService;
@@ -38,7 +38,7 @@ public class TemplateServiceImpl implements TemplateService {
         template1 = templateRepository.save(template1);
         TemplateDTO templateDTO = templateMapper.toTemplateDTO(template1);
 
-        LoggerCSR.createDebugMsg(enumDebugLog.CREATE_TEMPLATE, userId, Long.valueOf(template1.getId()));
+        LoggerCSR.createWarnMsg(EnumWarnLog.CREATE_TEMPLATE, userId, Long.valueOf(template1.getId()));
         return templateDTO;
     }
 

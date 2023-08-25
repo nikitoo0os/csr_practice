@@ -3,8 +3,8 @@ package com.vyatsu.practiceCSR.service.api.impl;
 import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.ServiceDTO;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
+import com.vyatsu.practiceCSR.logger.EnumWarnLog;
 import com.vyatsu.practiceCSR.logger.LoggerCSR;
-import com.vyatsu.practiceCSR.logger.enumDebugLog;
 import com.vyatsu.practiceCSR.mapper.ServiceMapper;
 import com.vyatsu.practiceCSR.repository.ServiceRepository;
 import com.vyatsu.practiceCSR.service.api.ServicesService;
@@ -63,7 +63,7 @@ public class ServicesServiceImpl implements ServicesService {
         }
         service.setIsActive(false);
         updateService(service);
-        LoggerCSR.createDebugMsg(enumDebugLog.DROP_SERVICE, userId, id);
+        LoggerCSR.createWarnMsg(EnumWarnLog.DROP_SERVICE, userId, id);
         return ResponseEntity.ok().build();
     }
 
@@ -83,7 +83,7 @@ public class ServicesServiceImpl implements ServicesService {
         service.setIsActive(true);
         service = serviceRepository.save(service);
 
-        LoggerCSR.createDebugMsg(enumDebugLog.CREATE_SERVICE, userId, Long.valueOf(service.getId()));
+        LoggerCSR.createWarnMsg(EnumWarnLog.CREATE_SERVICE, userId, Long.valueOf(service.getId()));
         return ResponseEntity.ok("Услуга успешно добавлена");
     }
 }
