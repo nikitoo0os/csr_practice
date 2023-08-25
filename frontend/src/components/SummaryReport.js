@@ -19,16 +19,24 @@ export default function SummaryReport({ template, closeModal }) {
     try {
       setIsDownloading(true);
 
-      const response = await request("get", `/reports/summary?startDate=${startDate}&endDate=${endDate}&templateId=${template.id}`);
+      const options = {
+        startDate,
+        endDate,
+        templateId:template.id,
+      };
 
-      const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const response = await request('post', '/reports/summary', options, {responseType: 'blob'});
+
+      const blob = new Blob([response.data], { type: "xlsx" });
       const url = window.URL.createObjectURL(blob);
 
       const link = document.createElement("a");
+      link.setAttribute('style','display: none');
+      link.setAttribute('target','blank');
       link.href = url;
       link.download = "summary-report.xlsx"; // Use "download" attribute
-      document.body.appendChild(link);
       link.click();
+      window.URL.revokeObjectURL(url);
       link.remove();
 
       window.URL.revokeObjectURL(url);
