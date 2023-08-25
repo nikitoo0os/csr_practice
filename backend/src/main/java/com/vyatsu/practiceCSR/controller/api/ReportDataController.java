@@ -34,9 +34,9 @@ public class ReportDataController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateReportData(@RequestBody List<ReportDataDTO> reportDataDTO){
+    public ResponseEntity<Void> updateReportData(@RequestHeader("Authorization") String token, @RequestBody List<ReportDataDTO> reportDataDTO){
         List<ReportData> reportData = reportDataMapper.toReportData(reportDataDTO);
-        reportDataService.saveReportData(reportData);
+        reportDataService.saveReportData(token, reportData);
         return ResponseEntity.ok().build();
     }
 

@@ -1,2 +1,17 @@
-package com.vyatsu.practiceCSR.logger;public class enumDebugLog {
+package com.vyatsu.practiceCSR.logger;
+
+public enum enumDebugLog {
+    CREATE_USER,
+    CREATE_SERVICE,
+    CREATE_REPORT,
+    COPY_REPORT,
+    CREATE_TEMPLATE,
+    UPDATE_TEMPLATE,
+    UPDATE_USER,
+    SAVE_REPORT,
+    COMPLETE_REPORT,
+    COMPLETE_TIMEOUT_REPORT,
+    DROP_USER,
+    DROP_SERVICE,
+    DROP_TEMPLATE
 }

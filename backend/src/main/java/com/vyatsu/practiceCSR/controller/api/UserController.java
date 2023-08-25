@@ -46,14 +46,14 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserAuthDto> createUser(@RequestBody SignUpDto user){
-        UserAuthDto createdUser = userService.register(user);
+    public ResponseEntity<UserAuthDto> createUser(@RequestHeader("Authorization") String token, @RequestBody SignUpDto user){
+        UserAuthDto createdUser = userService.register(token, user);
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
     }
 
     @PutMapping("/&{id}")
-    public ResponseEntity<Void> dropUser(@PathVariable Long id){
-        userService.deleteById(id);
+    public ResponseEntity<Void> dropUser(@RequestHeader("Authorization") String token, @PathVariable Long id){
+        userService.deleteById(token, id);
         return ResponseEntity.ok().build();
     }
 

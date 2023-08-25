@@ -1,11 +1,14 @@
 package com.vyatsu.practiceCSR.controller.api;
 
+import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.TemplateDTO;
+import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.Template;
 import com.vyatsu.practiceCSR.mapper.TemplateMapper;
 import com.vyatsu.practiceCSR.service.api.TemplateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +20,12 @@ public class TemplateController {
 
     private final TemplateService templateService;
     private final TemplateMapper templateMapper;
+    private final UserAuthenticationProvider authenticationProvider;
 
     @PostMapping
-    public ResponseEntity<TemplateDTO> createTemplate(@RequestBody TemplateDTO templateDTO){
+    public ResponseEntity<TemplateDTO> createTemplate(@RequestHeader("Authorization") String token, @RequestBody TemplateDTO templateDTO){
         Template template = templateMapper.toTemplate(templateDTO);
-        TemplateDTO templateDTO1 = templateService.createTemplate(template);
+        TemplateDTO templateDTO1 = templateService.createTemplate(token, template);
         return ResponseEntity.ok(templateDTO1);
     }
 

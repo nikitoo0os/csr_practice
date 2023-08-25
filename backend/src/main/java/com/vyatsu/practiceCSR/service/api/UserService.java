@@ -12,7 +12,7 @@ import java.util.List;
 public interface UserService {
     UserAuthDto login(CredentialsDto credentialsDto);
 
-    UserAuthDto register(SignUpDto userDto);
+    UserAuthDto register(String token, SignUpDto userDto);
 
     List<UserAuthDto> getAllUsers();
 
@@ -22,7 +22,7 @@ public interface UserService {
 
     UserAuthDto create(SignUpDto userDto);
 
-    void deleteById(Long id);
+    void deleteById(String token, Long id);
 
     ResponseEntity<Void> softDeleteById(Long id);
 

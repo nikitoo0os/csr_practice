@@ -1,5 +1,6 @@
 package com.vyatsu.practiceCSR.service.api.impl;
 
+import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.dto.api.UserDTO;
 import com.vyatsu.practiceCSR.dto.auth.CredentialsDto;
@@ -7,6 +8,10 @@ import com.vyatsu.practiceCSR.dto.auth.SignUpDto;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.Region;
 import com.vyatsu.practiceCSR.exception.AppException;
+import com.vyatsu.practiceCSR.logger.LoggerCSR;
+import com.vyatsu.practiceCSR.logger.enumDebugLog;
+import com.vyatsu.practiceCSR.logger.enumErrLog;
+import com.vyatsu.practiceCSR.logger.enumInfoLog;
 import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.UserMapper;
 import com.vyatsu.practiceCSR.repository.RegionRepository;
@@ -16,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import com.vyatsu.practiceCSR.entity.api.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,34 +44,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserAuthDto login(CredentialsDto credentialsDto) {
+
         User user = userRepository.findByEmail(credentialsDto.getEmail())
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
+            LoggerCSR.createInfoMsg(enumInfoLog.AUTH_USER, null, Long.valueOf(user.getId()));
             return userMapper.toUserAuthDto(user);
         }
+        LoggerCSR.createErrMsg(enumErrLog.BAD_AUTH_USER, null);
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    public UserAuthDto register(SignUpDto userDto) {
+    public UserAuthDto register(String token, SignUpDto userDto) {
         Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
-
         if (optionalUser.isPresent()) {
             throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
         }
 
         User user = userMapper.signUpToUser(userDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
-
         user.setIsAdmin(false);
         user.setIsActive(true);
 
         user.setRegion(regionRepository.findById(userDto.getRegion_id())
                 .orElseThrow(() -> new AppException("Регион с таким идентификатором не найден", HttpStatus.BAD_REQUEST)));
-
         User savedUser = userRepository.save(user);
 
+        LoggerCSR.createDebugMsg(enumDebugLog.CREATE_USER, 0L, Long.valueOf(savedUser.getId()));
         return userMapper.toUserAuthDto(savedUser);
     }
 
@@ -124,8 +131,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String token, Long id) {
         userRepository.deleteById(id);
+        LoggerCSR.createDebugMsg(enumDebugLog.DROP_USER, 0L, id);
     }
 
     @Override

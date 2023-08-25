@@ -4,7 +4,6 @@ import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
-import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.repository.ReportRepository;
@@ -16,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -120,8 +120,8 @@ public class ReportController {
     }
 
     @PostMapping
-    public ResponseEntity<ReportDTO> createReport(@RequestBody CreateReportDTO createReportDTO){
-        reportService.createReport(createReportDTO);
+    public ResponseEntity<ReportDTO> createReport(@RequestHeader("Authorization") String token, @RequestBody CreateReportDTO createReportDTO){
+        reportService.createReport(token, createReportDTO);
         return ResponseEntity.ok().build();
     }
 
@@ -132,14 +132,18 @@ public class ReportController {
     }
 
     @PutMapping("/end/{id}")
-    public ResponseEntity<Void> updateStatusReportByReportId(@PathVariable Long id){
-        reportService.updateStatusToEnd(id);
+    public ResponseEntity<Void> updateStatusReportByReportId(@RequestHeader("Authorization") String token, @PathVariable Long id){
+        reportService.updateStatusToEnd(token, id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/summary")
-    public HttpEntity<ByteArrayResource> generateSummaryReport(@RequestBody OptionsSummaryReportDTO options) throws IOException {
-        return reportService.getResultReportData(options.getStartDate(), options.getEndDate(), options.getTemplateId());
+    @GetMapping("/summary")
+    public HttpEntity<ByteArrayResource> generateSummaryReport(@RequestHeader("Authorization") String token,
+                                                               @RequestParam LocalDate startDate,
+                                                               @RequestParam LocalDate endDate,
+                                                               @RequestParam Long templateId) throws IOException {
+
+        return reportService.getResultReportData(token, startDate, endDate, templateId);
     }
 }
     
