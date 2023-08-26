@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/template/data")
@@ -25,9 +27,8 @@ public class TemplateDataController {
     }
 
     @GetMapping("{templateId}")
-    public ResponseEntity<TemplateDataDTO> getTemplateDataByTemplateId(@PathVariable Long templateId){
-        TemplateData templateData = templateDataService.getTemplateDataByTemplateId(templateId);
-        TemplateDataDTO templateDataDTO = templateDataMapper.toTemplateDataDTO(templateData);
+    public ResponseEntity<List<TemplateDataDTO>> getTemplateDataByTemplateId(@PathVariable Long templateId){
+        List<TemplateDataDTO> templateDataDTO = templateDataService.getTemplateDataByTemplateId(templateId);
         return ResponseEntity.ok(templateDataDTO);
     }
 
