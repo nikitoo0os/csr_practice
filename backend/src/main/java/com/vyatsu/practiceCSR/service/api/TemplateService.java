@@ -15,4 +15,6 @@ public interface TemplateService {
     TemplateDTO getTemplateById(Long id);
 
     List<Template> getAllTemplates();
+
+    void updateTemplate(Template template);
 }

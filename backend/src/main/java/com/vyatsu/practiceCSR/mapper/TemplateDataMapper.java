@@ -8,4 +8,6 @@ import org.mapstruct.Mapper;
 public interface TemplateDataMapper {
 
     TemplateData toTemplateData(TemplateDataDTO templateDataDTO);
+
+    TemplateDataDTO toTemplateDataDTO(TemplateData templateData);
 }

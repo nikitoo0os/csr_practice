@@ -24,11 +24,13 @@ public class TemplateDataController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
-    public ResponseEntity<TemplateData> getTemplateDataByTemplateId(@PathVariable Long id){
-        TemplateData templateData = templateDataService.getTemplateDataByTemplateId(id);
-        return ResponseEntity.ok(templateData);
+    @GetMapping("{templateId}")
+    public ResponseEntity<TemplateDataDTO> getTemplateDataByTemplateId(@PathVariable Long templateId){
+        TemplateData templateData = templateDataService.getTemplateDataByTemplateId(templateId);
+        TemplateDataDTO templateDataDTO = templateDataMapper.toTemplateDataDTO(templateData);
+        return ResponseEntity.ok(templateDataDTO);
     }
+
 
 
 

@@ -4,6 +4,7 @@ import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
+import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.entity.api.ReportData;
 import com.vyatsu.practiceCSR.entity.api.TemplateData;
@@ -19,13 +20,18 @@ import com.vyatsu.practiceCSR.repository.UserRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.utils.XLSUtil;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.loadtime.Options;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -136,17 +142,17 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public HttpEntity<ByteArrayResource> getResultReportData(String token, LocalDate localDateFrom, LocalDate localDateTo, Long templateId) throws IOException {
+    public Resource getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException {
         String jwtToken = token.substring(7);
         Authentication authentication = authenticationProvider.validateToken(jwtToken);
         Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
 
-        List<Report> reports = reportRepository.findByTemplateId(templateId);
+        List<Report> reports = reportRepository.findByTemplateId(options.getTemplateId());
 
         //фильтруем по дате
         reports = reports.stream()
-                .filter(report -> !report.getStartDate().isBefore(localDateFrom) &&
-                        !report.getStartDate().isAfter(localDateTo))
+                .filter(report -> !report.getStartDate().isBefore(options.getStartDate()) &&
+                        !report.getStartDate().isAfter(options.getEndDate()))
                 .collect(Collectors.toList());
 
         //получаем данные этих отчетов
@@ -199,7 +205,7 @@ public class ReportServiceImpl implements ReportService {
                 resultReportData.get(i).setCount2(count2 + lastCount2);
             }
         }
-        byte[] excelContent = XLSUtil.writeReportDataToByteArray(resultReportData,
+        InputStreamResource resource = XLSUtil.createXLSX(resultReportData,
                 new String[]{
                         "Наименование услуги в Кировской области",
                         "Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 31.07.2023)",
@@ -208,21 +214,9 @@ public class ReportServiceImpl implements ReportService {
                         "Доля услуг, предоставленных без нарушения регламентного срока при оказании услуги через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023) (%)"
                 });
 
-        ByteArrayResource resource = new ByteArrayResource(excelContent);
-
-        try (FileOutputStream outputStream = new FileOutputStream("C:/example.xlsx")) {
-            byte[] data = new byte[Math.toIntExact(resource.contentLength())];
-            resource.getInputStream().read(data);
-            outputStream.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        LoggerCSR.createWarnMsg(EnumWarnLog.GENERATE_SUMMARY_REPORT, userId, templateId);
+        LoggerCSR.createWarnMsg(EnumWarnLog.GENERATE_SUMMARY_REPORT, userId, options.getTemplateId());
         
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=file.xlsx")
-                .body(resource);
+        return resource;
     }
 
     @Override
@@ -232,6 +226,11 @@ public class ReportServiceImpl implements ReportService {
         YearMonth reportYearMonth = YearMonth.from(report.getStartDate());
 
         return reportYearMonth.equals(prevYearMonth);
+    }
+
+    @Override
+    public List<Report> getCompletedReportsByTemplateId(Long id) {
+        return reportRepository.findCompletedReportsByTemplateId(id);
     }
 
 }

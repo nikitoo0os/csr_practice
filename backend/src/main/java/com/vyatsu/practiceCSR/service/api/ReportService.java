@@ -2,9 +2,12 @@ package com.vyatsu.practiceCSR.service.api;
 
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
 import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
+import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -23,7 +26,9 @@ public interface ReportService {
 
     void updateStatusToEnd(String token, Long reportId);
 
-    HttpEntity<ByteArrayResource> getResultReportData(String token, LocalDate localDateFrom, LocalDate localDateTo, Long templateId) throws IOException;
+    Resource getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException;
 
     boolean isLastMonth(Report reportFrom);
+
+    List<Report> getCompletedReportsByTemplateId(Long id);
 }

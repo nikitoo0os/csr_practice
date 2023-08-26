@@ -16,13 +16,13 @@ public class TemplateData {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "template_id", nullable = false)
     private Template template;
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 

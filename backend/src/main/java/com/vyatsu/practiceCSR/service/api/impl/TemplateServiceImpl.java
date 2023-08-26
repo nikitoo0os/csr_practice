@@ -52,4 +52,9 @@ public class TemplateServiceImpl implements TemplateService {
     public List<Template> getAllTemplates() {
         return templateRepository.findAll();
     }
+
+    @Override
+    public void updateTemplate(Template template) {
+        templateRepository.save(template);
+    }
 }

@@ -4,18 +4,21 @@ import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
+import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.repository.ReportRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.*;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,13 +140,16 @@ public class ReportController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/summary")
-    public HttpEntity<ByteArrayResource> generateSummaryReport(@RequestHeader("Authorization") String token,
-                                                               @RequestParam LocalDate startDate,
-                                                               @RequestParam LocalDate endDate,
-                                                               @RequestParam Long templateId) throws IOException {
+    @PostMapping("/summary")
+    public ResponseEntity<Resource> generateSummaryReport(@RequestHeader("Authorization") String token,
+                                                          @RequestBody OptionsSummaryReportDTO options) throws IOException {
+        Resource resource = reportService.getResultReportData(token, options);
 
-        return reportService.getResultReportData(token, startDate, endDate, templateId);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=file.xlsx")
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 }
     

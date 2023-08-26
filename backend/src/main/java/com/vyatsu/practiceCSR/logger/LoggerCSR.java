@@ -29,7 +29,6 @@ public class LoggerCSR {
             case VIEW_USER_REPORT -> logger.warn("Просмотр отчета #" + controlToId + " администратором #" + manageFromId);
             case GENERATE_SUMMARY_REPORT -> logger.warn("Создание итогового отчета по шаблону #" + controlToId + " администратором #" + manageFromId);
             case BAD_AUTH_USER -> logger.warn("Неуспешная авторизация пользователя #" + controlToId);
-
         }
     }
 }

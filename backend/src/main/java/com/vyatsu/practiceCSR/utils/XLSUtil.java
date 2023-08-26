@@ -1,18 +1,22 @@
 package com.vyatsu.practiceCSR.utils;
 
 import com.vyatsu.practiceCSR.entity.api.ReportData;
-import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.util.ResourceUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 public class XLSUtil {
-    public static byte[] writeReportDataToByteArray(List<ReportData> dataList, String[] headers) throws IOException {
+    private static InputStream getTemplateInputStream() throws IOException {
+        File file = ResourceUtils.getFile("classpath:template.xlsx");;
+        return new FileInputStream(file);
+    }
+    public static InputStreamResource createXLSX(List<ReportData> dataList, String[] headers) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Data");
 
@@ -32,9 +36,16 @@ public class XLSUtil {
                 row.createCell(5).setCellValue(data.getRegularAct());
             }
 
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            workbook.write(outputStream);
-            return outputStream.toByteArray();
+            String outputPath = "C:/Windows/Temp/Csr/output.xlsx";  // Change this to your desired output path
+            File outputFile = new File(outputPath);
+
+            try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
+                workbook.write(outputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return new InputStreamResource(new FileInputStream(outputFile));
         }
     }
 }
