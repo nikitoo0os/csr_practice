@@ -29,8 +29,8 @@ export default function SummaryReport({ template, closeModal }) {
 
       const blob = new Blob([response.data], { type: "xlsx" });
       const url = window.URL.createObjectURL(blob);
-
       const link = document.createElement("a");
+      document.body.appendChild(link);
       link.setAttribute('style','display: none');
       link.setAttribute('target','blank');
       link.href = url;
@@ -38,9 +38,6 @@ export default function SummaryReport({ template, closeModal }) {
       link.click();
       window.URL.revokeObjectURL(url);
       link.remove();
-
-      window.URL.revokeObjectURL(url);
-
       setIsDownloading(false);
     } catch (error) {
       console.error("Error generating report:", error);
