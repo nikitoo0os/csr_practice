@@ -33,7 +33,7 @@ export default function EditTemplate() {
       const response2 = await request("get",`/template/data/${template.id}`);
       const tempServices = response2.data.map(service => service.service);
       setTemplateServices(tempServices);
-      setSelectedServices(tempServices);
+      setSelectedServices(templateServices);
     } catch (error) {
       toast.error("Не удалось получить список услуг.");
     }
@@ -48,8 +48,8 @@ export default function EditTemplate() {
   };
 
   const handleSelectAllServices = () => {
-    const allServiceIds = services.map((service) => service);
-    setSelectedServices(allServiceIds);
+    // const ss = services.filter(service => templateServices.includes(service)).map((service) => service);
+    setSelectedServices(services);
   };
 
   const handleDeselectAllServices = () => {
