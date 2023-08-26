@@ -31,9 +31,9 @@ export default function EditTemplate() {
       const response = await request("get", "/services");
       setServices(response.data);
       const response2 = await request("get",`/template/data/${template.id}`);
-      setTemplateServices(response2.data);
-      const services = templateServices.map((service) => service);
-      setSelectedServices(services);
+      const tempServices = response2.data.map(service => service.service);
+      setTemplateServices(tempServices);
+      setSelectedServices(tempServices);
     } catch (error) {
       toast.error("Не удалось получить список услуг.");
     }
@@ -76,7 +76,7 @@ export default function EditTemplate() {
             service,
           };
 
-          await request("post", "/template/data/create", templateData);
+          await request("post", "/template/data/edit", templateData);
         }
 
         toast.success("Шаблон успешно создан.");
