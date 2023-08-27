@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 export default function EditTemplate() {
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
-  const [templateServices,setTemplateServices] = useState([]);
+  const [templateServices, setTemplateServices] = useState([]);
   const [templateName, setTemplateName] = useState("");
   const [serviceFilter, setServiceFilter] = useState("");
   const [column1, setColumn1] = useState("");
@@ -24,16 +24,33 @@ export default function EditTemplate() {
     setColumn3(template.percentEPGURequests);
     setColumn4(template.percentNotViolationEPGURequests);
     fetchServices();
-  }, []);
+  }, [template, templateServices]);
+
+  useEffect(() => {
+    if (templateServices.length > 0) {
+      try {
+        const selectedServices = templateServices.map(templateService => {
+          const foundService = services.find(service => service.id === templateService.id);
+          if (foundService) {
+            return foundService;
+          }
+          return null; // Handle the case where a service is not found
+        });
+        setSelectedServices(selectedServices);
+      } catch (error) {
+        console.error("Error while selecting services:", error);
+      }
+    }
+  }, [templateServices, services]);
+  
 
   const fetchServices = async () => {
     try {
       const response = await request("get", "/services");
       setServices(response.data);
-      const response2 = await request("get",`/template/data/${template.id}`);
+      const response2 = await request("get", `/template/data/${template.id}`);
       const tempServices = response2.data.map(service => service.service);
       setTemplateServices(tempServices);
-      setSelectedServices(templateServices);
     } catch (error) {
       toast.error("Не удалось получить список услуг.");
     }
@@ -47,8 +64,8 @@ export default function EditTemplate() {
     }
   };
 
+
   const handleSelectAllServices = () => {
-    // const ss = services.filter(service => templateServices.includes(service)).map((service) => service);
     setSelectedServices(services);
   };
 
@@ -76,19 +93,13 @@ export default function EditTemplate() {
             service,
           };
 
-          await request("post", "/template/data/edit", templateData);
+          await request("post", "/template/data/create", templateData);
         }
-
-        toast.success("Шаблон успешно создан.");
-        setTemplateName("");
-        setColumn1("");
-        setColumn2("");
-        setColumn3("");
-        setColumn4("");
-        setSelectedServices([]);
+        window.location.href = '/';
+        toast.success("Шаблон успешно изменен.");
       } else {
         toast.error(
-          "Необходимо выбрать хотя бы одну услугу для создания шаблона"
+          "Необходимо выбрать хотя бы одну услугу"
         );
       }
     } catch (error) {
@@ -136,9 +147,8 @@ export default function EditTemplate() {
                   .map((service, index) => (
                     <div
                       key={service.id}
-                      className={`flex items-center ${
-                        index % 2 === 0 ? "bg-white" : "bg-gray-200"
-                      }`}
+                      className={`flex items-center ${index % 2 === 0 ? "bg-white" : "bg-gray-200"
+                        }`}
                     >
                       <input
                         type="checkbox"
@@ -149,9 +159,8 @@ export default function EditTemplate() {
                         }
                         className="form-checkbox mr-2"
                       />
-                      <label className="text-gray-700">{`${index + 1}. ${
-                        service.name
-                      }`}</label>
+                      <label className="text-gray-700">{`${index + 1}. ${service.name
+                        }`}</label>
                     </div>
                   ))}
               </div>
