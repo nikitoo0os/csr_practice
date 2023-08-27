@@ -24,7 +24,7 @@ export default function EditTemplate() {
     setColumn3(template.percentEPGURequests);
     setColumn4(template.percentNotViolationEPGURequests);
     fetchServices();
-  }, [template, templateServices]);
+  }, []);
 
   useEffect(() => {
     if (templateServices.length > 0) {
@@ -64,6 +64,14 @@ export default function EditTemplate() {
     }
   };
 
+  const handleSelectDefaultServices = () => {
+    let s = [];
+    for(let i=0; i<templateServices.length; i++){
+      let temp = services.find(service => service.id === templateServices[i].id);
+      s.push(temp);
+    }
+    setSelectedServices(s);
+  };
 
   const handleSelectAllServices = () => {
     setSelectedServices(services);
@@ -72,6 +80,7 @@ export default function EditTemplate() {
   const handleDeselectAllServices = () => {
     setSelectedServices([]);
   };
+  
 
   const createTemplate = async (e) => {
     e.preventDefault();
@@ -107,6 +116,8 @@ export default function EditTemplate() {
     }
   };
 
+
+  
   return (
     <>
       <div className="max-w-screen-xl bg-white mx-auto p-4">
@@ -179,6 +190,13 @@ export default function EditTemplate() {
                   className="text-blue-600 underline ml-4 focus:outline-none"
                 >
                   Снять выбор
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSelectDefaultServices}
+                  className="text-blue-600 underline ml-4 focus:outline-none"
+                >
+                  Выбрать услуги по умолчанию
                 </button>
               </div>
             </div>
