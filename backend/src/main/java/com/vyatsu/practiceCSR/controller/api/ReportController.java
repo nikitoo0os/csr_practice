@@ -141,14 +141,12 @@ public class ReportController {
     }
 
     @PostMapping("/summary")
-    public ResponseEntity<Resource> generateSummaryReport(@RequestHeader("Authorization") String token,
+    public ResponseEntity<byte[]> generateSummaryReport(@RequestHeader("Authorization") String token,
                                                           @RequestBody OptionsSummaryReportDTO options) throws IOException {
-        Resource resource = reportService.getResultReportData(token, options);
+        byte[] resource = reportService.getResultReportData(token, options);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=file.xlsx")
-                .contentLength(resource.contentLength())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=summary-report.xlsx")
                 .body(resource);
     }
 }

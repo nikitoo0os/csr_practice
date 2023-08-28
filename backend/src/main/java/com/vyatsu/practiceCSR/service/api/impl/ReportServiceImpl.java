@@ -20,19 +20,9 @@ import com.vyatsu.practiceCSR.repository.UserRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.utils.XLSUtil;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.loadtime.Options;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -142,7 +132,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public Resource getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException {
+    public byte[] getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException {
         String jwtToken = token.substring(7);
         Authentication authentication = authenticationProvider.validateToken(jwtToken);
         Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
@@ -205,7 +195,7 @@ public class ReportServiceImpl implements ReportService {
                 resultReportData.get(i).setCount2(count2 + lastCount2);
             }
         }
-        InputStreamResource resource = XLSUtil.createXLSX(resultReportData,
+        byte[] resource = XLSUtil.createXLSX(resultReportData,
                 new String[]{
                         "Наименование услуги в Кировской области",
                         "Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 31.07.2023)",

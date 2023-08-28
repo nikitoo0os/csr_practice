@@ -10,4 +10,6 @@ public interface TemplateDataService {
     void createTemplateData(TemplateData templateData);
 
     List<TemplateDataDTO> getTemplateDataByTemplateId(Long id);
+
+    void deleteAllTemplateDataByTemplateId(String token, Long id);
 }

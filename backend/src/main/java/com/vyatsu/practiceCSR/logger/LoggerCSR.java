@@ -31,4 +31,8 @@ public class LoggerCSR {
             case BAD_AUTH_USER -> logger.warn("Неуспешная авторизация пользователя #" + controlToId);
         }
     }
+
+    public static void createMsg(String msg){
+        logger.warn(msg);
+    }
 }

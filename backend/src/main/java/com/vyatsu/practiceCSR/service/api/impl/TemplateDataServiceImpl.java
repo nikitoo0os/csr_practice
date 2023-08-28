@@ -11,6 +11,7 @@ import com.vyatsu.practiceCSR.mapper.TemplateMapper;
 import com.vyatsu.practiceCSR.repository.TemplateDataRepository;
 import com.vyatsu.practiceCSR.service.api.TemplateDataService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,9 @@ import java.util.List;
 @Service
 public class TemplateDataServiceImpl implements TemplateDataService {
     private final TemplateDataRepository templateDataRepository;
-    private final TemplateDataMapper templateDataMapper;
     private final TemplateMapper templateMapper;
     private final ServiceMapper serviceMapper;
+    private final UserAuthenticationProvider authenticationProvider;
     @Override
     public void createTemplateData(TemplateData templateData) {
         templateDataRepository.save(templateData);
@@ -41,5 +42,14 @@ public class TemplateDataServiceImpl implements TemplateDataService {
             templateDataDTOs.add(templateDataDTO);
         }
         return templateDataDTOs;
+    }
+
+    @Override
+    public void deleteAllTemplateDataByTemplateId(String token, Long id) {
+        String jwtToken = token.substring(7);
+        Authentication authentication = authenticationProvider.validateToken(jwtToken);
+        Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
+        templateDataRepository.dropAllTemplateDataByTemplateId(id);
+        LoggerCSR.createMsg("Удалены отчеты шаблона #" + id + " т.к изменился шаблон пользователем #" + userId);
     }
 }

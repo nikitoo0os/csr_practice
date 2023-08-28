@@ -16,5 +16,5 @@ public interface TemplateService {
 
     List<Template> getAllTemplates();
 
-    void updateTemplate(Template template);
+    Template updateTemplate(String token, Template template);
 }

@@ -54,7 +54,13 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public void updateTemplate(Template template) {
-        templateRepository.save(template);
+    public Template updateTemplate(String token, Template template) {
+        String jwtToken = token.substring(7);
+        Authentication authentication = authenticationProvider.validateToken(jwtToken);
+        Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
+        template.setDate(new Timestamp(System.currentTimeMillis()));
+        template = templateRepository.save(template);
+        LoggerCSR.createWarnMsg(EnumWarnLog.UPDATE_TEMPLATE, userId, Long.valueOf(template.getId()));
+        return template;
     }
 }

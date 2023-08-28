@@ -26,15 +26,22 @@ export default function SummaryReport({ template, closeModal }) {
       };
 
       const response = await request('post', '/reports/summary', options, {responseType: 'blob'});
-
+      console.log(response)
       const blob = new Blob([response.data], { type: "xlsx" });
+      var reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = function () {
+        var base64data = reader.result;
+        console.log(base64data);
+        }
+      console.log(blob);
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       document.body.appendChild(link);
       link.setAttribute('style','display: none');
       link.setAttribute('target','blank');
       link.href = url;
-      link.download = "summary-report.xlsx"; // Use "download" attribute
+      link.download = 'summary-report.xlsx'; // Use "download" attribute
       link.click();
       window.URL.revokeObjectURL(url);
       link.remove();

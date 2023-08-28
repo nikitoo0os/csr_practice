@@ -5,10 +5,12 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 
 public class XLSUtil {
@@ -16,7 +18,7 @@ public class XLSUtil {
         File file = ResourceUtils.getFile("classpath:template.xlsx");;
         return new FileInputStream(file);
     }
-    public static InputStreamResource createXLSX(List<ReportData> dataList, String[] headers) throws IOException {
+    public static byte[] createXLSX(List<ReportData> dataList, String[] headers) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Data");
 
@@ -36,7 +38,7 @@ public class XLSUtil {
                 row.createCell(5).setCellValue(data.getRegularAct());
             }
 
-            String outputPath = "C:/Windows/Temp/Csr/output.xlsx";  // Change this to your desired output path
+            String outputPath = "C:/Windows/Temp/Csr/output.xlsx";
             File outputFile = new File(outputPath);
 
             try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
@@ -45,7 +47,9 @@ public class XLSUtil {
                 e.printStackTrace();
             }
 
-            return new InputStreamResource(new FileInputStream(outputFile));
+            Resource resource = new FileSystemResource(outputFile);
+
+            return resource.getContentAsByteArray();
         }
     }
 }

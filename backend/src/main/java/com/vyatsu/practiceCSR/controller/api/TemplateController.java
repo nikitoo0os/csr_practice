@@ -7,6 +7,7 @@ import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.entity.api.Template;
 import com.vyatsu.practiceCSR.mapper.TemplateMapper;
 import com.vyatsu.practiceCSR.service.api.ReportService;
+import com.vyatsu.practiceCSR.service.api.TemplateDataService;
 import com.vyatsu.practiceCSR.service.api.TemplateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.List;
 public class TemplateController {
 
     private final TemplateService templateService;
+    private final TemplateDataService templateDataService;
     private final ReportService reportService;
     private final TemplateMapper templateMapper;
     private final UserAuthenticationProvider authenticationProvider;
@@ -45,12 +47,13 @@ public class TemplateController {
     }
 
     @PutMapping
-    public ResponseEntity updateTemplate(@RequestBody TemplateDTO templateDTO){
+    public ResponseEntity<TemplateDTO> updateTemplate(@RequestHeader("Authorization") String token, @RequestBody TemplateDTO templateDTO){
        List<Report> completedReports = reportService.getCompletedReportsByTemplateId((long) templateDTO.getId());
        if(completedReports.size() > 0){
            return ResponseEntity.badRequest().build();
        }
-       templateService.updateTemplate(templateMapper.toTemplate(templateDTO));
-       return ResponseEntity.ok().build();
+       Template updatedTemplate = templateService.updateTemplate(token, templateMapper.toTemplate(templateDTO));
+       templateDataService.deleteAllTemplateDataByTemplateId(token, Long.valueOf(updatedTemplate.getId()));
+       return ResponseEntity.ok(templateMapper.toTemplateDTO(updatedTemplate));
     }
 }
