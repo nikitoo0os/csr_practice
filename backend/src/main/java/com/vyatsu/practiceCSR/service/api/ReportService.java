@@ -4,6 +4,7 @@ import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
 import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface ReportService {
 
     void updateStatusToEnd(String token, Long reportId);
 
-    byte[] getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException;
+    ByteArrayInputStream getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException;
 
     boolean isLastMonth(Report reportFrom);
 

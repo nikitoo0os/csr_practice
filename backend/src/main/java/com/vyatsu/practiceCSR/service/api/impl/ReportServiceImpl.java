@@ -19,10 +19,14 @@ import com.vyatsu.practiceCSR.repository.TemplateDataRepository;
 import com.vyatsu.practiceCSR.repository.UserRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.utils.XLSUtil;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,9 +37,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
+
+    private final XLSUtil Util;
     private final ReportRepository reportRepository;
     private final ReportMapper reportMapper;
     private final RegionMapper regionMapper;
@@ -57,14 +63,15 @@ public class ReportServiceImpl implements ReportService {
                 .stream()
                 .toList();
 
-        for(RegionDTO regionDTO : createReportDTO.getRegions()) {
+        for (RegionDTO regionDTO : createReportDTO.getRegions()) {
             Report report = reportMapper.toReport(createReportDTO);
             report.setIsActive(true);
             report.setRegion(regionMapper.toRegion(regionDTO));
             report.setStartDate(LocalDate.now());
             report = reportRepository.save(report);
 
-            List<TemplateData> templateDataList = templateDataRepository.findListByTemplateId(Long.valueOf(report.getTemplate().getId()));
+            List<TemplateData> templateDataList = templateDataRepository
+                    .findListByTemplateId(Long.valueOf(report.getTemplate().getId()));
             List<ReportData> reportDataList = new ArrayList<>();
             for (TemplateData templateData : templateDataList) {
                 ReportData reportData = new ReportData();
@@ -82,7 +89,7 @@ public class ReportServiceImpl implements ReportService {
         Report report = reportRepository.findById(id).get();
         LocalDate currentDate = LocalDate.now();
         boolean currentDateIsAfterEndDate = currentDate.isAfter(report.getEndDate());
-        if(currentDateIsAfterEndDate){
+        if (currentDateIsAfterEndDate) {
             report.setIsActive(false);
         }
         return report;
@@ -91,26 +98,28 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<Report> getActiveReportByUserId(Long userId) {
         User user = userRepository.findById(userId).get();
-        List<Report> activeReports = reportRepository.findActiveReportsByRegionId(Long.valueOf(user.getRegion().getId()));
+        List<Report> activeReports = reportRepository
+                .findActiveReportsByRegionId(Long.valueOf(user.getRegion().getId()));
         return activeReports;
     }
 
     @Override
     public List<Report> getInactiveReportByUserId(Long userId) {
         User user = userRepository.findById(userId).get();
-        List<Report> inactiveReports = reportRepository.findInactiveReportByRegionId(Long.valueOf(user.getRegion().getId()));
+        List<Report> inactiveReports = reportRepository
+                .findInactiveReportByRegionId(Long.valueOf(user.getRegion().getId()));
         return inactiveReports;
     }
 
     @Override
     public void createReportsUser(Long reportId, List<Integer> usersId) {
         Report report = getReportById(reportId);
-//        for(Integer id : usersId){
-//            UserReport userReport = new UserReport();
-//            userReport.setReport(report);
-//            userReport.setUser(userRepository.findById(Long.valueOf(id)).get());
-//            userReportRepository.save(userReport);
-//        }
+        // for(Integer id : usersId){
+        // UserReport userReport = new UserReport();
+        // userReport.setReport(report);
+        // userReport.setUser(userRepository.findById(Long.valueOf(id)).get());
+        // userReportRepository.save(userReport);
+        // }
     }
 
     @Override
@@ -123,71 +132,72 @@ public class ReportServiceImpl implements ReportService {
         report.setIsActive(false);
         reportRepository.save(report);
         LocalDate currentLocalDate = LocalDate.now();
-        if(currentLocalDate.isAfter(report.getEndDate())){
+        if (currentLocalDate.isAfter(report.getEndDate())) {
             LoggerCSR.createWarnMsg(EnumWarnLog.COMPLETE_REPORT, userId, Long.valueOf(report.getId()));
-        }
-        else{
+        } else {
             LoggerCSR.createWarnMsg(EnumWarnLog.COMPLETE_TIMEOUT_REPORT, userId, Long.valueOf(report.getId()));
         }
     }
 
     @Override
-    public byte[] getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException {
+    public ByteArrayInputStream getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException {
         String jwtToken = token.substring(7);
         Authentication authentication = authenticationProvider.validateToken(jwtToken);
         Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
 
         List<Report> reports = reportRepository.findByTemplateId(options.getTemplateId());
 
-        //фильтруем по дате
+        // фильтруем по дате
         reports = reports.stream()
                 .filter(report -> !report.getStartDate().isBefore(options.getStartDate()) &&
                         !report.getStartDate().isAfter(options.getEndDate()))
                 .collect(Collectors.toList());
 
-        //получаем данные этих отчетов
+        // получаем данные этих отчетов
         List<List<ReportData>> lastReportData = new ArrayList<>();
-        for(Report report : reports){
+        for (Report report : reports) {
             lastReportData.add(reportDataRepository.findByReportId(Long.valueOf(report.getId())));
         }
 
         List<ReportData> resultReportData = new ArrayList<>();
-        if(lastReportData.size() > 0){
+        if (lastReportData.size() > 0) {
             resultReportData = lastReportData.get(0);
         }
 
-        for(int i = 0; i < resultReportData.size(); i++){
-            for(int j = 0; j < lastReportData.size(); j++){
+        for (int i = 0; i < resultReportData.size(); i++) {
+            for (int j = 0; j < lastReportData.size(); j++) {
                 var count1 = resultReportData.get(i).getCount1();
-                if(count1 == null){
+                if (count1 == null) {
                     count1 = 0;
                 }
                 var count2 = resultReportData.get(i).getCount2();
-                if(count2 == null){
+                if (count2 == null) {
                     count2 = 0;
                 }
 
                 var percent1_ = resultReportData.get(i).getPercent1();
-                if(percent1_ == null){
-                    if(count1 > 0){
-                        BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
+                if (percent1_ == null) {
+                    if (count1 > 0) {
+                        BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100))
+                                .divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
                         resultReportData.get(i).setPercent1(percent1);
                     }
                 }
                 var percent2_ = resultReportData.get(i).getPercent2();
-                if(percent2_ == null){
-                    if(count2 > 0){
-                        BigDecimal percent2 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(count2), 10, RoundingMode.HALF_UP);
+                if (percent2_ == null) {
+                    if (count2 > 0) {
+                        BigDecimal percent2 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100))
+                                .divide(BigDecimal.valueOf(count2), 10, RoundingMode.HALF_UP);
                         resultReportData.get(i).setPercent2(percent2);
                     }
                 }
 
                 var lastCount1 = lastReportData.get(j).get(i).getCount1();
-                if(lastCount1 == null){
+                if (lastCount1 == null) {
                     lastCount1 = 0;
                 }
                 var lastCount2 = lastReportData.get(j).get(i).getCount2();
-                if(lastCount2 == null){
+                if (lastCount2 == null) {
                     lastCount2 = 0;
                 }
 
@@ -195,8 +205,8 @@ public class ReportServiceImpl implements ReportService {
                 resultReportData.get(i).setCount2(count2 + lastCount2);
             }
         }
-        byte[] resource = XLSUtil.createXLSX(resultReportData,
-                new String[]{
+        ByteArrayInputStream in = Util.createXLSX(resultReportData,
+                new String[] {
                         "Наименование услуги в Кировской области",
                         "Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 31.07.2023)",
                         "Количество обращений, поступивших в эл виде через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023)",
@@ -205,8 +215,8 @@ public class ReportServiceImpl implements ReportService {
                 });
 
         LoggerCSR.createWarnMsg(EnumWarnLog.GENERATE_SUMMARY_REPORT, userId, options.getTemplateId());
-        
-        return resource;
+
+        return in;
     }
 
     @Override

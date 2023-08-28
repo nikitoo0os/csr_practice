@@ -1,24 +1,33 @@
 package com.vyatsu.practiceCSR.utils;
 
 import com.vyatsu.practiceCSR.entity.api.ReportData;
+
+import lombok.RequiredArgsConstructor;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
+@Service
+@RequiredArgsConstructor
 public class XLSUtil {
-    private static InputStream getTemplateInputStream() throws IOException {
-        File file = ResourceUtils.getFile("classpath:template.xlsx");;
-        return new FileInputStream(file);
-    }
-    public static byte[] createXLSX(List<ReportData> dataList, String[] headers) throws IOException {
+
+    private ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+    // private static InputStream getTemplateInputStream() throws IOException {
+    // File file = ResourceUtils.getFile("classpath:template.xlsx");;
+    // return new FileInputStream(file);
+    // }
+    public ByteArrayInputStream createXLSX(List<ReportData> dataList, String[] headers) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Data");
 
@@ -38,18 +47,15 @@ public class XLSUtil {
                 row.createCell(5).setCellValue(data.getRegularAct());
             }
 
-            String outputPath = "C:/Windows/Temp/Csr/output.xlsx";
-            File outputFile = new File(outputPath);
-
-            try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
-                workbook.write(outputStream);
+            // String outputPath = "C:/Windows/Temp/Csr/output.xlsx"; // Change this to your
+            // desired output path
+            // File outputFile = new File(outputPath);
+            try {
+                workbook.write(out);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            Resource resource = new FileSystemResource(outputFile);
-
-            return resource.getContentAsByteArray();
+            return new ByteArrayInputStream(out.toByteArray());
         }
     }
 }
