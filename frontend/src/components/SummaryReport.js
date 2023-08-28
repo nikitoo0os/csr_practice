@@ -18,41 +18,31 @@ export default function SummaryReport({ template, closeModal }) {
   const handleGenerateReport = async () => {
     try {
       setIsDownloading(true);
-
+  
       const options = {
         startDate,
         endDate,
-        templateId:template.id,
+        templateId: template.id,
       };
-
-      const response = await request('post', '/reports/summary', options, {responseType: 'blob'});
-      console.log(response)
-      const blob = new Blob([response.data], { type: "xlsx" });
-      var reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = function () {
-        var base64data = reader.result;
-        console.log(base64data);
-        }
-      console.log(blob);
+  
+      const response = await request('post', '/reports/summary', options, { responseType: 'blob' });
+  
+      const blob = new Blob([response.data], { type: 'application/vnd.ms-excel' });
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      document.body.appendChild(link);
-      link.setAttribute('style','display: none');
-      link.setAttribute('target','blank');
+  
+      const link = document.createElement('a');
       link.href = url;
-      link.download = 'summary-report.xlsx'; // Use "download" attribute
+      link.download = 'summary-report.xlsx';
       link.click();
       window.URL.revokeObjectURL(url);
-      link.remove();
       setIsDownloading(false);
+      
     } catch (error) {
       console.error("Error generating report:", error);
       toast.error("Ошибка при формировании отчета.");
       setIsDownloading(false);
     }
   };
-
   return (
     <div className="p-4 bg-white rounded shadow-md w-48 mx-auto mt-64">
       <div className="flex justify-end">
