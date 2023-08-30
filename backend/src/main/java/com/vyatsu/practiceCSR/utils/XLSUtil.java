@@ -28,6 +28,7 @@ public class XLSUtil {
     // return new FileInputStream(file);
     // }
     public ByteArrayInputStream createXLSX(List<ReportData> dataList, String[] headers) throws IOException {
+        out = new ByteArrayOutputStream();
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Data");
 
@@ -36,22 +37,37 @@ public class XLSUtil {
             for (int i = 0; i < headers.length; i++) {
                 headerRow.createCell(i).setCellValue(headers[i]);
             }
+
+            int summaryCount1 = 0, summaryCount2 = 0;
+            double summaryPercent = 0.0;
+
             for (ReportData data : dataList) {
                 Row row = sheet.createRow(rowNum++);
 
                 row.createCell(0).setCellValue(data.getService().getName());
                 row.createCell(1).setCellValue(data.getCount1());
+                summaryCount1 += data.getCount1();
                 row.createCell(2).setCellValue(data.getCount2());
+                summaryCount2 += data.getCount2();
                 row.createCell(3).setCellValue(String.valueOf(data.getPercent1()));
                 row.createCell(4).setCellValue(String.valueOf(data.getPercent2()));
                 row.createCell(5).setCellValue(data.getRegularAct());
             }
+            summaryPercent = (double) (summaryCount2 * 100) / summaryCount1;
+
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue("ИТОГО по всем ОМСУ:");
+            row.createCell(1).setCellValue(summaryCount1);
+            row.createCell(2).setCellValue(summaryCount2);
+            row.createCell(3).setCellValue(summaryPercent);
 
             // String outputPath = "C:/Windows/Temp/Csr/output.xlsx"; // Change this to your
             // desired output path
             // File outputFile = new File(outputPath);
             try {
                 workbook.write(out);
+                out.close();
+                workbook.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

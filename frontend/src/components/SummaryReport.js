@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { request } from "../helpers/axios_helper";
+import * as fileSaver from 'file-saver';
+
 
 export default function SummaryReport({ template, closeModal }) {
   const [startDate, setStartDate] = useState("");
@@ -27,9 +29,8 @@ export default function SummaryReport({ template, closeModal }) {
   
       const response = await request('post', '/reports/summary', options, { responseType: 'blob' });
   
-      const blob = new Blob([response.data], { type: 'application/vnd.ms-excel' });
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = window.URL.createObjectURL(blob);
-  
       const link = document.createElement('a');
       link.href = url;
       link.download = 'summary-report.xlsx';

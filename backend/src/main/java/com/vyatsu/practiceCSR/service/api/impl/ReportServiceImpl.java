@@ -19,21 +19,18 @@ import com.vyatsu.practiceCSR.repository.TemplateDataRepository;
 import com.vyatsu.practiceCSR.repository.UserRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.utils.XLSUtil;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -139,6 +136,16 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
+    private List<com.vyatsu.practiceCSR.entity.api.Service> getUniqueSeviceList(List<ReportData> data){
+        List<com.vyatsu.practiceCSR.entity.api.Service> services = new ArrayList<>();
+        for(ReportData reportData : data){
+            if(!services.contains(reportData.getService())){
+                services.add(reportData.getService());
+            }
+        }
+        return services;
+    }
+
     @Override
     public ByteArrayInputStream getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException {
         String jwtToken = token.substring(7);
@@ -154,58 +161,102 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList());
 
         // получаем данные этих отчетов
-        List<List<ReportData>> lastReportData = new ArrayList<>();
+        List<ReportData> lastReportData = new ArrayList<>();
         for (Report report : reports) {
-            lastReportData.add(reportDataRepository.findByReportId(Long.valueOf(report.getId())));
-        }
-
-        List<ReportData> resultReportData = new ArrayList<>();
-        if (lastReportData.size() > 0) {
-            resultReportData = lastReportData.get(0);
-        }
-
-        for (int i = 0; i < resultReportData.size(); i++) {
-            for (int j = 0; j < lastReportData.size(); j++) {
-                var count1 = resultReportData.get(i).getCount1();
-                if (count1 == null) {
-                    count1 = 0;
-                }
-                var count2 = resultReportData.get(i).getCount2();
-                if (count2 == null) {
-                    count2 = 0;
-                }
-
-                var percent1_ = resultReportData.get(i).getPercent1();
-                if (percent1_ == null) {
-                    if (count1 > 0) {
-                        BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100))
-                                .divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
-                        resultReportData.get(i).setPercent1(percent1);
-                    }
-                }
-                var percent2_ = resultReportData.get(i).getPercent2();
-                if (percent2_ == null) {
-                    if (count2 > 0) {
-                        BigDecimal percent2 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100))
-                                .divide(BigDecimal.valueOf(count2), 10, RoundingMode.HALF_UP);
-                        resultReportData.get(i).setPercent2(percent2);
-                    }
-                }
-
-                var lastCount1 = lastReportData.get(j).get(i).getCount1();
-                if (lastCount1 == null) {
-                    lastCount1 = 0;
-                }
-                var lastCount2 = lastReportData.get(j).get(i).getCount2();
-                if (lastCount2 == null) {
-                    lastCount2 = 0;
-                }
-
-                resultReportData.get(i).setCount1(count1 + lastCount1);
-                resultReportData.get(i).setCount2(count2 + lastCount2);
+            List<ReportData> reportDataList = reportDataRepository.findByReportId(Long.valueOf(report.getId()));
+            for(ReportData reportData : reportDataList){
+                lastReportData.add(reportData);
             }
         }
-        ByteArrayInputStream in = Util.createXLSX(resultReportData,
+
+        List<ReportData> result = new ArrayList<>();
+        List<com.vyatsu.practiceCSR.entity.api.Service> serviceList = getUniqueSeviceList(lastReportData);
+
+        System.out.println(serviceList.size());
+
+        int tempCount1 = 0, tempCount2 = 0;
+        BigDecimal tempPercent1 = new BigDecimal(0), tempPercent2 = new BigDecimal(0);
+        String tempRegularAct = null;
+        com.vyatsu.practiceCSR.entity.api.Service tempService = null;
+        for(com.vyatsu.practiceCSR.entity.api.Service service : serviceList){
+            ReportData reportData1 = new ReportData();
+            for(ReportData reportData : lastReportData){
+                if(service == reportData.getService()){
+                    if(reportData.getCount1() != null){
+                        tempCount1 += reportData.getCount1();
+                    }
+                    if(reportData.getCount2() != null){
+                        tempCount2 += reportData.getCount2();
+                    }
+                    if(tempRegularAct == null){
+                        tempRegularAct = reportData.getRegularAct();
+                    }
+                    reportData1.setService(service);
+                    reportData1.setReport(reportData.getReport());
+                }
+            }
+            tempPercent1 = BigDecimal.valueOf(tempCount2 * 100L / tempCount1);
+
+            reportData1.setCount1(tempCount1);
+            reportData1.setCount2(tempCount2);
+            reportData1.setPercent1(tempPercent1);
+            reportData1.setPercent2(tempPercent2);
+
+            result.add(reportData1);
+        }
+
+        System.out.println(result.size());
+//
+//        List<ReportData> resultReportData = new ArrayList<>();
+//        if (lastReportData.size() > 0) {
+//            resultReportData = lastReportData.get(0);
+//        }
+
+//        for (int i = 0; i < resultReportData.size(); i++) {
+//            for (int j = 0; j < lastReportData.size(); j++) {
+//                var count1 = resultReportData.get(i).getCount1();
+//                if (count1 == null) {
+//                    count1 = 0;
+//                }
+//                var count2 = resultReportData.get(i).getCount2();
+//                if (count2 == null) {
+//                    count2 = 0;
+//                }
+//
+//                var percent1_ = resultReportData.get(i).getPercent1();
+//                if (percent1_ == null) {
+//                    if (count1 > 0) {
+//                        BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100))
+//                                .divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
+//                        resultReportData.get(i).setPercent1(percent1);
+//                    }
+//                }
+//                var percent2_ = resultReportData.get(i).getPercent2();
+//                if (percent2_ == null) {
+//                    if (count2 > 0) {
+//                        BigDecimal percent2 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100))
+//                                .divide(BigDecimal.valueOf(count2), 10, RoundingMode.HALF_UP);
+//                        resultReportData.get(i).setPercent2(percent2);
+//                    }
+//                }
+//
+//                var lastCount1 = lastReportData.get(j).get(i).getCount1();
+//                if (lastCount1 == null) {
+//                    lastCount1 = 0;
+//                }
+//                var lastCount2 = lastReportData.get(j).get(i).getCount2();
+//                if (lastCount2 == null) {
+//                    lastCount2 = 0;
+//                }
+//
+//                resultReportData.get(i).setCount1(count1 + lastCount1);
+//                resultReportData.get(i).setCount2(count2 + lastCount2);
+//            }
+//        }
+
+
+
+        ByteArrayInputStream in = Util.createXLSX(result,
                 new String[] {
                         "Наименование услуги в Кировской области",
                         "Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 31.07.2023)",

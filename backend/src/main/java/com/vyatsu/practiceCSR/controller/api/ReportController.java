@@ -9,6 +9,7 @@ import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
 import com.vyatsu.practiceCSR.repository.ReportRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.core.io.ByteArrayResource;
@@ -149,13 +150,15 @@ public class ReportController {
     }
 
     @PostMapping("/summary")
-    public ResponseEntity<Resource> generateSummaryReport(@RequestHeader("Authorization") String token,
-            @RequestBody OptionsSummaryReportDTO options) throws IOException {
+    @ResponseBody
+    public ResponseEntity<InputStreamResource> generateSummaryReport(@RequestHeader("Authorization") String token,
+                                                                     @RequestBody OptionsSummaryReportDTO options
+                                                                     ) throws IOException {
         InputStreamResource file = new InputStreamResource(reportService.getResultReportData(token, options));
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=filename=file.xlsx")
-                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .header("Content-Disposition", "attachment; filename=report.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(file);
     }
 }

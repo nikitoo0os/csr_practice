@@ -36,7 +36,7 @@ public class Service {
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "service")
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
     private Set<ReportData> reportData = new LinkedHashSet<>();
 
 }
