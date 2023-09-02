@@ -39,22 +39,46 @@ export default function SummaryReport({ template, closeModal }) {
         ...rest,
       };
     });
+
+    const xlsxData = updatedData.map(item => {
+      const { ...rest } = item;
+      return {
+        number: "1",
+        ...rest,
+      };
+    });
+
+    xlsxData.forEach((item, index) => {
+      item.number = index + 1;
+    });
     const table_head = {
+      number: "№",
       service: "Наименование услуги в Кировской области",
       count1: template.countAllRequests,
       count2: template.countEPGURequests,
       percent1: template.percentEPGURequests,
       percent2: template.percentNotViolationEPGURequests
     };
-    updatedData.unshift(table_head);
+    xlsxData.unshift(table_head);
+
+    const totalRow = {
+      number: null,
+      service: "ИТОГО по всем ОМСУ:",
+      count1: updatedData.reduce((total, item) => total + item.count1, 0), // Сумма всех count1
+      count2: updatedData.reduce((total, item) => total + item.count2, 0), // Сумма всех count2
+      percent1: updatedData.reduce((total, item) => total + item.count2, 0) / updatedData.reduce((total, item) => total + item.count1, 0) * 100,
+      percent2: null,
+    };
+
+    xlsxData.push(totalRow);
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("MySheet1");
 
-    const columnWidths = [50, 25, 25, 25, 25];
+    const columnWidths = [10,50, 25, 25, 25, 25];
     worksheet.columns = columnWidths.map(width => ({ width }));  
 
-    updatedData.forEach(item => {
+    xlsxData.forEach(item => {
       worksheet.addRow(Object.values(item));
     });
 
@@ -79,7 +103,7 @@ export default function SummaryReport({ template, closeModal }) {
 
     const firstRow = worksheet.getRow(1);
   firstRow.eachCell((cell, colNumber) => {
-    if (colNumber <= 5) {
+    if (colNumber <= 6) {
       cell.font = { bold: true };
       cell.fill = {
         type: 'pattern',
@@ -93,13 +117,22 @@ export default function SummaryReport({ template, closeModal }) {
   worksheet.eachRow((row, rowIndex) => {
     if (rowIndex >= 2) {
       row.eachCell((cell, colNumber) => {
-        if (colNumber >= 2) {
+        if (colNumber >= 3) {
           cell.alignment = { horizontal: 'center', vertical: 'middle' };
         }
       });
     }
   });
+  worksheet.getColumn(1).alignment = { horizontal: 'center', vertical: 'middle' };
+  const lastRow = worksheet.getRow(xlsxData.length);
 
+// Установите стили для каждой ячейки в последней строке
+lastRow.eachCell((cell, colNumber) => {
+  if (colNumber === 2) {
+    cell.font = { bold: true, italic: true };
+    cell.alignment = { vertical: 'middle', horizontal: 'right' };
+  }
+});
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = window.URL.createObjectURL(blob);
