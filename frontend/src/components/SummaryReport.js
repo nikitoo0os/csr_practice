@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import { request } from "../helpers/axios_helper";
-import * as fileSaver from 'file-saver';
+import ExcelJS from 'exceljs';
+
 
 
 export default function SummaryReport({ template, closeModal }) {
@@ -18,32 +18,99 @@ export default function SummaryReport({ template, closeModal }) {
   };
 
   const handleGenerateReport = async () => {
-    try {
-      setIsDownloading(true);
+    const options = {
+      startDate,
+      endDate,
+      templateId: template.id
+    };
+    const response = await request('post', '/reports/summary', options);
   
-      const options = {
-        startDate,
-        endDate,
-        templateId: template.id,
+    const responseData = response.data;
+    const modifiedData = responseData.map(item => {
+      const { report, ...newItem } = item;
+      return newItem;
+    });
+  
+    const updatedData = modifiedData.map(item => {
+      const service = item.service.name;
+      const { service: _, ...rest } = item;
+      return {
+        service,
+        ...rest,
       };
-  
-      const response = await request('post', '/reports/summary', options, { responseType: 'blob' });
-  
-      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'summary-report.xlsx';
-      link.click();
-      window.URL.revokeObjectURL(url);
-      setIsDownloading(false);
-      
-    } catch (error) {
-      console.error("Error generating report:", error);
-      toast.error("Ошибка при формировании отчета.");
-      setIsDownloading(false);
+    });
+    const table_head = {
+      service: "Наименование услуги в Кировской области",
+      count1: template.countAllRequests,
+      count2: template.countEPGURequests,
+      percent1: template.percentEPGURequests,
+      percent2: template.percentNotViolationEPGURequests
+    };
+    updatedData.unshift(table_head);
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("MySheet1");
+
+    const columnWidths = [50, 25, 25, 25, 25];
+    worksheet.columns = columnWidths.map(width => ({ width }));  
+
+    updatedData.forEach(item => {
+      worksheet.addRow(Object.values(item));
+    });
+
+    worksheet.eachRow((row, rowNumber) => {
+      row.height = 110;
+      row.alignment = {
+        vertical: 'middle',
+        wrapText: true,
+      };
+    });
+
+    worksheet.eachRow((row, rowNumber) => {
+      row.eachCell((cell, colNumber) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+      });
+    });
+
+    const firstRow = worksheet.getRow(1);
+  firstRow.eachCell((cell, colNumber) => {
+    if (colNumber <= 5) {
+      cell.font = { bold: true };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'fff2cc' },
+      };
+      cell.alignment = { horizontal: 'center', vertical: 'middle' };
     }
+  });
+
+  worksheet.eachRow((row, rowIndex) => {
+    if (rowIndex >= 2) {
+      row.eachCell((cell, colNumber) => {
+        if (colNumber >= 2) {
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        }
+      });
+    }
+  });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'MyExcel.xlsx';
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
+  
+
   return (
     <div className="p-4 bg-white rounded shadow-md w-48 mx-auto mt-64">
       <div className="flex justify-end">
