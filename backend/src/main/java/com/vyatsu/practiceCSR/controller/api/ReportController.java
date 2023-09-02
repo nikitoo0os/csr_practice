@@ -160,7 +160,7 @@ public class ReportController {
         //response.setContentType(MediaType.APPLICATION_OCTET_STREAM.getType());
         //InputStreamResource resource = new InputStreamResource(reportService.getResultReportData(token, options, response));
         //return resource.getContentAsByteArray();
-
-        return ResponseEntity.ok(reportService.getResultReportData(token, options));
+        List<CreateSummaryReportDTO> res = reportService.getResultReportData(token, options);
+        return ResponseEntity.ok(res);
     }
 }

@@ -17,8 +17,8 @@ public class CreateSummaryReportDTO {
 
     private ServiceDTO service;
     private ReportDTO report;
-    private Integer count1;
-    private Integer count2;
+    private Double count1;
+    private Double count2;
     private BigDecimal percent1;
     private BigDecimal percent2;
 }

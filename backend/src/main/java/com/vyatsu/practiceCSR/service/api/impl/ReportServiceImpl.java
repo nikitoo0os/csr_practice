@@ -176,7 +176,7 @@ public class ReportServiceImpl implements ReportService {
         List<CreateSummaryReportDTO> result = new ArrayList<>();
         List<com.vyatsu.practiceCSR.entity.api.Service> serviceList = getUniqueSeviceList(lastReportData);
 
-        int tempCount1 = 0, tempCount2 = 0;
+        double tempCount1 = 0, tempCount2 = 0;
         BigDecimal tempPercent1 = new BigDecimal(0), tempPercent2 = new BigDecimal(0);
         String tempRegularAct = null;
         com.vyatsu.practiceCSR.entity.api.Service tempService = null;
@@ -198,6 +198,7 @@ public class ReportServiceImpl implements ReportService {
                 }
             }
             tempPercent1 = BigDecimal.valueOf(tempCount2 * 100L / tempCount1);
+
 
             createSummaryReportDTO.setCount1(tempCount1);
             createSummaryReportDTO.setCount2(tempCount2);
