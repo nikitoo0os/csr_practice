@@ -2,6 +2,7 @@ package com.vyatsu.practiceCSR.utils;
 
 import com.vyatsu.practiceCSR.entity.api.ReportData;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.apache.poi.ss.usermodel.Row;
@@ -27,7 +28,7 @@ public class XLSUtil {
     // File file = ResourceUtils.getFile("classpath:template.xlsx");;
     // return new FileInputStream(file);
     // }
-    public ByteArrayInputStream createXLSX(List<ReportData> dataList, String[] headers) throws IOException {
+    public ByteArrayInputStream createXLSX(List<ReportData> dataList, String[] headers, HttpServletResponse response) throws IOException {
         out = new ByteArrayOutputStream();
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Data");
@@ -42,16 +43,17 @@ public class XLSUtil {
             double summaryPercent = 0.0;
 
             for (ReportData data : dataList) {
-                Row row = sheet.createRow(rowNum++);
+                Row row = sheet.createRow(rowNum);
 
-                row.createCell(0).setCellValue(data.getService().getName());
-                row.createCell(1).setCellValue(data.getCount1());
+                row.createCell(0).setCellValue(rowNum++);
+                row.createCell(1).setCellValue(data.getService().getName());
+                row.createCell(2).setCellValue(data.getCount1());
                 summaryCount1 += data.getCount1();
-                row.createCell(2).setCellValue(data.getCount2());
+                row.createCell(3).setCellValue(data.getCount2());
                 summaryCount2 += data.getCount2();
-                row.createCell(3).setCellValue(String.valueOf(data.getPercent1()));
-                row.createCell(4).setCellValue(String.valueOf(data.getPercent2()));
-                row.createCell(5).setCellValue(data.getRegularAct());
+                row.createCell(4).setCellValue(String.valueOf(data.getPercent1()));
+                row.createCell(5).setCellValue(String.valueOf(data.getPercent2()));
+                row.createCell(6).setCellValue(data.getRegularAct());
             }
             summaryPercent = (double) (summaryCount2 * 100) / summaryCount1;
 
@@ -65,6 +67,7 @@ public class XLSUtil {
             // desired output path
             // File outputFile = new File(outputPath);
             try {
+                workbook.write(response.getOutputStream());
                 workbook.write(out);
                 out.close();
                 workbook.close();

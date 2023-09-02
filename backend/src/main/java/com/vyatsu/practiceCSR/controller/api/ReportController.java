@@ -4,6 +4,7 @@ import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.ReportDTO;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
+import com.vyatsu.practiceCSR.dto.helper.CreateSummaryReportDTO;
 import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
@@ -149,16 +150,17 @@ public class ReportController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/summary")
-    @ResponseBody
-    public ResponseEntity<InputStreamResource> generateSummaryReport(@RequestHeader("Authorization") String token,
-                                                                     @RequestBody OptionsSummaryReportDTO options
+    @PostMapping(value = "/summary" )
+    public ResponseEntity<List<CreateSummaryReportDTO>> generateSummaryReport(@RequestHeader("Authorization") String token,
+                                                                              @RequestBody OptionsSummaryReportDTO options
                                                                      ) throws IOException {
-        InputStreamResource file = new InputStreamResource(reportService.getResultReportData(token, options));
 
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=report.xlsx")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(file);
+//        response.setHeader("Content-Disposition", "attachment; filename=file.xlsx");
+//        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        //response.setContentType(MediaType.APPLICATION_OCTET_STREAM.getType());
+        //InputStreamResource resource = new InputStreamResource(reportService.getResultReportData(token, options, response));
+        //return resource.getContentAsByteArray();
+
+        return ResponseEntity.ok(reportService.getResultReportData(token, options));
     }
 }

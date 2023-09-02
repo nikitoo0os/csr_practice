@@ -4,6 +4,7 @@ import com.vyatsu.practiceCSR.config.auth.UserAuthenticationProvider;
 import com.vyatsu.practiceCSR.dto.api.RegionDTO;
 import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
+import com.vyatsu.practiceCSR.dto.helper.CreateSummaryReportDTO;
 import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
 import com.vyatsu.practiceCSR.entity.api.ReportData;
@@ -13,12 +14,14 @@ import com.vyatsu.practiceCSR.logger.EnumWarnLog;
 import com.vyatsu.practiceCSR.logger.LoggerCSR;
 import com.vyatsu.practiceCSR.mapper.RegionMapper;
 import com.vyatsu.practiceCSR.mapper.ReportMapper;
+import com.vyatsu.practiceCSR.mapper.ServiceMapper;
 import com.vyatsu.practiceCSR.repository.ReportDataRepository;
 import com.vyatsu.practiceCSR.repository.ReportRepository;
 import com.vyatsu.practiceCSR.repository.TemplateDataRepository;
 import com.vyatsu.practiceCSR.repository.UserRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import com.vyatsu.practiceCSR.utils.XLSUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -46,6 +49,7 @@ public class ReportServiceImpl implements ReportService {
     private final UserRepository userRepository;
     private final ReportDataRepository reportDataRepository;
     private final UserAuthenticationProvider authenticationProvider;
+    private final ServiceMapper serviceMapper;
 
     @Override
     public void createReport(String token, CreateReportDTO createReportDTO) {
@@ -147,7 +151,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public ByteArrayInputStream getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException {
+    public List<CreateSummaryReportDTO> getResultReportData(String token, OptionsSummaryReportDTO options) throws IOException {
         String jwtToken = token.substring(7);
         Authentication authentication = authenticationProvider.validateToken(jwtToken);
         Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
@@ -169,17 +173,15 @@ public class ReportServiceImpl implements ReportService {
             }
         }
 
-        List<ReportData> result = new ArrayList<>();
+        List<CreateSummaryReportDTO> result = new ArrayList<>();
         List<com.vyatsu.practiceCSR.entity.api.Service> serviceList = getUniqueSeviceList(lastReportData);
-
-        System.out.println(serviceList.size());
 
         int tempCount1 = 0, tempCount2 = 0;
         BigDecimal tempPercent1 = new BigDecimal(0), tempPercent2 = new BigDecimal(0);
         String tempRegularAct = null;
         com.vyatsu.practiceCSR.entity.api.Service tempService = null;
         for(com.vyatsu.practiceCSR.entity.api.Service service : serviceList){
-            ReportData reportData1 = new ReportData();
+            CreateSummaryReportDTO createSummaryReportDTO = new CreateSummaryReportDTO();
             for(ReportData reportData : lastReportData){
                 if(service == reportData.getService()){
                     if(reportData.getCount1() != null){
@@ -191,83 +193,34 @@ public class ReportServiceImpl implements ReportService {
                     if(tempRegularAct == null){
                         tempRegularAct = reportData.getRegularAct();
                     }
-                    reportData1.setService(service);
-                    reportData1.setReport(reportData.getReport());
+                    createSummaryReportDTO.setService(serviceMapper.serviceToServiceDTO(service));
+                    createSummaryReportDTO.setReport(reportMapper.toReportDTO(reportData.getReport()));
                 }
             }
             tempPercent1 = BigDecimal.valueOf(tempCount2 * 100L / tempCount1);
 
-            reportData1.setCount1(tempCount1);
-            reportData1.setCount2(tempCount2);
-            reportData1.setPercent1(tempPercent1);
-            reportData1.setPercent2(tempPercent2);
+            createSummaryReportDTO.setCount1(tempCount1);
+            createSummaryReportDTO.setCount2(tempCount2);
+            createSummaryReportDTO.setPercent1(tempPercent1);
+            createSummaryReportDTO.setPercent2(tempPercent2);
 
-            result.add(reportData1);
+            result.add(createSummaryReportDTO);
         }
 
-        System.out.println(result.size());
-//
-//        List<ReportData> resultReportData = new ArrayList<>();
-//        if (lastReportData.size() > 0) {
-//            resultReportData = lastReportData.get(0);
-//        }
-
-//        for (int i = 0; i < resultReportData.size(); i++) {
-//            for (int j = 0; j < lastReportData.size(); j++) {
-//                var count1 = resultReportData.get(i).getCount1();
-//                if (count1 == null) {
-//                    count1 = 0;
-//                }
-//                var count2 = resultReportData.get(i).getCount2();
-//                if (count2 == null) {
-//                    count2 = 0;
-//                }
-//
-//                var percent1_ = resultReportData.get(i).getPercent1();
-//                if (percent1_ == null) {
-//                    if (count1 > 0) {
-//                        BigDecimal percent1 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100))
-//                                .divide(BigDecimal.valueOf(count1), 10, RoundingMode.HALF_UP);
-//                        resultReportData.get(i).setPercent1(percent1);
-//                    }
-//                }
-//                var percent2_ = resultReportData.get(i).getPercent2();
-//                if (percent2_ == null) {
-//                    if (count2 > 0) {
-//                        BigDecimal percent2 = BigDecimal.valueOf(count2).multiply(BigDecimal.valueOf(100))
-//                                .divide(BigDecimal.valueOf(count2), 10, RoundingMode.HALF_UP);
-//                        resultReportData.get(i).setPercent2(percent2);
-//                    }
-//                }
-//
-//                var lastCount1 = lastReportData.get(j).get(i).getCount1();
-//                if (lastCount1 == null) {
-//                    lastCount1 = 0;
-//                }
-//                var lastCount2 = lastReportData.get(j).get(i).getCount2();
-//                if (lastCount2 == null) {
-//                    lastCount2 = 0;
-//                }
-//
-//                resultReportData.get(i).setCount1(count1 + lastCount1);
-//                resultReportData.get(i).setCount2(count2 + lastCount2);
-//            }
-//        }
-
-
-
-        ByteArrayInputStream in = Util.createXLSX(result,
-                new String[] {
-                        "Наименование услуги в Кировской области",
-                        "Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 31.07.2023)",
-                        "Количество обращений, поступивших в эл виде через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023)",
-                        "% обращений в эл виде через ЕПГУ (целевой показатель на 2023 год 40%) (нарастающим итогом с 01.01.2023 по 31.07.2023)",
-                        "Доля услуг, предоставленных без нарушения регламентного срока при оказании услуги через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023) (%)"
-                });
+//        ByteArrayInputStream in = Util.createXLSX(result,
+//                new String[] {
+//                        "№",
+//                        "Наименование услуги в Кировской области",
+//                        "Количество обращений за отчетный период с учетом всех способов подачи (нарастающим итогом с 01.01.2023 по 31.07.2023)",
+//                        "Количество обращений, поступивших в эл виде через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023)",
+//                        "% обращений в эл виде через ЕПГУ (целевой показатель на 2023 год 40%) (нарастающим итогом с 01.01.2023 по 31.07.2023)",
+//                        "Доля услуг, предоставленных без нарушения регламентного срока при оказании услуги через ЕПГУ (нарастающим итогом с 01.01.2023 по 31.07.2023) (%)"
+//                },
+//                response);
 
         LoggerCSR.createWarnMsg(EnumWarnLog.GENERATE_SUMMARY_REPORT, userId, options.getTemplateId());
 
-        return in;
+        return result;
     }
 
     @Override
