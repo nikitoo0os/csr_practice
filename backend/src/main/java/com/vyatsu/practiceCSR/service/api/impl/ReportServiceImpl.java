@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -167,9 +168,11 @@ public class ReportServiceImpl implements ReportService {
         // получаем данные этих отчетов
         List<ReportData> lastReportData = new ArrayList<>();
         for (Report report : reports) {
-            List<ReportData> reportDataList = reportDataRepository.findByReportId(Long.valueOf(report.getId()));
-            for(ReportData reportData : reportDataList){
-                lastReportData.add(reportData);
+            if(!report.getIsActive()){
+                List<ReportData> reportDataList = reportDataRepository.findByReportId(Long.valueOf(report.getId()));
+                for(ReportData reportData : reportDataList){
+                    lastReportData.add(reportData);
+                }
             }
         }
 
@@ -177,7 +180,8 @@ public class ReportServiceImpl implements ReportService {
         List<com.vyatsu.practiceCSR.entity.api.Service> serviceList = getUniqueSeviceList(lastReportData);
 
         double tempCount1 = 0, tempCount2 = 0;
-        BigDecimal tempPercent1 = new BigDecimal(0), tempPercent2 = new BigDecimal(0);
+        BigDecimal tempPercent1 = new BigDecimal(0);
+        BigDecimal tempPercent2 = new BigDecimal(0);
         String tempRegularAct = null;
         com.vyatsu.practiceCSR.entity.api.Service tempService = null;
         for(com.vyatsu.practiceCSR.entity.api.Service service : serviceList){
@@ -190,22 +194,29 @@ public class ReportServiceImpl implements ReportService {
                     if(reportData.getCount2() != null){
                         tempCount2 += reportData.getCount2();
                     }
+                    if(reportData.getPercent2() != null){
+                        tempPercent2 = tempPercent2.add(reportData.getPercent2());
+                    }
                     if(tempRegularAct == null){
                         tempRegularAct = reportData.getRegularAct();
                     }
+
                     createSummaryReportDTO.setService(serviceMapper.serviceToServiceDTO(service));
                     createSummaryReportDTO.setReport(reportMapper.toReportDTO(reportData.getReport()));
                 }
             }
             tempPercent1 = BigDecimal.valueOf(tempCount2 * 100L / tempCount1);
 
-
             createSummaryReportDTO.setCount1(tempCount1);
             createSummaryReportDTO.setCount2(tempCount2);
-            createSummaryReportDTO.setPercent1(tempPercent1);
+            createSummaryReportDTO.setPercent1(tempPercent1.setScale(2, RoundingMode.HALF_UP));
             createSummaryReportDTO.setPercent2(tempPercent2);
 
             result.add(createSummaryReportDTO);
+
+            tempCount1 = 0;
+            tempCount2 = 0;
+            tempPercent2 = new BigDecimal(0);
         }
 
 //        ByteArrayInputStream in = Util.createXLSX(result,
