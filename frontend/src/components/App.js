@@ -10,6 +10,7 @@ import TemplatesAndReports from './TemplatesAndReports';
 import FillReport from './FillReport';
 import ReadReport from './ReadReport';
 import EditTemplate from './EditTemplate';
+import SummaryRepRead from './SummaryRepRead';
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
                     <Route path="/users" element={<Users />} />
                     <Route path="/" element={<TemplatesAndReports />} />
                     <Route path="/edit-template" element={<EditTemplate/>}/>
+                    <Route path="/summary-report" element={<SummaryRepRead/>}/>
                   </>
                 ) : (
                   <>
