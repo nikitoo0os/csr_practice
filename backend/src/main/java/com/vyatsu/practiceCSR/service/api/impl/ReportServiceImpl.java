@@ -205,7 +205,10 @@ public class ReportServiceImpl implements ReportService {
                     createSummaryReportDTO.setReport(reportMapper.toReportDTO(reportData.getReport()));
                 }
             }
-            tempPercent1 = BigDecimal.valueOf(tempCount2 * 100L / tempCount1);
+
+            if(tempCount1 > 0.0){
+                tempPercent1 = BigDecimal.valueOf(tempCount2 * 100L / tempCount1);
+            }
 
             createSummaryReportDTO.setCount1(tempCount1);
             createSummaryReportDTO.setCount2(tempCount2);
@@ -216,6 +219,7 @@ public class ReportServiceImpl implements ReportService {
 
             tempCount1 = 0;
             tempCount2 = 0;
+            tempPercent1 = new BigDecimal(0);
             tempPercent2 = new BigDecimal(0);
         }
 
