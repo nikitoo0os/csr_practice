@@ -80,7 +80,7 @@ export default function Users() {
       }
     } catch (error) {
       // Обработка ошибки, если требуется
-      toast.error("Ошибка при получении данных регионов");
+      toast.error("Ошибка при получении данных районов");
     }
   };
 
@@ -151,7 +151,7 @@ export default function Users() {
         <div className="border-2 w-1/3 p-2 mb-2 ml-2 mt-4 shadow-lg rounded">
           <h2 className="font-semibold border-b-2">Фильтр</h2>
           <div className="flex flex-col mt-4">
-            <label className="text-sm mb-1">Регион</label>
+            <label className="text-sm mb-1">Район</label>
             <div className="flex">
             <Select
               value={selectedRegionValue} // Используем новое состояние для значения
@@ -160,7 +160,7 @@ export default function Users() {
                 setSelectedRegionValue(selectedOption); // Обновляем состояние значения
                 setSelectedRegion(selectedOption.value);
               }}
-              placeholder="Выберите регион"
+              placeholder="Выберите район"
               className="w-64"
             />
               {selectedRegion && (
@@ -190,7 +190,7 @@ export default function Users() {
             <tr className="bg-sky-600 text-white">
               <th className="px-4 py-2 w-3/12 border">ФИО</th>
               <th className="px-4 py-2 w-3/12 border">Почта</th>
-              <th className="px-4 py-2 w-2/12 border">Регион</th>
+              <th className="px-4 py-2 w-2/12 border">Район</th>
               <th className="px-4 py-2 w-4/12 border">Действия</th>
             </tr>
           </thead>

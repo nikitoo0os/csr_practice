@@ -21,7 +21,7 @@ export default function NewReport({ template, closeModal }) {
       const response = await request("get", "/regions");
       setRegions(response.data);
     } catch (error) {
-      toast.error("Не удалось получить список регионов.");
+      toast.error("Не удалось получить список районов.");
     }
   };
 
@@ -58,7 +58,7 @@ export default function NewReport({ template, closeModal }) {
     event.preventDefault();
 
     if (selectedRegion.length === 0) {
-      toast.error("Выберите хотя бы один регион.");
+      toast.error("Выберите хотя бы один район.");
       return;
     }
 
@@ -153,7 +153,7 @@ export default function NewReport({ template, closeModal }) {
         </div>
 
         <div className="mb-4">
-          <label className="block font-bold mb-2">Регион:</label>
+          <label className="block font-bold mb-2">Район:</label>
           <Select
             options={regions.map(region => ({
               value: region.id,
@@ -164,7 +164,7 @@ export default function NewReport({ template, closeModal }) {
             isMulti
             className="w-full"
             required
-            placeholder="Выберите регионы"
+            placeholder="Выберите районы"
             styles={selectStyles}
           />
           <button
@@ -184,7 +184,7 @@ export default function NewReport({ template, closeModal }) {
               setSelectAllRegions(!selectAllRegions);
             }}
           >
-            {selectAllRegions ? "Отменить выбор всех регионов" : "Выбрать все регионы"}
+            {selectAllRegions ? "Отменить выбор всех районов" : "Выбрать все районы"}
           </button>
 
         </div>

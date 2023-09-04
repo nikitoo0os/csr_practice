@@ -9,8 +9,8 @@ export default function SummaryRepRead() {
     const tableData = location.state && location.state.tableData;
     const xlsxData = location.state && location.state.tableData;
 
-    if (!tableData || tableData.length === 0) {
-        return <div className="bg-white p-4">Нет данных для отображения</div>;
+    if (!tableData || tableData.length === 2) {
+        return <div className="bg-white p-4 max-w-screen-xl mx-auto">Невозможно сформировать итоговый отчет, т.к. нету завершенных отчетов по заданным параметрам.</div>;
     }
 
     const headers = Object.keys(tableData[0]); // Ключи первого объекта - заголовки
