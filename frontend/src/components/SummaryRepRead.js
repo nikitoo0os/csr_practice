@@ -17,7 +17,7 @@ export default function SummaryRepRead() {
     const totals = Object.keys(tableData[tableData.length - 1]); // Ключи последнего объекта - итоговые значения
     const dataRows = tableData.slice(1, -1); // Остальные элементы - данные
     const downloadXLSX = async () => {
-        
+
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Отчет");
 
@@ -81,6 +81,14 @@ export default function SummaryRepRead() {
                 cell.alignment = { vertical: "middle", horizontal: "right" };
             }
         });
+
+        firstRow.eachCell((cell, colNumber) => {
+            cell.alignment = {
+                vertical: "middle",
+                wrapText: true,
+            };
+        });
+
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
