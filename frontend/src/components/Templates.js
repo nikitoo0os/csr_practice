@@ -35,11 +35,21 @@ export default function Templates() {
     if (!filterDateFrom && !filterDateTo) {
       return true; // Если оба поля пустые, вернуть все шаблоны
     }
-
+  
     const templateDate = new Date(template.date);
     const startDate = filterDateFrom ? new Date(filterDateFrom) : null;
     const endDate = filterDateTo ? new Date(filterDateTo) : null;
-
+  
+    // Установить время в начало дня (00:00:00) для templateDate
+    templateDate.setHours(0, 0, 0, 0);
+  
+    if (startDate) {
+      startDate.setHours(0, 0, 0, 0);
+    }
+    if (endDate) {
+      endDate.setHours(0, 0, 0, 0);
+    }
+  
     if (startDate && endDate) {
       return templateDate >= startDate && templateDate <= endDate;
     } else if (startDate) {
@@ -47,9 +57,10 @@ export default function Templates() {
     } else if (endDate) {
       return templateDate <= endDate;
     }
-
+  
     return true;
   });
+  
   useEffect(() => {
     fetchTemplates();
   }, []);
