@@ -58,7 +58,7 @@ export default function ActiveReports() {
 
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const currentReports = reports.slice(startIndex, endIndex);
+  const currentReports = filteredReports.slice(startIndex, endIndex);
 
   return (
     <div>
@@ -79,7 +79,7 @@ export default function ActiveReports() {
           />
         </div>
       </div>
-          {filteredReports.map((report) => (
+          {currentReports.map((report) => (
             <div
               key={report.id}
               className={`border border-gray-300 rounded shadow-lg p-4 mb-4 ${new Date() > new Date(report.endDate) ? 'bg-red-200' : ''
