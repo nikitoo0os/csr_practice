@@ -94,7 +94,11 @@ export default function FillReport() {
         if (fieldName === 'percent2') {
           const newPercent2 = parseFloat(updatedItem.percent2);
           if (!isNaN(newPercent2)) {
-            updatedItem.percent2 = Math.min(newPercent2, 100).toFixed(1);
+            if (newPercent2 > 100)
+            {
+              updatedItem.percent2 = 100;
+            }
+            else updatedItem.percent2 = newPercent2;
           }
         }
 
