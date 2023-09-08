@@ -103,7 +103,6 @@ export default function SummaryReport({ template, closeModal }) {
           value={startDate}
           onChange={handleStartDateChange}
           min="2022-01-01"
-          max={new Date().toISOString().split("T")[0]}
           className="border border-gray-300 rounded px-3 py-1"
         />
       </div>
@@ -117,7 +116,6 @@ export default function SummaryReport({ template, closeModal }) {
           value={endDate}
           onChange={handleEndDateChange}
           min="2022-01-01"
-          max={new Date().toISOString().split("T")[0]}
           className="border border-gray-300 rounded px-3 py-1"
         />
       </div>
