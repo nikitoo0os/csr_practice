@@ -3,14 +3,13 @@ import { request } from '../helpers/axios_helper';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import ReactModal from 'react-modal';
-import { useHistory } from 'react-router-dom';
 import CopyReportData from './CopyReportData';
-import { useStateManager } from 'react-select';
 
 
 export default function FillReport() {
   const [reportsData, setReportsData] = useState([]);
-  const [formData, setFormData] = useState([]);
+  let [formData, setFormData] = useState([]);
+  let [filteredFormData, setFilteredFormData] = useState([]);
   const location = useLocation();
   const report = location.state && location.state.report;
   // Calculate the total count1 and count2
@@ -55,10 +54,11 @@ export default function FillReport() {
       regularAct: item.regularAct,
     }));
     setFormData(initialData);
+    setFilteredFormData(initialData);
   };
 
   const handleInputChange = (event, service, fieldName) => {
-    const updatedData = formData.map((item) => {
+    const updatedData = filteredFormData.map((item) => {
       if (item.service.id === service.id) {
         const updatedItem = {
           ...item,
@@ -166,10 +166,10 @@ export default function FillReport() {
 
   useEffect(() => {
     filterData();
-  }, [reportsData, serviceNameFilter, count1Filter, count2Filter, percent1Filter, percent2Filter, regularActFilter]);
+  }, [filteredFormData, reportsData, serviceNameFilter, count1Filter, count2Filter, percent1Filter, percent2Filter, regularActFilter]);
 
   const filterData = () => {
-    const filtered = reportsData.filter((item) => {
+    const filtered = formData.filter((item) => {
       const serviceNameMatch = !serviceNameFilter || item.service.name?.toLowerCase().includes(serviceNameFilter.toLowerCase());
       const count1Match = !count1Filter || item.count1?.toString() === count1Filter;
       const count2Match = !count2Filter || item.count2?.toString() === count2Filter;
@@ -197,10 +197,27 @@ export default function FillReport() {
         regularAct: item.regularAct,
       };
     });
-
-    setFormData(updatedFormData);
+    setFilteredFormData(updatedFormData);
+  };
+  const updateFormData = async () => {
+    try {
+      await fetchReportData();
+    } catch (error) {
+      toast.error('Не удалось обновить данные.');
+    }
   };
 
+  const clearFormData = () => {
+    const clearedData = formData.map((item) => ({
+      ...item,
+      count1: '',
+      count2: '',
+      percent1: '',
+      percent2: '',
+      regularAct: '',
+    }));
+    setFormData(clearedData);
+  };
 
   return (
     <>
@@ -302,7 +319,7 @@ export default function FillReport() {
                   <input
                     type="number"
                     min="0"
-                    value={formData[index].count1}
+                    value={filteredFormData[index].count1}
                     onChange={(e) => handleInputChange(e, reportData.service, 'count1')}
                     className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
                   />
@@ -311,7 +328,7 @@ export default function FillReport() {
                   <input
                     type="number"
                     min="0"
-                    value={formData[index].count2}
+                    value={filteredFormData[index].count2}
                     onChange={(e) => handleInputChange(e, reportData.service, 'count2')}
                     className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
                   />
@@ -322,7 +339,7 @@ export default function FillReport() {
                     min="0.0"
                     max="100.0"
                     step="0.1"
-                    value={formData[index].percent1}
+                    value={filteredFormData[index].percent1}
                     readOnly={true}
                     onChange={(e) => handleInputChange(e, reportData.service, 'percent1')}
                     className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
@@ -334,14 +351,14 @@ export default function FillReport() {
                     min="0.0"
                     max="100.0"
                     step="0.5"
-                    value={formData[index].percent2}
+                    value={filteredFormData[index].percent2}
                     onChange={(e) => handleInputChange(e, reportData.service, 'percent2')}
                     className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1"
                   />
                 </td>
                 <td className="border px-4 py-2">
                   <textarea
-                    value={formData[index].regularAct}
+                    value={filteredFormData[index].regularAct}
                     onChange={(e) => handleInputChange(e, reportData.service, 'regularAct')}
                     className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-2 py-1 max-h-96"
                   />
@@ -414,7 +431,7 @@ export default function FillReport() {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <CopyReportData reportToCopy={report} closeModal={handleCloseCopyDataModal} fetchReportData={fetchReportData} />
+        <CopyReportData reportToCopy={report} closeModal={handleCloseCopyDataModal} fetchReportData={updateFormData} clearFormData={clearFormData} />
       </ReactModal>
     </>
   );

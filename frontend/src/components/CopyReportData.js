@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { request } from '../helpers/axios_helper';
 import { toast } from 'react-toastify';
 
-export default function CopyReportData({reportToCopy,closeModal,fetchReportData}) {
+export default function CopyReportData({reportToCopy,closeModal,fetchReportData,clearFormData}) {
   const [reports, setReports] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 3; // Number of items per page
@@ -28,7 +28,7 @@ export default function CopyReportData({reportToCopy,closeModal,fetchReportData}
   const copyReportData = async (selectedReport) => {
     try {
       await request('put', `/report/data/copy/${reportToCopy.id}`, selectedReport.id);
-      toast.success("Данные успешно скопированы");
+      clearFormData();
       fetchReportData();
       closeModal();
     } catch (error) {
