@@ -8,7 +8,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ReportDataMapper {
-
     List<ReportDataDTO> toReportDataDTO(List<ReportData> reportData);
     List<ReportData> toReportData(List<ReportDataDTO> reportDataDTOs);
 }

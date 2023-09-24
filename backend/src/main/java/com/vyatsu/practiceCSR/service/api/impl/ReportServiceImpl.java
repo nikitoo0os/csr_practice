@@ -20,13 +20,10 @@ import com.vyatsu.practiceCSR.repository.ReportRepository;
 import com.vyatsu.practiceCSR.repository.TemplateDataRepository;
 import com.vyatsu.practiceCSR.repository.UserRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
-import com.vyatsu.practiceCSR.utils.XLSUtil;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -34,7 +31,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,7 +38,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
-    private final XLSUtil Util;
     private final ReportRepository reportRepository;
     private final ReportMapper reportMapper;
     private final RegionMapper regionMapper;

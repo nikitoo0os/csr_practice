@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ServiceDTO {
-
     private int id;
     private String name;
 }

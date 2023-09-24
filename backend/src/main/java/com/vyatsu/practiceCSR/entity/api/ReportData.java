@@ -50,5 +50,4 @@ public class ReportData {
     @Setter
     @Column(name = "regular_act", length = Integer.MAX_VALUE)
     private String regularAct;
-
 }

@@ -8,10 +8,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface TemplateDataMapper {
-
     TemplateData toTemplateData(TemplateDataDTO templateDataDTO);
-
     TemplateDataDTO toTemplateDataDTO(TemplateData templateData);
-
     List<TemplateDataDTO> toListTemplateDataDTO(List<TemplateData> templateDataList);
 }

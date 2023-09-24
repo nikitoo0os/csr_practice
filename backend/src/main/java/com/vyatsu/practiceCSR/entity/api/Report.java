@@ -54,5 +54,4 @@ public class Report {
     @Setter
     @OneToMany(mappedBy = "report")
     private Set<ReportData> reportData = new LinkedHashSet<>();
-
 }

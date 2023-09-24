@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class CreateSummaryReportDTO {
-
     private ServiceDTO service;
     private ReportDTO report;
     private Double count1;

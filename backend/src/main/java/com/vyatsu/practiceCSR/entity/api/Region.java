@@ -1,13 +1,9 @@
 package com.vyatsu.practiceCSR.entity.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import net.minidev.json.annotate.JsonIgnore;
-import org.hibernate.annotations.Fetch;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -30,12 +26,11 @@ public class Region {
 
     @Getter
     @Setter
-    @OneToMany( mappedBy = "region")
+    @OneToMany(mappedBy = "region")
     private Set<User> users = new LinkedHashSet<>();
 
     @Getter
     @Setter
     @OneToMany(mappedBy = "region")
     private Set<Report> reports = new LinkedHashSet<>();
-
 }

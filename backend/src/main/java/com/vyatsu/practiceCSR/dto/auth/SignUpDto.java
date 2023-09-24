@@ -29,5 +29,4 @@ public class SignUpDto {
 
     @NotEmpty
     private Long region_id;
-
 }

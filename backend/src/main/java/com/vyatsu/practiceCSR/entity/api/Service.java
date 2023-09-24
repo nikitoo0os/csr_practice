@@ -1,7 +1,6 @@
 package com.vyatsu.practiceCSR.entity.api;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +17,6 @@ public class Service {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @NotNull
     @Getter
     @Setter
     @Column(name = "name", nullable = false, length = Integer.MAX_VALUE)
@@ -38,5 +36,4 @@ public class Service {
     @Setter
     @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
     private Set<ReportData> reportData = new LinkedHashSet<>();
-
 }

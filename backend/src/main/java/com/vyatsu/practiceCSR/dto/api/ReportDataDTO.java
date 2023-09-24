@@ -1,7 +1,5 @@
 package com.vyatsu.practiceCSR.dto.api;
 
-import com.vyatsu.practiceCSR.entity.api.Report;
-import com.vyatsu.practiceCSR.entity.api.Service;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +12,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class ReportDataDTO {
-
     private Integer id;
     private ServiceDTO service;
     private ReportDTO report;

@@ -11,8 +11,6 @@ import java.util.List;
 public interface ReportMapper {
     ReportDTO toReportDTO(Report report);
     Report toReport(ReportDTO reportDTO);
-
     Report toReport (CreateReportDTO createReportDTO);
-
     List<ReportDTO> toListReportDTO(List<Report> reports);
 }

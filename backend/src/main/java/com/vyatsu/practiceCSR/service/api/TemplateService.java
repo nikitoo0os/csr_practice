@@ -2,7 +2,6 @@ package com.vyatsu.practiceCSR.service.api;
 
 import com.vyatsu.practiceCSR.dto.api.TemplateDTO;
 import com.vyatsu.practiceCSR.entity.api.Template;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 

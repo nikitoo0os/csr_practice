@@ -3,7 +3,6 @@ package com.vyatsu.practiceCSR.entity.api;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.sql.Timestamp;
 import java.util.LinkedHashSet;
@@ -58,5 +57,4 @@ public class Template {
     @Setter
     @OneToMany(mappedBy = "template")
     private Set<Report> reports = new LinkedHashSet<>();
-
 }

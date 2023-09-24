@@ -6,12 +6,10 @@ import com.vyatsu.practiceCSR.dto.auth.UserAuthDto;
 import com.vyatsu.practiceCSR.entity.api.TemplateData;
 import com.vyatsu.practiceCSR.logger.LoggerCSR;
 import com.vyatsu.practiceCSR.mapper.ServiceMapper;
-import com.vyatsu.practiceCSR.mapper.TemplateDataMapper;
 import com.vyatsu.practiceCSR.mapper.TemplateMapper;
 import com.vyatsu.practiceCSR.repository.TemplateDataRepository;
 import com.vyatsu.practiceCSR.service.api.TemplateDataService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 

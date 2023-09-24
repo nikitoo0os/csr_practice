@@ -4,10 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -71,10 +67,4 @@ public class User {
     @Setter
     @Column(name = "is_active", columnDefinition = "boolean default true")
     private Boolean isActive;
-
-//    @Getter
-//    @Setter
-//    @OneToMany(mappedBy = "user")
-//    private Set<UserReport> userReports = new LinkedHashSet<>();
-
 }

@@ -7,7 +7,6 @@ import com.vyatsu.practiceCSR.entity.api.ReportData;
 import com.vyatsu.practiceCSR.logger.EnumWarnLog;
 import com.vyatsu.practiceCSR.logger.LoggerCSR;
 import com.vyatsu.practiceCSR.repository.ReportDataRepository;
-import com.vyatsu.practiceCSR.repository.ReportRepository;
 import com.vyatsu.practiceCSR.service.api.ReportDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -19,7 +18,6 @@ import java.util.List;
 @Service
 public class ReportDataServiceImpl implements ReportDataService {
     private final ReportDataRepository reportDataRepository;
-    private final ReportRepository reportRepository;
     private final UserAuthenticationProvider authenticationProvider;
 
     @Override

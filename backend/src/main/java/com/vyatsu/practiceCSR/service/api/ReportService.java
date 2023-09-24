@@ -4,9 +4,7 @@ import com.vyatsu.practiceCSR.dto.helper.CreateReportDTO;
 import com.vyatsu.practiceCSR.dto.helper.CreateSummaryReportDTO;
 import com.vyatsu.practiceCSR.dto.helper.OptionsSummaryReportDTO;
 import com.vyatsu.practiceCSR.entity.api.Report;
-import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 

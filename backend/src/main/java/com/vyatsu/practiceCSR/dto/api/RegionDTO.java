@@ -7,8 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class RegionDTO {
-
     private int id;
     private String name;
-
 }
