@@ -36,7 +36,6 @@ public class ReportController {
     private final ReportService reportService;
     private final UserAuthenticationProvider authenticationProvider;
     private final ReportMapper reportMapper;
-
     private final ReportRepository reportRepository;
 
     @GetMapping
@@ -54,13 +53,8 @@ public class ReportController {
     @GetMapping("/active/user")
     public ResponseEntity<List<ReportDTO>> getActiveReportByUser(@RequestHeader("Authorization") String token) {
         try {
-            // Извлекаем токен из заголовка Authorization
             String jwtToken = token.substring(7); // Предполагается, что токен имеет формат "Bearer <токен>"
-
-            // Проверяем токен и получаем аутентифицированного клиента
             Authentication authentication = authenticationProvider.validateToken(jwtToken);
-
-            // Получаем ID аутентифицированного клиента
             Long userId = ((UserAuthDto) authentication.getPrincipal()).getId();
 
             // Получаем профили для аутентифицированного клиента

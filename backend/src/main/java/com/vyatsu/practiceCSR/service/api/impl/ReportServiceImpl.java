@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,6 @@ public class ReportServiceImpl implements ReportService {
             Report report = reportMapper.toReport(createReportDTO);
             report.setIsActive(true);
             report.setRegion(regionMapper.toRegion(regionDTO));
-            report.setStartDate(LocalDate.now());
             report = reportRepository.save(report);
 
             List<TemplateData> templateDataList = templateDataRepository
@@ -97,6 +97,10 @@ public class ReportServiceImpl implements ReportService {
         User user = userRepository.findById(userId).get();
         List<Report> activeReports = reportRepository
                 .findActiveReportsByRegionId(Long.valueOf(user.getRegion().getId()));
+        activeReports = activeReports
+                .stream()
+                .filter(report -> report.getStartDate().isAfter(LocalDate.now()) || Objects.equals(report.getStartDate(), LocalDate.now()))
+                .collect(Collectors.toList());
         return activeReports;
     }
 
