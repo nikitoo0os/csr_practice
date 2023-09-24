@@ -21,6 +21,7 @@ import com.vyatsu.practiceCSR.repository.TemplateDataRepository;
 import com.vyatsu.practiceCSR.repository.UserRepository;
 import com.vyatsu.practiceCSR.service.api.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -95,12 +96,16 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<Report> getActiveReportByUserId(Long userId) {
         User user = userRepository.findById(userId).get();
-        List<Report> activeReports = reportRepository
+        List<Report> tempReport = reportRepository
                 .findActiveReportsByRegionId(Long.valueOf(user.getRegion().getId()));
-        activeReports = activeReports
-                .stream()
-                .filter(report -> report.getStartDate().isAfter(LocalDate.now()) || Objects.equals(report.getStartDate(), LocalDate.now()))
-                .collect(Collectors.toList());
+
+        List<Report> activeReports = new ArrayList<>();
+        LocalDate curDate = LocalDate.now();
+        for(Report report : tempReport){
+            if(curDate.isAfter(report.getStartDate())){
+                activeReports.add(report);
+            }
+        }
         return activeReports;
     }
 
