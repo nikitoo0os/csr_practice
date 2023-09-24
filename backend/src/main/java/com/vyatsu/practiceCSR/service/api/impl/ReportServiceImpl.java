@@ -102,7 +102,7 @@ public class ReportServiceImpl implements ReportService {
         List<Report> activeReports = new ArrayList<>();
         LocalDate curDate = LocalDate.now();
         for(Report report : tempReport){
-            if(curDate.isAfter(report.getStartDate())){
+            if(curDate.isAfter(report.getStartDate()) || curDate.isEqual(report.getStartDate())){
                 activeReports.add(report);
             }
         }
