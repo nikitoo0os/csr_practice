@@ -124,7 +124,6 @@ export default function NewReport({ template, closeModal }) {
             type="date"
             value={startDate}
             onChange={handleStartDateChange}
-            min={new Date().toISOString().split("T")[0]}
             className="w-full border border-gray-300 focus:outline-none focus:border-sky-500 rounded-md px-4 py-2"
             required
           />
