@@ -166,7 +166,8 @@ public class ReportServiceImpl implements ReportService {
         // фильтруем по дате
         reports = reports.stream()
                 .filter(report -> !report.getStartDate().isBefore(options.getStartDate()) &&
-                        !report.getStartDate().isAfter(options.getEndDate()))
+                        !report.getStartDate().isAfter(options.getEndDate()) &&
+                        !report.getEndDate().isAfter(options.getEndDate()))
                 .collect(Collectors.toList());
 
         // получаем данные этих отчетов
